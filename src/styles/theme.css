@@ -1,0 +1,52 @@
+/* Default Theme */
+:root {
+  --login-logo-bg: black;
+  --navbar-bg: #0a69ba;
+  --navbar-content-color: white;
+  --sidebar-bg: #f3f3f9;
+  --loader-color: #ff6600;
+  --dashboard-bg: url('../assets/images/vconnect/dashboard-bg.png');
+  --button-login: #0a69ba;
+  --button-draft: #6c757d;
+  --button-submit: #007bff;
+  --button-approval: #28a745;
+  --button-approved: #198754;
+  --button-reject: #dc3545;
+  --button-hold: #ffc107;
+  --button-cancel: #fd7e14;
+  --button-download: #17a2b8;
+  --button-print: #6610f2;
+  --button-back: #343a40;
+  --popup-bg: #ffffff;
+  --heading-color: #212529;
+  --paragraph-color: #495057;
+  --table-header-bg: #dee2e6;
+  --table-header-text: #343a40;
+}
+
+/* Client A Theme */
+[data-theme="Atomberg"] {
+  --login-logo-bg: white;
+  --navbar-bg: black;
+  --navbar-content-color: white;
+  --sidebar-bg: #f3f3f9;
+  --loader-color: #f39c12;
+  --dashboard-bg: url('../assets/images/atomberg/dashboard-bg.jpg');
+  --button-login: black;
+  --button-draft: #e74c3c;
+  --button-submit: #1abc9c;
+  --button-approval: #27ae60;
+  --button-approved: #2ecc71;
+  --button-reject: #e74c3c;
+  --button-hold: #f39c12;
+  --button-cancel: #d35400;
+  --button-download: #3498db;
+  --button-print: #8e44ad;
+  --button-back: #7f8c8d;
+  --popup-bg: #ffffff;
+  --heading-color: #2c3e50;
+  --paragraph-color: #7f8c8d;
+  --table-header-bg: #bdc3c7;
+  --table-header-text: #2c3e50;
+}
+
