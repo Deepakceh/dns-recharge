@@ -40,7 +40,7 @@ const Login: React.FC = () => {
           validationSchema={LoginSchema}
           onSubmit={handleSubmit}
         >
-          {({ setFieldValue }) => (
+          {() => (
             <Form>
               <div className="relative w-full">
                 <Field name="userId" type="text" as={Input} placeholder=" " className="peer h-12 w-full border border-gray-300 rounded px-3 pt-5 placeholder-transparent text-sm focus-visible:ring-0 focus-visible:ring-offset-0 focus:outline-none" />
@@ -75,10 +75,11 @@ const Login: React.FC = () => {
 
               <div className="text-center text-sm text-gray-500 my-4">OR</div>
 
-              <Button type="button" className="w-full bg-blue-900 hover:bg-blue-800 text-white">Login With OTP</Button>
-
+              <Button type="button" className="w-full bg-blue-900 hover:bg-blue-800 text-white">
+                <Link to="/login/otp">Login With OTP</Link>
+              </Button>
               <div className="text-center text-sm mt-4 text-gray-600">Don’t have an account?
-                <Link to="/signup" className="text-orange-500 font-medium hover:underline">Signup</Link>
+                <Link to="login/signup" className="text-orange-500 font-medium hover:underline">Signup</Link>
               </div>
             </Form>
           )}

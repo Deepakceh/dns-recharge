@@ -12,6 +12,7 @@ const Home = React.lazy(() => import('@/pages/guestPages/Home'));
 const About = React.lazy(() => import('@/pages/guestPages/About'));
 const ContactUs = React.lazy(() => import('@/pages/guestPages/Contact'))
 const Login = React.lazy(() => import('@/pages/auth/Login'));
+const Otp = React.lazy(() => import('@/pages/auth/LoginWithOtp'));
 const Signup = React.lazy(() => import('@/pages/auth/Signup'));
 
 // Auth Pages
@@ -34,7 +35,8 @@ const AppRoutes: React.FC = () => {
                         <Route path="about" element={<About />} />
                         <Route path="contact-us" element={<ContactUs />} />
                         <Route path="login" element={<Login />} />
-                        <Route path="signup" element={<Signup />} />
+                        <Route path="login/otp" element={<Otp />} />
+                        <Route path="login/signup" element={<Signup />} />
                     </Route>
 
                     {/* Authenticated Routes */}
