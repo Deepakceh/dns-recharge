@@ -32,17 +32,17 @@ const AppRoutes: React.FC = () => {
                     {/* Guest Routes */}
                     <Route element={<GuestLayout />}>
                         <Route index element={<Home />} />
-                        <Route path="about" element={<About />} />
-                        <Route path="contact-us" element={<ContactUs />} />
-                        <Route path="login" element={<Login />} />
-                        <Route path="login/otp" element={<Otp />} />
-                        <Route path="login/signup" element={<Signup />} />
+                        <Route path="/about" element={<About />} />
+                        <Route path="/contact-us" element={<ContactUs />} />
+                        <Route path="/login" element={<Login />} />
+                        <Route path="/login/otp" element={<Otp />} />
+                        <Route path="/login/signup" element={<Signup />} />
                     </Route>
 
                     {/* Authenticated Routes */}
                     <Route element={<AuthLayout />}>
-                        <Route path="dashboard" element={<Dashboard />} />
-                        <Route path="profile" element={<Profile />} />
+                        <Route path="/dashboard" element={<Dashboard />} />
+                        <Route path="/profile" element={<Profile />} />
                     </Route>
 
                     {/* 404 */}

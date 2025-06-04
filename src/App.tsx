@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import './styles/theme.css'
 import AppRoutes from './routes/AppRoutes';
 import { applyThemeSettings } from './utils/themeHandler';
