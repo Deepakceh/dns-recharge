@@ -3,7 +3,7 @@ import { GalleryVerticalEnd, SquareTerminal } from "lucide-react"
 import { NavMain } from "@/components/nav-main"
 import { NavUser } from "@/components/nav-user"
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarRail } from "@/components/ui/sidebar"
-
+import sidebar_logo from '../assets/images/dns/sidebar_logo.svg'
 // This is sample data.
 const data = {
   user: {
@@ -102,10 +102,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               asChild
               className="data-[slot=sidebar-menu-button]:!p-1.5"
             >
-              {/* <a href="#">
-                <IconInnerShadowTop className="!size-5" /> */}
+              <a href="#">
+                <img src={sidebar_logo} alt="logo" />
+                {/* <IconInnerShadowTop className="!size-5" /> */}
                 <span className="text-base font-semibold">DNS Link Portal</span>
-              {/* </a> */}
+              </a>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>

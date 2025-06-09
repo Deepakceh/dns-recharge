@@ -1,7 +1,10 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { PieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, XAxis, Tooltip } from "recharts";
-
+// import doller from '../../assets/images/common/doller.svg'
+import profit from '../../assets/images/common/profit.svg'
+import operator from '../../assets/images/common/operator.svg'
+import pen_reacharge from '../../assets/images/common/pending_recharge.svg'
 const COLORS = ["#00C49F", "#FFBB28", "#0088FE", "#FF8042"];
 
 const pieData = [
@@ -60,33 +63,69 @@ function DonutStat({ label, value, color }: { label: string; value: number; colo
 export default function Dashboard() {
   return (
     <div className="p-4 space-y-4">
-      {/* Dashboard Header */}
-      <div className="flex flex-wrap items-center justify-between gap-2">
-        <h1 className="text-xl font-semibold">Dashboard</h1>
+      <h1 className="text-xl font-semibold">Dashboard</h1>
+      <div className="">
+        {/* Dashboard Header */}
         <div className="flex gap-2">
-          <Badge variant="outline">Recharge</Badge>
-          <Badge variant="outline">Bill Payment</Badge>
-          <Badge variant="outline">AEPS</Badge>
-          <Badge variant="outline">CMS</Badge>
+          <Badge variant="secondary" className="bg-white py-2 px-5 text-orange-500 border-2 border-orange-500 font-medium">Recharge</Badge>
+          <Badge variant="secondary" className="bg-white py-2 px-5 text-gray-500 font-medium">Bill Payment</Badge>
+          <Badge variant="secondary" className="bg-white py-2 px-5 text-gray-500 font-medium">AEPS</Badge>
+          <Badge variant="secondary" className="bg-white py-2 px-5 text-gray-500 font-medium">CMS</Badge>
         </div>
       </div>
 
       {/* Summary Cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <Card className="bg-white rounded-lg shadow-md border"><CardContent className="p-4 text-center"><p>Total</p><h2 className="text-xl font-bold">14,450</h2></CardContent></Card>
-        <Card className="bg-white rounded-lg shadow-md border"><CardContent className="p-4 text-center"><p>Total Profit</p><h2 className="text-xl font-bold text-green-600">₹75,300</h2></CardContent></Card>
-        <Card className="bg-white rounded-lg shadow-md border"><CardContent className="p-4 text-center"><p>Most Used Operator</p><h2 className="text-xl font-semibold">Airtel</h2></CardContent></Card>
-        <Card className="bg-white rounded-lg shadow-md border"><CardContent className="p-4 text-center"><p>Pending Recharges</p><h2 className="text-xl font-semibold">8</h2></CardContent></Card>
+        <Card className="bg-white rounded-lg shadow-md border">
+          <CardContent className="p-4 flex items-center gap-4">
+            <img src={profit} alt="Money Icon" className="w-10 h-10" />
+            <div className="flex flex-col">
+              <p className="text-gray-400 font-normal">Total</p>
+              <h2 className="text-xl font-medium">14,450</h2>
+            </div>
+          </CardContent>
+        </Card>
+        <Card className="bg-white rounded-lg shadow-md border">
+          <CardContent className="p-4 flex items-center gap-4">
+            <img src={profit} alt="Money Icon" className="w-10 h-10" />
+            <div className="flex flex-col">
+              <p className="text-gray-400 font-normal">Total Profit</p>
+              <h2 className="text-xl font-medium">14,450</h2>
+            </div>
+          </CardContent>
+        </Card>
+        <Card className="bg-white rounded-lg shadow-md border">
+          <CardContent className="p-4 flex items-center gap-4">
+            <img src={operator} alt="Money Icon" className="w-10 h-10" />
+            <div className="flex flex-col">
+              <p className="text-gray-400 font-normal">Most Used Operator</p>
+              <h2 className="text-xl font-medium">14,450</h2>
+            </div>
+          </CardContent>
+        </Card>
+        <Card className="bg-white rounded-lg shadow-md border">
+          <CardContent className="p-4 flex items-center gap-4">
+            <img src={pen_reacharge} alt="Money Icon" className="w-10 h-10" />
+            <div className="flex flex-col">
+              <p className="text-gray-400 font-normal">Pending Recharges</p>
+              <h2 className="text-xl font-medium">14,450</h2>
+            </div>
+          </CardContent>
+        </Card>
       </div>
 
-
-
-      <div className="bg-white rounded-lg shadow-md border py-5 px-6">
+      <div className="bg-white rounded-lg shadow-md border py-5 ">
         <div className="flex flex-wrap items-center justify-between px-20 gap-2 mb-6">
-        <h1 className="text-xl font-semibold">Stats</h1>
-          <div className="flex gap-2">
-            <Badge variant="outline">Week</Badge>
-            <Badge variant="outline">Month</Badge>
+          <h1 className="text-xl font-semibold">Stats</h1>
+          <div className="flex gap-4">
+            <div className="flex items-center gap-2">
+              <span className="w-3 h-3  border border-gray-500"></span>
+              <p className="text-sm text-muted-foreground">Week</p>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="w-3 h-3  border border-gray-500"></span>
+              <p className="text-sm text-muted-foreground">Month</p>
+            </div>
           </div>
         </div>
 
@@ -106,7 +145,23 @@ export default function Dashboard() {
           <h1 className="text-xl font-semibold mb-4">Recharges By Operator</h1>
           <Card className="bg-white rounded-lg shadow-md border">
             <CardContent className="p-4">
-              <p className="text-sm text-muted-foreground mb-2">$7,560 Debited & $5,420 Credited in this week</p>
+              <div className="flex justify-between items-center px-5 mb-6 flex-wrap gap-2">
+                {/* Left side */}
+                <p className="text-lg text-gray-500"><span className="text-black">$7,560</span> Debited & <span className="text-black">$5,420</span> Credited in this week</p>
+
+                {/* Right side */}
+                <div className="flex gap-4">
+                  <div className="flex items-center gap-2">
+                    <span className="w-3 h-3 rounded-sm bg-blue-500"></span>
+                    <p className="text-sm text-muted-foreground">Jio</p>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="w-3 h-3 rounded-sm bg-red-500"></span>
+                    <p className="text-sm text-muted-foreground">Airtel</p>
+                  </div>
+                </div>
+              </div>
+
               <ResponsiveContainer width="100%" height={250}>
                 <BarChart data={barData}>
                   <XAxis dataKey="day" />
@@ -124,7 +179,6 @@ export default function Dashboard() {
           <h1 className="text-xl font-semibold mb-4">Stats</h1>
           <Card className="bg-white rounded-lg shadow-md border">
             <CardContent className="p-4">
-              <p className="text-sm text-muted-foreground mb-2">Stats</p>
               <ResponsiveContainer width="100%" height={250}>
                 <PieChart>
                   <Pie
@@ -164,17 +218,17 @@ export default function Dashboard() {
             <div className="flex-1">
               <p className="font-semibold text-lg mb-4">P2P Wallet</p>
               <div className="space-y-3">
-                <div className="flex justify-between text-sm text-gray-600">
-                  <span>Billing Taken</span>
-                  <span className="text-muted-foreground font-medium">₹180</span>
+                <div className="flex justify-between text-sm">
+                  <span className="font-semibold">Billing Taken</span>
+                  <span className="text-muted-foreground font-medium text-gray-500">₹180</span>
                 </div>
-                <div className="flex justify-between text-sm text-gray-600">
-                  <span>Approved</span>
-                  <span className="text-muted-foreground font-medium">₹250</span>
+                <div className="flex justify-between text-sm ">
+                  <span className="font-semibold">Approved</span>
+                  <span className="text-muted-foreground font-medium text-gray-500">₹250</span>
                 </div>
-                <div className="flex justify-between text-sm text-gray-600">
-                  <span>Wallet Amount</span>
-                  <span className="text-muted-foreground font-medium">₹560</span>
+                <div className="flex justify-between text-sm ">
+                  <span className="font-semibold">Wallet Amount</span>
+                  <span className="text-muted-foreground font-medium text-gray-500">₹560</span>
                 </div>
               </div>
             </div>
@@ -182,20 +236,20 @@ export default function Dashboard() {
             {/* P2A Wallet Section */}
             <div className="flex-1">
               <div className="flex justify-between items-start mb-4">
-                <p className="font-semibold text-lg">P2A Wallet</p>
+                <p className="font-bold text-lg">P2A Wallet</p>
               </div>
               <div className="space-y-3">
-                <div className="flex justify-between text-sm text-gray-600">
-                  <span>Billing Taken</span>
-                  <span className="text-muted-foreground font-medium">₹180</span>
+                <div className="flex justify-between text-sm ">
+                  <span className="font-semibold">Billing Taken</span>
+                  <span className="text-muted-foreground font-medium text-gray-500">₹180</span>
                 </div>
-                <div className="flex justify-between text-sm text-gray-600">
-                  <span>Approved</span>
-                  <span className="text-muted-foreground font-medium">₹250</span>
+                <div className="flex justify-between text-sm ">
+                  <span className="font-semibold">Approved</span>
+                  <span className="text-muted-foreground font-medium text-gray-500">₹250</span>
                 </div>
-                <div className="flex justify-between text-sm text-gray-600">
-                  <span>Wallet Payment</span>
-                  <span className="text-muted-foreground font-medium">₹560</span>
+                <div className="flex justify-between text-sm ">
+                  <span className="font-semibold">Wallet Payment</span>
+                  <span className="text-muted-foreground font-medium text-gray-500">₹560</span>
                 </div>
               </div>
             </div>
