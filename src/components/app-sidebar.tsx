@@ -7,7 +7,7 @@ import sidebar_logo from '../assets/images/dns/sidebar_logo.svg'
 // This is sample data.
 const data = {
   user: {
-    name: "Support",
+    name: "Deepak Kumar",
     email: "",
     avatar: "/avatars/shadcn.jpg",
   },
@@ -28,11 +28,11 @@ const data = {
       title: "Users",
       url: "#",
       icon: SquareTerminal,
-      isActive: true,
+      isActive: false,
       items: [
         {
           title: "User List Add/Edit",
-          url: "#",
+          url: "/user/list",
         },
         {
           title: "User Role & Permission",
@@ -61,7 +61,7 @@ const data = {
       title: "Vendors",
       url: "#",
       icon: SquareTerminal,
-      isActive: true,
+      isActive: false,
       items: [
         {
           title: "Vendor List-Add/Edit/Settings",
@@ -95,7 +95,7 @@ const data = {
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar collapsible="icon" {...props} className="bg-white">
-       <SidebarHeader>
+      <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton
@@ -103,7 +103,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               className="data-[slot=sidebar-menu-button]:!p-1.5"
             >
               <a href="#">
-                <img src={sidebar_logo} alt="logo" />
+                <img src={sidebar_logo} alt="logo" className="!size-5" />
                 {/* <IconInnerShadowTop className="!size-5" /> */}
                 <span className="text-base font-semibold">DNS Link Portal</span>
               </a>

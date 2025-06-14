@@ -1,0 +1,13 @@
+/* Light mode */
+.ag-theme-quartz {
+  --ag-font-family: theme('fontFamily.sans');
+  --ag-border-radius: theme('borderRadius.lg');
+}
+
+/* Dark mode */
+.dark .ag-theme-quartz {
+  --ag-background-color: theme('colors.gray.900');
+  --ag-foreground-color: theme('colors.gray.50');
+  --ag-border-color: theme('colors.gray.700');
+  --ag-row-hover-color: theme('colors.gray.800');
+}

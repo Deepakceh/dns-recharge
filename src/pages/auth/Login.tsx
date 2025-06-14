@@ -53,7 +53,7 @@ const Login: React.FC = () => {
               </div>
 
               <div className="relative w-full mt-6">
-                <Field name="password" type="password" placeholder=" " className="peer h-12 w-full border border-gray-300 rounded px-3 pt-5 placeholder-transparent text-sm focus-visible:ring-0 focus-visible:ring-offset-0 focus:outline-none" />
+                <Field name="password" type="password" placeholder=" " autoComplete='off' className="peer h-12 w-full border border-gray-300 rounded px-3 pt-5 placeholder-transparent text-sm focus-visible:ring-0 focus-visible:ring-offset-0 focus:outline-none" />
                 <label htmlFor="password" className="absolute left-3 top-1 text-gray-500 text-sm transition-all peer-placeholder-shown:top-3.5 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:top-1 peer-focus:text-xs peer-focus:text-gray-700">
                   Password
                 </label>
@@ -74,10 +74,11 @@ const Login: React.FC = () => {
               <Button type="submit" className="w-full bg-orange-500 hover:bg-orange-600 text-white mt-3">Login</Button>
 
               <div className="text-center text-sm text-gray-500 my-4">OR</div>
-
-              <Button type="button" className="w-full bg-blue-900 hover:bg-blue-800 text-white">
-                <Link to="/login/otp">Login With OTP</Link>
-              </Button>
+              <Link to="/login/otp">
+                <Button type="button" className="w-full bg-blue-900 hover:bg-blue-800 text-white">
+                  Login With OTP
+                </Button>
+              </Link>
               <div className="text-center text-sm mt-4 text-gray-600">Don’t have an account?
                 <Link to="/login/signup" className="text-orange-500 font-medium hover:underline">Signup</Link>
               </div>

@@ -12,12 +12,13 @@ const Home = React.lazy(() => import('@/pages/guestPages/Home'));
 const About = React.lazy(() => import('@/pages/guestPages/About'));
 const ContactUs = React.lazy(() => import('@/pages/guestPages/Contact'))
 const Login = React.lazy(() => import('@/pages/auth/Login'));
-const Otp = React.lazy(() => import('@/pages/auth/LoginWithOtp'));
+const LoginWithOtp = React.lazy(() => import('@/pages/auth/LoginWithOtp'));
+const OtpVerify = React.lazy(() => import('@/pages/auth/OtpVerify'));
 const Signup = React.lazy(() => import('@/pages/auth/Signup'));
 
 // Auth Pages
 const Dashboard = React.lazy(() => import('@/pages/main-pages/Dashboard'));
-const Profile = React.lazy(() => import('@/pages/main-pages/Profile'));
+const User = React.lazy(() => import('@/pages/main-pages/users/UserList/UserList'));
 
 // Other
 const PageNotFound = React.lazy(() => import('@/pages/otherPages/PageNotFound'));
@@ -35,14 +36,15 @@ const AppRoutes: React.FC = () => {
                         <Route path="/about" element={<About />} />
                         <Route path="/contact-us" element={<ContactUs />} />
                         <Route path="/login" element={<Login />} />
-                        <Route path="/login/otp" element={<Otp />} />
+                        <Route path="/login/otp" element={<LoginWithOtp />} />
+                        <Route path="/login/otp/verify" element={<OtpVerify />} />
                         <Route path="/login/signup" element={<Signup />} />
                     </Route>
 
                     {/* Authenticated Routes */}
                     <Route element={<AuthLayout />}>
                         <Route path="/dashboard" element={<Dashboard />} />
-                        <Route path="/profile" element={<Profile />} />
+                        <Route path="/user/list" element={<User />} />
                     </Route>
 
                     {/* 404 */}

@@ -5,7 +5,7 @@ import signupBg from "@/assets/images/dns/signup_bg.svg";
 import { motion } from "framer-motion";
 import { Input } from "@/components/ui/input";
 import { Link } from "react-router-dom";
-
+import { useNavigate } from "react-router-dom";
 interface LoginFormValues {
     mobile: string;
 }
@@ -15,10 +15,11 @@ const LoginSchema = Yup.object().shape({
 });
 
 const LoginWithOtp: React.FC = () => {
+    const navigate = useNavigate()
     const handleSubmit = (values: LoginFormValues, { resetForm }: { resetForm: () => void }) => {
         console.log("Form Data:", values);
         resetForm();
-        alert("Otp Send");
+        navigate('/login/otp/verify')
     };
 
     return (
@@ -38,7 +39,7 @@ const LoginWithOtp: React.FC = () => {
                     {() => (
                         <Form>
                             <div className="relative w-full">
-                                <Field name="userId" type="text" as={Input} placeholder=" " className="peer h-12 w-full border border-gray-300 rounded px-3 pt-5 placeholder-transparent text-sm focus-visible:ring-0 focus-visible:ring-offset-0 focus:outline-none" />
+                                <Field name="mobile" type="text" as={Input}  placeholder=" " maxLength='10' autoComplete='off' className="peer h-12 w-full border border-gray-300 rounded px-3 pt-5 placeholder-transparent text-sm focus-visible:ring-0 focus-visible:ring-offset-0 focus:outline-none" />
                                 <label htmlFor="mobile" className="absolute left-3 top-1 text-gray-500 text-sm transition-all peer-placeholder-shown:top-3.5 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:top-1 peer-focus:text-xs peer-focus:text-gray-700">
                                     Mobile
                                 </label>
