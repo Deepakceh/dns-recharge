@@ -5,6 +5,7 @@ export default {
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
     "./node_modules/@shadcn/ui/dist/**/*.{js,jsx,ts,tsx}", // Include ShadCN files
+	 "./node_modules/ag-grid-community/styles/**/*.css"
 
   ],
 

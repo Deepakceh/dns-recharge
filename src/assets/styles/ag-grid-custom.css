@@ -1,13 +1,23 @@
-/* Light mode */
-.ag-theme-quartz {
-  --ag-font-family: theme('fontFamily.sans');
-  --ag-border-radius: theme('borderRadius.lg');
+.ag-theme-quartz .ag-root-wrapper {
+  border-left: none !important;
+  border-right: none !important;
+}
+.ag-theme-quartz .ag-header {
+  background-color: #f4f2ff;
+}
+.ag-theme-quartz .ag-header-cell-label {
+  font-family: 'Inter', sans-serif;
+  font-weight: bold;
+  font-size: 12px;
+  color: #6e6893;
+}
+.ag-theme-quartz .ag-cell {
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  font-weight:500;
+  color: #6e6893;
+  display: flex;
+  align-items: center;
+  /* justify-content: center; */
 }
 
-/* Dark mode */
-.dark .ag-theme-quartz {
-  --ag-background-color: theme('colors.gray.900');
-  --ag-foreground-color: theme('colors.gray.50');
-  --ag-border-color: theme('colors.gray.700');
-  --ag-row-hover-color: theme('colors.gray.800');
-}

@@ -44,7 +44,7 @@ const AppRoutes: React.FC = () => {
                     {/* Authenticated Routes */}
                     <Route element={<AuthLayout />}>
                         <Route path="/dashboard" element={<Dashboard />} />
-                        <Route path="/user/list" element={<User />} />
+                        <Route path="/users/:page" element={<User />} />
                     </Route>
 
                     {/* 404 */}

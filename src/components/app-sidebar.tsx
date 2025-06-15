@@ -1,5 +1,5 @@
 import * as React from "react"
-import { GalleryVerticalEnd, SquareTerminal } from "lucide-react"
+import { GalleryVerticalEnd, SquareTerminal, LayoutGrid} from "lucide-react"
 import { NavMain } from "@/components/nav-main"
 import { NavUser } from "@/components/nav-user"
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarRail } from "@/components/ui/sidebar"
@@ -22,7 +22,7 @@ const data = {
     {
       title: "Dashboard",
       url: "/dashboard",
-      icon: SquareTerminal,
+      icon: LayoutGrid,
     },
     {
       title: "Users",
@@ -32,7 +32,7 @@ const data = {
       items: [
         {
           title: "User List Add/Edit",
-          url: "/user/list",
+          url: "/users/list",
         },
         {
           title: "User Role & Permission",
@@ -89,7 +89,7 @@ const data = {
         }
       ],
     },
-  ],
+  ]
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
