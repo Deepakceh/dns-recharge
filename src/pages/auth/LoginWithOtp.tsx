@@ -30,7 +30,8 @@ const LoginWithOtp: React.FC = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6 }}
             >
-                <h2 className="text-3xl font-bold text-center mb-20 text-gray-800">Login With OTP</h2>
+                <h2 className="text-3xl font-bold text-center mb-14 text-gray-800">Login With OTP</h2>
+                <p className="text-center text-gray-600 mb-6">Please enter registered mobile number.</p>
                 <Formik
                     initialValues={{ mobile: "" }}
                     validationSchema={LoginSchema}
@@ -39,7 +40,7 @@ const LoginWithOtp: React.FC = () => {
                     {() => (
                         <Form>
                             <div className="relative w-full">
-                                <Field name="mobile" type="text" as={Input}  placeholder=" " maxLength='10' autoComplete='off' className="peer h-12 w-full border border-gray-300 rounded px-3 pt-5 placeholder-transparent text-sm focus-visible:ring-0 focus-visible:ring-offset-0 focus:outline-none" />
+                                <Field name="mobile" type="text" as={Input} placeholder=" " maxLength='10' autoComplete='off' className="peer h-12 w-full border border-gray-300 rounded px-3 pt-5 placeholder-transparent text-sm focus-visible:ring-0 focus-visible:ring-offset-0 focus:outline-none" />
                                 <label htmlFor="mobile" className="absolute left-3 top-1 text-gray-500 text-sm transition-all peer-placeholder-shown:top-3.5 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:top-1 peer-focus:text-xs peer-focus:text-gray-700">
                                     Mobile
                                 </label>

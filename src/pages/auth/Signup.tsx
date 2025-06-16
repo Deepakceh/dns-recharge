@@ -113,23 +113,23 @@ const Signup: React.FC = () => {
                 </div>
 
                 <div className="grid md:grid-cols-3 gap-6">
-                  <InputField name="name" label="Name" type="text" placeholder="Enter Name" className="border" />
-                  <InputField name="shopName" label="Shop Name" type="text" placeholder="Enter Shop Name" className="border" />
-                  <InputField name="mobile" label="Mobile" type="text" maxLength={10} placeholder="Enter Mobile" className="border" />
-                  <InputField name="email" label="Email" type="email" placeholder="Enter Email" className="border" />
-                  <SelectField name="state" label="State" options={dropdown.state} className="border" />
-                  <SelectField name="district" label="District" options={dropdown.district} className="border" />
-                  <InputField name="address" label="Address" type="text" placeholder="Enter Address" className="border" />
-                  <InputField name="pincode" label="Pincode" type="text" maxLength={6} placeholder="Enter Pincode" className="border" />
-                  <InputField name="aadhar" label="Aadhar" type="text" maxLength={12} capitalize={true} placeholder="Enter Aadhar Number" className="border" />
-                  <InputField name="pan" label="PAN" type="text" maxLength={10} capitalize={true} placeholder="Enter PAN Number" className="border" />
+                  <InputField name="name" label="Name" type="text" placeholder="Enter Name" labelType='floating' className="border" />
+                  <InputField name="shopName" label="Shop Name" type="text" placeholder="Enter Shop Name" labelType='floating' className="border" />
+                  <InputField name="mobile" label="Mobile" type="text" maxLength={10} placeholder="Enter Mobile" labelType='floating' className="border" />
+                  <InputField name="email" label="Email" type="email" placeholder="Enter Email" labelType='floating' className="border" />
+                  <SelectField name="state" label="State" options={dropdown.state} labelType='floating' className="border" />
+                  <SelectField name="district" label="District" options={dropdown.district} labelType='floating' className="border" />
+                  <InputField name="address" label="Address" type="text" placeholder="Enter Address" labelType='floating' className="border" />
+                  <InputField name="pincode" label="Pincode" type="text" maxLength={6} placeholder="Enter Pincode" labelType='floating' className="border" />
+                  <InputField name="aadhar" label="Aadhar" type="text" maxLength={12} capitalize={true} placeholder="Enter Aadhar Number" labelType='floating' className="border" />
+                  <InputField name="pan" label="PAN" type="text" maxLength={10} capitalize={true} placeholder="Enter PAN Number" labelType='floating' className="border" />
 
                   {/* Conditional fields for API_USER role */}
                   {values.role === "API_USER" && (
                     <                    >
-                      <InputField name="gst" label="GST" type="text" maxLength={15} capitalize={true} placeholder="Enter GST Number" className="border" />
-                      <InputField name="domainName" label="Domain Name" type="text" placeholder="Enter Domain Name" className="border" />
-                      <SelectField name="companyType" label="Company Type" options={dropdown.companyType} className="border" />
+                      <InputField name="gst" label="GST" type="text" maxLength={15} capitalize={true} placeholder="Enter GST Number" labelType='floating' className="border" />
+                      <InputField name="domainName" label="Domain Name" type="text" placeholder="Enter Domain Name" labelType='floating' className="border" />
+                      <SelectField name="companyType" label="Company Type" options={dropdown.companyType} labelType='floating' className="border" />
                     </>
                   )}
                 </div>

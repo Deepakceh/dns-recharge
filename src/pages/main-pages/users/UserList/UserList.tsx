@@ -1,4 +1,5 @@
 import { useState, useRef } from "react";
+import { Formik, Form } from "formik";
 import { AgGridReact } from "ag-grid-react";
 import { ModuleRegistry } from "ag-grid-community";
 import { AllCommunityModule } from "ag-grid-community";
@@ -7,14 +8,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Pencil, Trash2, SquarePlus, Filter, Search } from "lucide-react";
 import type { ColDef, ICellRendererParams } from "ag-grid-community";
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
-} from "@/components/ui/sheet"
+import { Sheet, SheetContent, SheetHeader, SheetTitle, } from "@/components/ui/sheet"
+import InputField from "@/components/common/formFields/InputField";
+import SelectField from "@/components/common/formFields/SelectField";
+import { Link } from "react-router-dom";
+
 // Register all AG Grid Community modules
 ModuleRegistry.registerModules([AllCommunityModule]);
 
@@ -27,12 +25,40 @@ type UserRowData = {
   status: "ON" | "OFF";
 };
 
+interface filterFormValues {
+  mobile: string;
+  email: string;
+  user: string;
+  role: string;
+  status: string;
+}
+
 export default function UserList() {
   const gridRef = useRef(null);
   const [open, setOpen] = useState(false);
+  const [dropdown] = useState({
+    user: [
+      { value: "", label: "Select" },
+      { value: "user1", label: "User 1" },
+      { value: "user2", label: "User 2" },
+    ],
+    role: [
+      { value: "", label: "Select" },
+      { value: "role1", label: "Role 1" },
+      { value: "role2", label: "Role 2" },
+    ],
+    status: [
+      { value: "", label: "Select" },
+      { value: "on", label: "ON" },
+      { value: "off", label: "OFF" },
+    ],
+  });
 
-
-
+  const handleSubmit = (values: filterFormValues, { resetForm }: { resetForm: () => void }) => {
+    console.log("filter Data:", values);
+    resetForm();
+  };
+  // ag grig table 
   const columnDefs: ColDef[] = [
     {
       headerName: "S.No.",
@@ -182,13 +208,13 @@ export default function UserList() {
             >
               Export
             </Button>
+            <Link to='/users/add' >
             <Button className="h-8 px-5 text-sm bg-orange-500 hover:bg-orange-600 text-white">
               ADD
             </Button>
+            </Link>
           </div>
         </div>
-
-
         <div className="ag-theme-quartz w-full" style={{ height: '75vh' }}>
           <AgGridReact
             ref={gridRef}
@@ -204,27 +230,40 @@ export default function UserList() {
         </div>
       </div>
       <Sheet open={open} onOpenChange={setOpen}>
-        <SheetContent className="bg-white shadow-xl p-6 w-[400px]">
+        <SheetContent className="!w-[600px] !max-w-none bg-white shadow-xl p-4">
           <SheetHeader>
-            <SheetTitle>Edit profile</SheetTitle>
-            <SheetDescription>
-              Make changes to your profile here. Click save when you&apos;re done.
-            </SheetDescription>
+            <SheetTitle>Filter</SheetTitle>
           </SheetHeader>
-          {/* <div className="grid flex-1 auto-rows-min gap-6 px-4">
-          <div className="grid gap-3">
-            <Label htmlFor="sheet-demo-name">Name</Label>
-            <Input id="sheet-demo-name" defaultValue="Pedro Duarte" />
+          <div className="mt-5">
+            <Formik
+              initialValues={{
+                mobile: "",
+                email: "",
+                user: "",
+                role: "",
+                status: "",
+              }}
+              onSubmit={handleSubmit}
+            >
+              {() => (
+                <Form>
+                  <div className="grid md:grid-cols-2 gap-6">
+                    <InputField name="mobile" label="Mobile" type="text" maxLength={10} placeholder="Enter Mobile" className="border" />
+                    <InputField name="email" label="Email" type="email" placeholder="Enter Email" className="border" />
+                    <SelectField name="user" label="User" options={dropdown.user} className="border" />
+                    <SelectField name="role" label="Role" options={dropdown.role} className="border" />
+                    <SelectField name="status" label="Status" options={dropdown.status} className="border" />
+                  </div>
+
+                  <div className="flex gap-4 mt-10">
+                    <Button type="submit" className="w-full bg-orange-500 text-white hover:brightness-90">Search</Button>
+                    <Button type="button" onClick={() => setOpen(false)}
+                      variant="outline" className="w-full border border-blue-900 text-blue-900 hover:bg-blue-50">Cancel</Button>
+                  </div>
+                </Form>
+              )}
+            </Formik>
           </div>
-          <div className="grid gap-3">
-            <Label htmlFor="sheet-demo-username">Username</Label>
-            <Input id="sheet-demo-username" defaultValue="@peduarte" />
-          </div>
-        </div> */}
-          <SheetFooter>
-            {/* <Button type="submit">Save changes</Button> */}
-           
-          </SheetFooter>
         </SheetContent>
       </Sheet>
     </div>

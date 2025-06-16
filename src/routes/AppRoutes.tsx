@@ -18,7 +18,7 @@ const Signup = React.lazy(() => import('@/pages/auth/Signup'));
 
 // Auth Pages
 const Dashboard = React.lazy(() => import('@/pages/main-pages/Dashboard'));
-const User = React.lazy(() => import('@/pages/main-pages/users/UserList/UserList'));
+const User = React.lazy(() => import('@/pages/main-pages/users/UserList/User'));
 
 // Other
 const PageNotFound = React.lazy(() => import('@/pages/otherPages/PageNotFound'));
