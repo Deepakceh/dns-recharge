@@ -12,7 +12,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, } from "@/components/ui/s
 import InputField from "@/components/common/formFields/InputField";
 import SelectField from "@/components/common/formFields/SelectField";
 import { Link } from "react-router-dom";
-
+import { useNavigate } from "react-router-dom";
 // Register all AG Grid Community modules
 ModuleRegistry.registerModules([AllCommunityModule]);
 
@@ -34,6 +34,7 @@ interface filterFormValues {
 }
 
 export default function UserList() {
+  const navigate = useNavigate()
   const gridRef = useRef(null);
   const [open, setOpen] = useState(false);
   const [dropdown] = useState({
@@ -74,7 +75,7 @@ export default function UserList() {
       cellRenderer: () => (
         <div className="flex items-center gap-2 justify-center">
           <span title="Edit"><Pencil className="text-indigo-500 cursor-pointer w-4 h-4" /></span>
-          <span title="Add"><SquarePlus className="text-indigo-400 cursor-pointer w-5 h-5" /></span>
+          <span title="Add" onClick={()=>navigate('/users/wallet')}><SquarePlus className="text-indigo-400 cursor-pointer w-5 h-5" /></span>
           <span title="Delete"><Trash2 className="text-indigo-500 cursor-pointer w-4 h-4" /></span>
         </div>
       ),

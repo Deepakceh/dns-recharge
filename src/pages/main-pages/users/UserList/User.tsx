@@ -2,10 +2,10 @@ import { useParams } from "react-router-dom"
 import UserList from "./UserList"
 import AddUser from "./AddUser"
 import PageNotFound from "@/pages/otherPages/PageNotFound"
+import UserWallet from "../UserWallet/UserWallet"
 
 export default function User() {
   const { page } = useParams()
-  console.log('get page name', page)
 
   const renderPage = () => {
     switch (page) {
@@ -15,6 +15,8 @@ export default function User() {
       case 'edit':
       case 'view':
         return <AddUser />
+      case 'wallet':
+        return <UserWallet />
       default:
         return <PageNotFound />
     }
