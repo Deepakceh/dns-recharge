@@ -209,7 +209,7 @@ export default function UserList() {
             >
               Export
             </Button>
-            <Link to='/users/add' >
+            <Link to='/users/list/add' >
             <Button className="h-8 px-5 text-sm bg-orange-500 hover:bg-orange-600 text-white">
               ADD
             </Button>
@@ -233,7 +233,7 @@ export default function UserList() {
       <Sheet open={open} onOpenChange={setOpen}>
         <SheetContent className="!w-[600px] !max-w-none bg-white shadow-xl p-4">
           <SheetHeader>
-            <SheetTitle>Filter</SheetTitle>
+            <SheetTitle>Search Panel</SheetTitle>
           </SheetHeader>
           <div className="mt-5">
             <Formik

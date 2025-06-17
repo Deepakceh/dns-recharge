@@ -5,7 +5,7 @@ import SelectField from "@/components/common/formFields/SelectField";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { useNavigate } from "react-router-dom";
-interface userFormValues {
+interface formValues {
   name: string;
   email: string;
   mobile: string;
@@ -15,7 +15,7 @@ interface userFormValues {
   password: string;
 }
 
-export default function UserWallet() {
+export default function AddUser() {
   const navigate = useNavigate()
   const [dropdown] = useState({
     package: [
@@ -31,7 +31,7 @@ export default function UserWallet() {
   });
 
   const handleSubmit = (
-    values: userFormValues,
+    values: formValues,
     { resetForm }: { resetForm: () => void }
   ) => {
     console.log("filter Data:", values);
@@ -41,7 +41,7 @@ export default function UserWallet() {
   return (
     <div className="p-4">
       <div className="px-6 pb-12 pt-2 bg-white border border-gray-200 rounded-lg shadow-md">
-        <h3 className="text-lg font-semibold text-gray-800">Wallet</h3>
+        <h3 className="text-lg font-semibold text-gray-800">Add User</h3>
         <Separator className="my-2 bg-gray-200" />
 
         <Formik
@@ -58,7 +58,6 @@ export default function UserWallet() {
         >
           {() => (
             <Form className="space-y-6">
-              {/* General Info Section */}
               <div>
                 <h4 className="text-base font-semibold text-gray-700 mt-3 mb-3">General Info</h4>
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
@@ -69,8 +68,6 @@ export default function UserWallet() {
                   <SelectField name="package" label="Package Id" options={dropdown.package} />
                 </div>
               </div>
-
-              {/* Login Info Section */}
               <div>
                 <h4 className="text-base font-semibold text-gray-700 mb-3">Login Info</h4>
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">

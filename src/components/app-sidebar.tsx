@@ -1,5 +1,5 @@
 import * as React from "react"
-import { GalleryVerticalEnd, SquareTerminal, LayoutGrid} from "lucide-react"
+import { GalleryVerticalEnd, UserRoundPlus, Users, LayoutGrid, Landmark } from "lucide-react"
 import { NavMain } from "@/components/nav-main"
 import { NavUser } from "@/components/nav-user"
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarRail } from "@/components/ui/sidebar"
@@ -27,7 +27,7 @@ const data = {
     {
       title: "Users",
       url: "#",
-      icon: SquareTerminal,
+      icon: UserRoundPlus,
       isActive: false,
       items: [
         {
@@ -60,7 +60,7 @@ const data = {
     {
       title: "Vendors",
       url: "#",
-      icon: SquareTerminal,
+      icon: Users,
       isActive: false,
       items: [
         {
@@ -85,6 +85,26 @@ const data = {
         },
         {
           title: "Vendor Balance",
+          url: "#",
+        }
+      ],
+    },
+    {
+      title: "Bank",
+      url: "#",
+      icon: Landmark,
+      isActive: false,
+      items: [
+        {
+          title: "Bank Account",
+          url: "/bank/account-list",
+        },
+        {
+          title: "Bank Statement",
+          url: "#",
+        },
+        {
+          title: "Deposit / Withdrow",
           url: "#",
         }
       ],

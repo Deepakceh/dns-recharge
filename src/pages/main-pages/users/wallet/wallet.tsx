@@ -15,7 +15,7 @@ interface userFormValues {
   password: string;
 }
 
-export default function AddUser() {
+export default function Wallet() {
   const navigate = useNavigate()
   const [dropdown] = useState({
     package: [
@@ -41,7 +41,7 @@ export default function AddUser() {
   return (
     <div className="p-4">
       <div className="px-6 pb-12 pt-2 bg-white border border-gray-200 rounded-lg shadow-md">
-        <h3 className="text-lg font-semibold text-gray-800">Add User</h3>
+        <h3 className="text-lg font-semibold text-gray-800">Wallet</h3>
         <Separator className="my-2 bg-gray-200" />
 
         <Formik

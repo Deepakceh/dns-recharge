@@ -1,5 +1,5 @@
 import React, { Suspense } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate  } from 'react-router-dom';
 import { Toaster } from 'sonner';
 import CircleLoader from "@/components/common/loader/CircleLoader";
 
@@ -18,7 +18,17 @@ const Signup = React.lazy(() => import('@/pages/auth/Signup'));
 
 // Auth Pages
 const Dashboard = React.lazy(() => import('@/pages/main-pages/Dashboard'));
-const User = React.lazy(() => import('@/pages/main-pages/users/UserList/User'));
+
+// users routes
+const UsersLayout = React.lazy(() => import('@/pages/main-pages/users/layout'));
+const UserList = React.lazy(() => import('@/pages/main-pages/users/list/list'));
+const AddUser = React.lazy(() => import('@/pages/main-pages/users/list/add'));
+const Wallet = React.lazy(() => import('@/pages/main-pages/users/wallet/wallet'));
+
+// bank routes
+const BankLayout = React.lazy(() => import('@/pages/main-pages/bank/layout'));
+const AccountList = React.lazy(() => import('@/pages/main-pages/bank/account/list'));
+const AddAccount = React.lazy(() => import('@/pages/main-pages/bank/account/add'));
 
 // Other
 const PageNotFound = React.lazy(() => import('@/pages/otherPages/PageNotFound'));
@@ -44,8 +54,23 @@ const AppRoutes: React.FC = () => {
                     {/* Authenticated Routes */}
                     <Route element={<AuthLayout />}>
                         <Route path="/dashboard" element={<Dashboard />} />
-                        <Route path="/users/:page" element={<User />} />
                     </Route>
+
+                    {/* users routes */}
+                    <Route path="/users" element={<UsersLayout />}>
+                        <Route index element={<Navigate to="list" />} />
+                        <Route path="list" element={<UserList />} />
+                        <Route path="list/:page" element={<AddUser />} />
+                        <Route path="wallet" element={<Wallet />} />
+                    </Route>
+
+                     {/* bank routes */}
+                    <Route path="/bank" element={<BankLayout />}>
+                        <Route index element={<Navigate to="account-list" />} />
+                        <Route path="account-list" element={<AccountList />} />
+                        <Route path="account-list/:page" element={<AddAccount />} />
+                    </Route>
+
 
                     {/* 404 */}
                     <Route path="*" element={<PageNotFound />} />
