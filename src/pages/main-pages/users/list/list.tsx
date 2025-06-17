@@ -75,7 +75,7 @@ export default function UserList() {
       cellRenderer: () => (
         <div className="flex items-center gap-2 justify-center">
           <span title="Edit"><Pencil className="text-indigo-500 cursor-pointer w-4 h-4" /></span>
-          <span title="Add" onClick={()=>navigate('/users/wallet')}><SquarePlus className="text-indigo-400 cursor-pointer w-5 h-5" /></span>
+          <span title="Add" onClick={() => navigate('/users/wallet')}><SquarePlus className="text-indigo-400 cursor-pointer w-5 h-5" /></span>
           <span title="Delete"><Trash2 className="text-indigo-500 cursor-pointer w-4 h-4" /></span>
         </div>
       ),
@@ -120,7 +120,7 @@ export default function UserList() {
   ];
 
 
-  const rowData: UserRowData[] = [
+  const rowData: Record<string, unknown>[] = [
     { id: 1, name: "Edns Solutions Pvt Ltd", orgName: "DNS Pvt. Ltd.", p2pBalance: "1,987,464", p2aBalance: "746,843,747", status: "ON" },
     { id: 2, name: "SoftTech India Ltd", orgName: "ST Pvt. Ltd.", p2pBalance: "2,345,123", p2aBalance: "984,123,111", status: "OFF" },
     { id: 3, name: "Alpha Techno", orgName: "Alpha Pvt. Ltd.", p2pBalance: "3,456,789", p2aBalance: "123,456,789", status: "ON" },
@@ -210,9 +210,9 @@ export default function UserList() {
               Export
             </Button>
             <Link to='/users/list/add' >
-            <Button className="h-8 px-5 text-sm bg-orange-500 hover:bg-orange-600 text-white">
-              ADD
-            </Button>
+              <Button className="h-8 px-5 text-sm bg-orange-500 hover:bg-orange-600 text-white">
+                ADD
+              </Button>
             </Link>
           </div>
         </div>

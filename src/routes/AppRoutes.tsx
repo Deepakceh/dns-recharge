@@ -23,6 +23,7 @@ const Dashboard = React.lazy(() => import('@/pages/main-pages/Dashboard'));
 const UsersLayout = React.lazy(() => import('@/pages/main-pages/users/layout'));
 const UserList = React.lazy(() => import('@/pages/main-pages/users/list/list'));
 const AddUser = React.lazy(() => import('@/pages/main-pages/users/list/add'));
+const Role = React.lazy(() => import('@/pages/main-pages/users/role-permission/role'));
 const Wallet = React.lazy(() => import('@/pages/main-pages/users/wallet/wallet'));
 
 // bank routes
@@ -61,6 +62,7 @@ const AppRoutes: React.FC = () => {
                         <Route index element={<Navigate to="list" />} />
                         <Route path="list" element={<UserList />} />
                         <Route path="list/:page" element={<AddUser />} />
+                        <Route path="role" element={<Role />} />
                         <Route path="wallet" element={<Wallet />} />
                     </Route>
 

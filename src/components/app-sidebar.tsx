@@ -36,7 +36,7 @@ const data = {
         },
         {
           title: "User Role & Permission",
-          url: "#",
+          url: "/users/role",
         },
         {
           title: "User Package & Commission",
