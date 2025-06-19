@@ -30,7 +30,7 @@ export default function AccountList() {
   };
   // ag grig table 
   const columnDefs: ColDef[] = [
-    { headerName: "S.No.", field: "id", width: 60, suppressSizeToFit: true },
+    { headerName: "S.NO.", field: "id", width: 60, suppressSizeToFit: true },
     {
       headerName: "ACTION",
       field: "action",
@@ -47,19 +47,18 @@ export default function AccountList() {
         </div>
       ),
     },
-
-    { headerName: "Display Name", field: "DisplayName", width: 150 },
-    { headerName: "Bank/Branch Name", field: "BankBranchName", width: 180 },
-    { headerName: "Branch Address", field: "BranchAddress", width: 180 },
-    { headerName: "Account No.", field: "AccountNo", width: 140 },
-    { headerName: "IFSC Code", field: "IFSC", width: 130 },
-    { headerName: "Holder Name", field: "HolderName", width: 150 },
-    { headerName: "UPI Address", field: "UPI", width: 130 },
-    { headerName: "User", field: "User", width: 120 },
-    { headerName: "Vendor", field: "Vendor", width: 120 },
-    { headerName: "Remarks", field: "Remarks", width: 160 },
-    { headerName: "Balance", field: "Balance", width: 120 },
-    { headerName: "Min Limit", field: "MinLimit", width: 120 },
+    { headerName: "DISPLAY NAME", field: "DisplayName", width: 150 },
+    { headerName: "BANK/BRANCH NAME", field: "BankBranchName", width: 180 },
+    { headerName: "BRNACH ADDRESS", field: "BranchAddress", width: 180 },
+    { headerName: "ACCOUNT NO.", field: "AccountNo", width: 140 },
+    { headerName: "IFSC CODE", field: "IFSC", width: 130 },
+    { headerName: "HOLDER NAME", field: "HolderName", width: 150 },
+    { headerName: "UPI ADDRESS", field: "UPI", width: 130 },
+    { headerName: "USER", field: "User", width: 120 },
+    { headerName: "VENDOR", field: "Vendor", width: 120 },
+    { headerName: "REMARKS", field: "Remarks", width: 160 },
+    { headerName: "BALANCE", field: "Balance", width: 120 },
+    { headerName: "MIN. LIMIT", field: "MinLimit", width: 120 },
   ];
 
   const rowData: Record<string, unknown>[] = [

@@ -1,5 +1,5 @@
 import React, { Suspense } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate  } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from 'sonner';
 import CircleLoader from "@/components/common/loader/CircleLoader";
 
@@ -24,6 +24,7 @@ const UsersLayout = React.lazy(() => import('@/pages/main-pages/users/layout'));
 const UserList = React.lazy(() => import('@/pages/main-pages/users/list/list'));
 const AddUser = React.lazy(() => import('@/pages/main-pages/users/list/add'));
 const Role = React.lazy(() => import('@/pages/main-pages/users/role-permission/role'));
+const Permission = React.lazy(() => import('@/pages/main-pages/users/role-permission/permission'));
 const Wallet = React.lazy(() => import('@/pages/main-pages/users/wallet/wallet'));
 
 // bank routes
@@ -63,10 +64,11 @@ const AppRoutes: React.FC = () => {
                         <Route path="list" element={<UserList />} />
                         <Route path="list/:page" element={<AddUser />} />
                         <Route path="role" element={<Role />} />
+                        <Route path="role/permission" element={<Permission />} />
                         <Route path="wallet" element={<Wallet />} />
                     </Route>
 
-                     {/* bank routes */}
+                    {/* bank routes */}
                     <Route path="/bank" element={<BankLayout />}>
                         <Route index element={<Navigate to="account-list" />} />
                         <Route path="account-list" element={<AccountList />} />
