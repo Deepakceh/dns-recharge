@@ -25,12 +25,15 @@ const UserList = React.lazy(() => import('@/pages/main-pages/users/list/list'));
 const AddUser = React.lazy(() => import('@/pages/main-pages/users/list/add'));
 const Role = React.lazy(() => import('@/pages/main-pages/users/role-permission/role'));
 const Permission = React.lazy(() => import('@/pages/main-pages/users/role-permission/permission'));
+const PackageList = React.lazy(() => import('@/pages/main-pages/users/package-commission/list'));
 const Wallet = React.lazy(() => import('@/pages/main-pages/users/wallet/wallet'));
 
 // bank routes
 const BankLayout = React.lazy(() => import('@/pages/main-pages/bank/layout'));
 const AccountList = React.lazy(() => import('@/pages/main-pages/bank/account/list'));
 const AddAccount = React.lazy(() => import('@/pages/main-pages/bank/account/add'));
+const StatementList = React.lazy(() => import('@/pages/main-pages/bank/statement/list'));
+
 
 // Other
 const PageNotFound = React.lazy(() => import('@/pages/otherPages/PageNotFound'));
@@ -65,6 +68,7 @@ const AppRoutes: React.FC = () => {
                         <Route path="list/:page" element={<AddUser />} />
                         <Route path="role" element={<Role />} />
                         <Route path="role/permission" element={<Permission />} />
+                        <Route path="package-list" element={<PackageList />} />
                         <Route path="wallet" element={<Wallet />} />
                     </Route>
 
@@ -73,6 +77,7 @@ const AppRoutes: React.FC = () => {
                         <Route index element={<Navigate to="account-list" />} />
                         <Route path="account-list" element={<AccountList />} />
                         <Route path="account-list/:page" element={<AddAccount />} />
+                        <Route path="statement-list/" element={<StatementList />} />
                     </Route>
 
 

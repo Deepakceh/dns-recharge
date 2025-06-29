@@ -1,11 +1,5 @@
 import React from "react";
-import {
-  Field,
-  ErrorMessage,
-  useFormikContext,
-  FieldProps,
-} from "formik";
-
+import { Field, ErrorMessage, useFormikContext, FieldProps, } from "formik";
 interface SelectFieldProps {
   name: string;
   label: string;
@@ -14,7 +8,6 @@ interface SelectFieldProps {
   disabled?: boolean;
   labelType?: "top" | "floating";
 }
-
 interface FormValues {
   [key: string]: string;
 }

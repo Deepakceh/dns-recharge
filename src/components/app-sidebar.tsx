@@ -40,7 +40,7 @@ const data = {
         },
         {
           title: "User Package & Commission",
-          url: "#",
+          url: "/users/package-list",
         },
         {
           title: "User Wallet TXN-Add/Pull",
@@ -101,7 +101,7 @@ const data = {
         },
         {
           title: "Bank Statement",
-          url: "#",
+          url: "/bank/statement-list",
         },
         {
           title: "Deposit / Withdrow",
