@@ -8,7 +8,7 @@ export const authService = {
   // 🔥 Admin Login Function
   admin_login: async (
     action: string,
-    data: any
+    data: unknown
   ): Promise<ApiResponse> => {
     try {
       const payload = buildAuthPayload(action, data);   // Build payload dynamically

@@ -1,8 +1,8 @@
 // ✅ Function to build dynamic payloads
 export const buildAuthPayload = (
   action: string,     // ← Action type
-  data: any           // ← Payload data
-): Record<string, any> => {
+  data: unknown           // ← Payload data
+): Record<string, unknown> => {
 
   switch (action) {
     case "ADMIN_LOGIN":

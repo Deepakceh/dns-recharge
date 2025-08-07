@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
 import { Button } from "@/components/ui/button";
@@ -7,6 +7,7 @@ import SelectField from "@/components/common/formFields/SelectField";
 import signupBg from "@/assets/images/dns/signup_bg.svg";
 import { getValidationSchema } from "@/utils/validation";
 import { motion } from "framer-motion"; // Importing Framer Motion
+import { commonService } from "@/api/common/service";
 
 interface SignupFormValues {
   name: string;
@@ -61,6 +62,32 @@ const Signup: React.FC = () => {
       { value: "PARTNERSHIP", label: "Partnership" },
     ],
   });
+  useEffect(() => {
+    // const fetchStates = async () => {
+    //   try {
+    //     const response = await commonService.common_state();
+    //     console.log('get state data', response);
+    //   } catch (err) {
+    //     console.error("State API Error:", err);
+    //   } finally {
+    //     // setLoading(false);
+    //   }
+    // };
+
+    const fetchDstrict = async () => {
+      try {
+        const response = await commonService.common_district('COMMON_DISTRICT', { id: "33" });
+        console.log('get state data', response);
+      } catch (err) {
+        console.error("District API Error:", err);
+      } finally {
+        // setLoading(false);
+      }
+    };
+    // fetchStates();
+    fetchDstrict()
+  }, []);
+
 
   const handleSubmit = (values: SignupFormValues, { resetForm }: { resetForm: () => void }) => {
     console.log("Form Data:", values);
