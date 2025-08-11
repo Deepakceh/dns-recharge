@@ -6,7 +6,7 @@ import InputField from "@/components/common/formFields/InputField";
 import SelectField from "@/components/common/formFields/SelectField";
 import signupBg from "@/assets/images/dns/signup_bg.svg";
 import { getValidationSchema } from "@/utils/validation";
-import { motion } from "framer-motion"; // Importing Framer Motion
+import { motion } from "framer-motion";
 import { commonService } from "@/api/common/service";
 
 interface SignupFormValues {
@@ -46,49 +46,50 @@ const validationSchema = Yup.object({
 const Signup: React.FC = () => {
   const [dropdown] = useState({
     state: [
-      { value: "", label: "Select" },
-      { value: "UP", label: "Uttar Pradesh" },
-      { value: "MP", label: "Madhya Pradesh" },
+      { id: 0, name: "Select" },
+      { id: 1, name: "Uttar Pradesh" },
+      { id: 2, name: "Madhya Pradesh" },
     ],
     district: [
-      { value: "", label: "Select" },
-      { value: "district1", label: "District 1" },
-      { value: "district2", label: "District 2" },
+      { id: 0, name: "Select" },
+      { id: 1, name: "District 1" },
+      { id: 2, name: "District 2" },
     ],
     companyType: [
-      { value: "", label: "Select" },
-      { value: "LLP", label: "LLP" },
-      { value: "PVT_LTD", label: "Private Limited" },
-      { value: "PARTNERSHIP", label: "Partnership" },
+      { id: 0, name: "Select" },
+      { id: 1, name: "LLP" },
+      { id: 2, name: "Private Limited" },
+      { id: 3, name: "Partnership" },
     ],
   });
   useEffect(() => {
-    // const fetchStates = async () => {
-    //   try {
-    //     const response = await commonService.common_state();
-    //     console.log('get state data', response);
-    //   } catch (err) {
-    //     console.error("State API Error:", err);
-    //   } finally {
-    //     // setLoading(false);
-    //   }
-    // };
 
-    const fetchDstrict = async () => {
-      try {
-        const response = await commonService.common_district('COMMON_DISTRICT', { id: "33" });
-        console.log('get state data', response);
-      } catch (err) {
-        console.error("District API Error:", err);
-      } finally {
-        // setLoading(false);
-      }
-    };
-    // fetchStates();
-    fetchDstrict()
+
+
+    fetchStates();
+    fetchDistrict();
   }, []);
+  const fetchStates = async () => {
+    try {
+      const response = await commonService.common_state();
+      console.log('get state data', response);
+    } catch (err) {
+      console.error("State API Error:", err);
+    } finally {
+      // setLoading(false);
+    }
+  };
 
-
+  const fetchDistrict = async () => {
+    try {
+      const response = await commonService.common_district("33");
+      console.log('get state data', response);
+    } catch (err) {
+      console.error("District API Error:", err);
+    } finally {
+      // setLoading(false);
+    }
+  };
   const handleSubmit = (values: SignupFormValues, { resetForm }: { resetForm: () => void }) => {
     console.log("Form Data:", values);
     resetForm();

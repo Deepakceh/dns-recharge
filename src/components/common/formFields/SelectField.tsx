@@ -3,7 +3,7 @@ import { Field, ErrorMessage, useFormikContext, FieldProps, } from "formik";
 interface SelectFieldProps {
   name: string;
   label: string;
-  options: { label: string; value: string }[];
+  options: { id: number; name: string }[];
   className?: string;
   disabled?: boolean;
   labelType?: "top" | "floating";
@@ -52,13 +52,9 @@ const SelectField: React.FC<SelectFieldProps> = ({
               </option>
             )}
 
-            {options.map((option) => (
-              <option
-                key={option.value}
-                value={option.value}
-                className="text-gray-700"
-              >
-                {option.label}
+            {options?.map((option) => (
+              <option key={option.id} value={option.id} className="text-gray-700">
+                {option.name}
               </option>
             ))}
           </select>
