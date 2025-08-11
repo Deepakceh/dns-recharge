@@ -1,5 +1,11 @@
 import React from "react";
-import { Field, ErrorMessage, useFormikContext, FieldProps, } from "formik";
+import {
+  Field,
+  ErrorMessage,
+  useFormikContext,
+  FieldProps,
+} from "formik";
+
 interface SelectFieldProps {
   name: string;
   label: string;
@@ -7,7 +13,9 @@ interface SelectFieldProps {
   className?: string;
   disabled?: boolean;
   labelType?: "top" | "floating";
+  onCustomChange?: (value: string) => void; // ✅ NEW PROP
 }
+
 interface FormValues {
   [key: string]: string;
 }
@@ -18,7 +26,8 @@ const SelectField: React.FC<SelectFieldProps> = ({
   options,
   className = "",
   disabled = false,
-  labelType = "top", // default
+  labelType = "top",
+  onCustomChange, // ✅ destructure here
 }) => {
   const { setFieldValue, values } = useFormikContext<FormValues>();
   const selectedValue = values[name];
@@ -26,7 +35,6 @@ const SelectField: React.FC<SelectFieldProps> = ({
 
   return (
     <div className="relative w-full">
-      {/* Show top label only when labelType is 'top' */}
       {labelType === "top" && (
         <label
           htmlFor={name}
@@ -42,10 +50,15 @@ const SelectField: React.FC<SelectFieldProps> = ({
             {...field}
             id={name}
             disabled={disabled}
-            onChange={(e) => setFieldValue(name, e.target.value)}
+            onChange={(e) => {
+              const value = e.target.value;
+              setFieldValue(name, value); // ✅ Formik update
+              if (onCustomChange) {
+                onCustomChange(value); // ✅ Call custom method
+              }
+            }}
             className={`${heightClass} w-full border border-gray-300 rounded px-3 text-sm focus:outline-none focus:ring-0 focus:border-blue-500 ${className} ${!selectedValue ? "text-gray-400" : "text-black"}`}
           >
-            {/* Floating label becomes placeholder */}
             {labelType === "floating" && (
               <option value="" disabled hidden>
                 Select {label}

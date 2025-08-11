@@ -44,34 +44,23 @@ const validationSchema = Yup.object({
 });
 
 const Signup: React.FC = () => {
-  const [dropdown] = useState({
-    state: [
-      { id: 0, name: "Select" },
-      { id: 1, name: "Uttar Pradesh" },
-      { id: 2, name: "Madhya Pradesh" },
-    ],
-    district: [
-      { id: 0, name: "Select" },
-      { id: 1, name: "District 1" },
-      { id: 2, name: "District 2" },
-    ],
-    companyType: [
-      { id: 0, name: "Select" },
-      { id: 1, name: "LLP" },
-      { id: 2, name: "Private Limited" },
-      { id: 3, name: "Partnership" },
-    ],
-  });
+  const [stateData, setStateData] = useState([]);
+  const [districtData, setDistrictData] = useState([]);
+  const [companyTypeData, setCompanyTypeData] = useState([]);
+
   useEffect(() => {
 
 
 
     fetchStates();
-    fetchDistrict();
+    // fetchDistrict();
   }, []);
   const fetchStates = async () => {
     try {
-      const response = await commonService.common_state();
+      const res = await commonService.common_state();
+      if(res.success){
+setStateData(res.data || []);
+      }
       console.log('get state data', response);
     } catch (err) {
       console.error("State API Error:", err);
@@ -80,20 +69,25 @@ const Signup: React.FC = () => {
     }
   };
 
-  const fetchDistrict = async () => {
-    try {
-      const response = await commonService.common_district("33");
-      console.log('get state data', response);
-    } catch (err) {
-      console.error("District API Error:", err);
-    } finally {
-      // setLoading(false);
-    }
-  };
   const handleSubmit = (values: SignupFormValues, { resetForm }: { resetForm: () => void }) => {
     console.log("Form Data:", values);
     resetForm();
     alert("Signup Successful");
+  };
+
+  const handleStateChange = async (stateId: string) => {
+    // Reset district value
+    // setFieldValue("district", "");
+    // setDistrictOptions([]);
+
+    if (!stateId) return;
+
+    try {
+      const response = await commonService.common_district(stateId);
+      // setDistrictOptions(res.data); // Populate district dropdown
+    } catch (err) {
+      console.error("Error fetching districts:", err);
+    }
   };
 
   return (
@@ -145,8 +139,8 @@ const Signup: React.FC = () => {
                   <InputField name="shopName" label="Shop Name" type="text" placeholder="Enter Shop Name" labelType='floating' className="border" />
                   <InputField name="mobile" label="Mobile" type="text" maxLength={10} placeholder="Enter Mobile" labelType='floating' className="border" />
                   <InputField name="email" label="Email" type="email" placeholder="Enter Email" labelType='floating' className="border" />
-                  <SelectField name="state" label="State" options={dropdown.state} labelType='floating' className="border" />
-                  <SelectField name="district" label="District" options={dropdown.district} labelType='floating' className="border" />
+                  <SelectField name="state" label="State" options={stateData} labelType='floating' className="border" onCustomChange={handleStateChange}/>
+                  <SelectField name="district" label="District" options={districtData} labelType='floating' className="border" />
                   <InputField name="address" label="Address" type="text" placeholder="Enter Address" labelType='floating' className="border" />
                   <InputField name="pincode" label="Pincode" type="text" maxLength={6} placeholder="Enter Pincode" labelType='floating' className="border" />
                   <InputField name="aadhar" label="Aadhar" type="text" maxLength={12} capitalize={true} placeholder="Enter Aadhar Number" labelType='floating' className="border" />
@@ -157,7 +151,7 @@ const Signup: React.FC = () => {
                     <                    >
                       <InputField name="gst" label="GST" type="text" maxLength={15} capitalize={true} placeholder="Enter GST Number" labelType='floating' className="border" />
                       <InputField name="domainName" label="Domain Name" type="text" placeholder="Enter Domain Name" labelType='floating' className="border" />
-                      <SelectField name="companyType" label="Company Type" options={dropdown.companyType} labelType='floating' className="border" />
+                      <SelectField name="companyType" label="Company Type" options={companyTypeData} labelType='floating' className="border" />
                     </>
                   )}
                 </div>
