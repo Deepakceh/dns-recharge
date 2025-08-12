@@ -39,19 +39,19 @@ export default function UserList() {
   const [open, setOpen] = useState(false);
   const [dropdown] = useState({
     user: [
-      { value: "", label: "Select" },
-      { value: "user1", label: "User 1" },
-      { value: "user2", label: "User 2" },
+      { id: 0, name: "Select" },
+      { id: 1, name: "User 1" },
+      { id: 2, name: "User 2" },
     ],
     role: [
-      { value: "", label: "Select" },
-      { value: "role1", label: "Role 1" },
-      { value: "role2", label: "Role 2" },
+      { id: 0, name: "Select" },
+      { id: 1, name: "Role 1" },
+      { id: 2, name: "Role 2" },
     ],
     status: [
-      { value: "", label: "Select" },
-      { value: "on", label: "ON" },
-      { value: "off", label: "OFF" },
+      { id: 0, name: "Select" },
+      { id: 1, name: "ON" },
+      { id: 2, name: "OFF" },
     ],
   });
 
