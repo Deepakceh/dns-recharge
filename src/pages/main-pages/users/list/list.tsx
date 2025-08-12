@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Formik, Form } from "formik";
 import { AgGridReact } from "ag-grid-react";
 import { ModuleRegistry } from "ag-grid-community";
@@ -13,6 +13,8 @@ import InputField from "@/components/common/formFields/InputField";
 import SelectField from "@/components/common/formFields/SelectField";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import { userService } from "@/api/user/service";
+
 // Register all AG Grid Community modules
 ModuleRegistry.registerModules([AllCommunityModule]);
 
@@ -37,6 +39,9 @@ export default function UserList() {
   const navigate = useNavigate()
   const gridRef = useRef(null);
   const [open, setOpen] = useState(false);
+  const [user] = useState({
+    page: 1, size: 100, search: '', data: []
+  })
   const [dropdown] = useState({
     user: [
       { id: 0, name: "Select" },
@@ -54,6 +59,25 @@ export default function UserList() {
       { id: 2, name: "OFF" },
     ],
   });
+
+  useEffect(() => {
+    getUserListService(user.page, user.size);
+  }, [user.page, user.size]);
+
+  //  api call for get user list data
+  const getUserListService = async (page: number, size: number) => {
+    try {
+      const res = await userService.getUserList("GET_USER_LIST", {
+        page: page,
+        size: size
+      });
+      if (res?.success) {
+        console.log("User List Data:", res.data);
+      }
+    } catch (err) {
+      console.error("User API Error:", err);
+    }
+  };
 
   const handleSubmit = (values: filterFormValues, { resetForm }: { resetForm: () => void }) => {
     console.log("filter Data:", values);

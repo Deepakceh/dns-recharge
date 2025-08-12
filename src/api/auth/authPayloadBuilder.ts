@@ -1,17 +1,17 @@
-// ✅ Function to build dynamic payloads
+// Function to build dynamic payloads
 export const buildAuthPayload = (
-  action: string,     // ← Action type
-  data: unknown           // ← Payload data
+  action: string,   
+  data: unknown          
 ): Record<string, unknown> => {
 
   switch (action) {
     case "ADMIN_LOGIN":
       return {
-        "UserID": data?.userId || "",    // ← User ID from input
-        "Password": data?.password || "" // ← Password from input
+        "UserID": data?.userId || "",    
+        "Password": data?.password || ""
       };
 
     default:
-      throw new Error(`Unknown action: ${action}`);  // 🚫 Handle unknown actions
+      throw new Error(`Unknown action: ${action}`); 
   }
 };

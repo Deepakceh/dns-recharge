@@ -1,10 +1,5 @@
 import React from "react";
-import {
-  Field,
-  ErrorMessage,
-  useFormikContext,
-  FieldProps,
-} from "formik";
+import { Field, ErrorMessage, useFormikContext, FieldProps } from "formik";
 
 interface SelectFieldProps {
   name: string;
@@ -32,6 +27,7 @@ const SelectField: React.FC<SelectFieldProps> = ({
   const { setFieldValue, values } = useFormikContext<FormValues>();
   const selectedValue = values[name];
   const heightClass = labelType === "top" ? "h-9" : "h-12";
+  const finalOptions = [{ id: '', name: `Select ${label}` }, ...options];
 
   return (
     <div className="relative w-full">
@@ -65,7 +61,7 @@ const SelectField: React.FC<SelectFieldProps> = ({
               </option>
             )}
 
-            {options?.map((option) => (
+            {finalOptions?.map((option) => (
               <option key={option.id} value={option.id} className="text-gray-700">
                 {option.name}
               </option>

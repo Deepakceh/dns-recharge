@@ -44,28 +44,45 @@ const validationSchema = Yup.object({
 });
 
 const Signup: React.FC = () => {
-  const [stateData, setStateData] = useState([]);
-  const [districtData, setDistrictData] = useState([]);
-  const [companyTypeData, setCompanyTypeData] = useState([]);
+  interface OptionType {
+    id: number;
+    name: string;
+  }
+
+  const [stateData, setStateData] = useState<OptionType[]>([]);
+  const [districtData, setDistrictData] = useState<OptionType[]>([]);
+  const [companyTypeData, setCompanyTypeData] = useState<OptionType[]>([]);
 
   useEffect(() => {
-
-
-
-    fetchStates();
-    // fetchDistrict();
+    getStateService();
+    getCompanyService()
   }, []);
-  const fetchStates = async () => {
+
+  //  api call for get states data
+  const getStateService = async () => {
     try {
       const res = await commonService.common_state();
-      if(res.success){
-setStateData(res.data || []);
+      if (res?.success) {
+        const data = res.data as Array<{ id: number; stateName: string }>;
+        const states = data.map((state) => ({ id: state.id, name: state.stateName }));
+        setStateData(states);
       }
-      console.log('get state data', response);
     } catch (err) {
       console.error("State API Error:", err);
-    } finally {
-      // setLoading(false);
+    }
+  };
+
+  //  api call for get company data 
+  const getCompanyService = async () => {
+    try {
+      const res = await commonService.company();
+      if (res?.success) {
+        const data = res.data as Array<{ id: number; typeName: string }>;
+        const companies = data.map((company) => ({ id: company.id, name: company.typeName }));
+        setCompanyTypeData(companies);
+      }
+    } catch (err) {
+      console.error("State API Error:", err);
     }
   };
 
@@ -75,16 +92,18 @@ setStateData(res.data || []);
     alert("Signup Successful");
   };
 
-  const handleStateChange = async (stateId: string) => {
+  const handleStateChange = async (stateId: string, setFieldValue: (field: string, value: string) => void) => {
     // Reset district value
-    // setFieldValue("district", "");
-    // setDistrictOptions([]);
+    setFieldValue("district", "");
+    setDistrictData([]);
 
     if (!stateId) return;
 
     try {
-      const response = await commonService.common_district(stateId);
-      // setDistrictOptions(res.data); // Populate district dropdown
+      const res = await commonService.common_district(stateId);
+      const data = res.data as Array<{ id: number; districtName: string }>;
+      const districts = data.map((district) => ({ id: district.id, name: district.districtName }));
+      setDistrictData(districts);
     } catch (err) {
       console.error("Error fetching districts:", err);
     }
@@ -139,7 +158,7 @@ setStateData(res.data || []);
                   <InputField name="shopName" label="Shop Name" type="text" placeholder="Enter Shop Name" labelType='floating' className="border" />
                   <InputField name="mobile" label="Mobile" type="text" maxLength={10} placeholder="Enter Mobile" labelType='floating' className="border" />
                   <InputField name="email" label="Email" type="email" placeholder="Enter Email" labelType='floating' className="border" />
-                  <SelectField name="state" label="State" options={stateData} labelType='floating' className="border" onCustomChange={handleStateChange}/>
+                  <SelectField name="state" label="State" options={stateData} labelType='floating' className="border" onCustomChange={(stateId: string) => handleStateChange(stateId, setFieldValue)} />
                   <SelectField name="district" label="District" options={districtData} labelType='floating' className="border" />
                   <InputField name="address" label="Address" type="text" placeholder="Enter Address" labelType='floating' className="border" />
                   <InputField name="pincode" label="Pincode" type="text" maxLength={6} placeholder="Enter Pincode" labelType='floating' className="border" />
@@ -170,3 +189,5 @@ setStateData(res.data || []);
 };
 
 export default Signup;
+
+

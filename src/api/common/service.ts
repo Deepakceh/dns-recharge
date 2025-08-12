@@ -27,5 +27,16 @@ export const commonService = {
       console.error(`Error in common_district:`, error);
       throw error;
     }
-  }
+  },
+
+  // company Function
+  company: async (): Promise<ApiResponse> => {
+    try {
+      const response = await request<ApiResponse>("get", commonUrls.company, null, true)
+      return response;
+    } catch (error) {
+      console.error(`Error in common_state:`, error);
+      throw error;
+    }
+  },
 };
