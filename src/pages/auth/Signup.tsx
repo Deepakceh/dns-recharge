@@ -220,21 +220,21 @@ const Signup: React.FC = () => {
                   </div>
 
                   <div className="grid md:grid-cols-3 gap-6">
-                    <InputField name="name" label="Name" type="text" placeholder="Enter Name" labelType='floating' className="border" />
-                    <InputField name="shopName" label="Shop Name" type="text" placeholder="Enter Shop Name" labelType='floating' className="border" />
-                    <InputField name="mobile" label="Mobile" type="text" maxLength={10} placeholder="Enter Mobile" labelType='floating' className="border" />
+                    <InputField name="name" label="Name" type="text" placeholder="Enter Name" labelType='floating' inputMode='alpha' className="border" />
+                    <InputField name="shopName" label="Shop Name" type="text" placeholder="Enter Shop Name" labelType='floating' inputMode='alpha' className="border" />
+                    <InputField name="mobile" label="Mobile" type="text" maxLength={10} placeholder="Enter Mobile" labelType='floating' inputMode='int' className="border" />
                     <InputField name="email" label="Email" type="email" placeholder="Enter Email" labelType='floating' className="border" />
                     <SelectField name="state" label="State" options={stateData} labelType='floating' className="border" onCustomChange={(stateId: string) => handleStateChange(stateId, setFieldValue)} />
                     <SelectField name="district" label="District" options={districtData} labelType='floating' className="border" />
                     <InputField name="address" label="Address" type="text" placeholder="Enter Address" labelType='floating' className="border" />
-                    <InputField name="pincode" label="Pincode" type="text" maxLength={6} placeholder="Enter Pincode" labelType='floating' className="border" />
-                    <InputField name="aadhar" label="Aadhar" type="text" maxLength={12} capitalize={true} placeholder="Enter Aadhar Number" labelType='floating' className="border"
+                    <InputField name="pincode" label="Pincode" type="text" maxLength={6} placeholder="Enter Pincode" labelType='floating' inputMode='int' className="border" />
+                    <InputField name="aadhar" label="Aadhar" type="text" maxLength={12} capitalize={true} placeholder="Enter Aadhar Number" labelType='floating' inputMode='int' className="border"
                       showVerificationIcon={true}
                       verifiedStatus={true}
                       onVerificationIconClick={() => {
                         alert("Verification icon clicked");
                       }} />
-                    <InputField name="pan" label="PAN" type="text" maxLength={10} capitalize={true} placeholder="Enter PAN Number" labelType='floating' className="border"
+                    <InputField name="pan" label="PAN" type="text" maxLength={10} capitalize={true} placeholder="Enter PAN Number" labelType='floating' inputMode='alphanum' className="border"
                       showVerificationIcon={true}
                       verifiedStatus={false}
                       onVerificationIconClick={() => {
@@ -244,7 +244,7 @@ const Signup: React.FC = () => {
                     {/* Conditional fields for API_USER role */}
                     {values.role === "2" && (
                       <>
-                        <InputField name="gst" label="GST" type="text" maxLength={15} capitalize={true} placeholder="Enter GST Number" labelType='floating' className="border"
+                        <InputField name="gst" label="GST" type="text" maxLength={15} capitalize={true} placeholder="Enter GST Number" labelType='floating' inputMode='alphanum' className="border"
                           showVerificationIcon={true}
                           verifiedStatus={false}
                           onVerificationIconClick={() => {
@@ -257,7 +257,7 @@ const Signup: React.FC = () => {
                   </div>
 
                   <div className="flex gap-4 mt-10">
-                    <Button type="submit" className="w-full bg-orange-500 text-white hover:brightness-90">Submit</Button>
+                    <Button type="submit" className="w-full bg-orange-500 text-white hover:brightness-90" disabled={loader}>Submit</Button>
                     <Link to="/login" className="w-full"><Button type="button" variant="outline" className="w-full border border-blue-900 text-blue-900 hover:bg-blue-50">Cancel</Button></Link>
                   </div>
                 </Form>

@@ -14,6 +14,7 @@ const ContactUs = React.lazy(() => import('@/pages/guestPages/Contact'))
 const Login = React.lazy(() => import('@/pages/auth/Login'));
 const LoginWithOtp = React.lazy(() => import('@/pages/auth/LoginWithOtp'));
 const OtpVerify = React.lazy(() => import('@/pages/auth/OtpVerify'));
+const Forgot = React.lazy(() => import('@/pages/auth/Forgot'));
 const Signup = React.lazy(() => import('@/pages/auth/Signup'));
 
 // Auth Pages
@@ -53,6 +54,7 @@ const AppRoutes: React.FC = () => {
                         <Route path="/login" element={<Login />} />
                         <Route path="/login/otp" element={<LoginWithOtp />} />
                         <Route path="/login/otp/verify" element={<OtpVerify />} />
+                        <Route path="/login/forgot" element={<Forgot />} />
                         <Route path="/login/signup" element={<Signup />} />
                     </Route>
 

@@ -10,6 +10,7 @@ import { authService } from "@/api/auth/services";
 import { showToast } from "@/utils/toast";
 import { useNavigate } from "react-router-dom";
 import { Loader2 } from "lucide-react"; // 🌀 Import spinner icon
+import { Eye, EyeOff } from "lucide-react";
 
 interface LoginFormValues {
   userId: string;
@@ -24,6 +25,7 @@ const LoginSchema = Yup.object().shape({
 const Login: React.FC = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
 
   const handleSubmit = async (values: LoginFormValues, { resetForm }: { resetForm: () => void }) => {
@@ -75,22 +77,44 @@ const Login: React.FC = () => {
               </div>
 
               <div className="relative w-full mt-6">
-                <Field name="password" type="password" placeholder=" " autoComplete='off' className="peer h-12 w-full border border-gray-300 rounded px-3 pt-5 placeholder-transparent text-sm focus-visible:ring-0 focus-visible:ring-offset-0 focus:outline-none" />
-                <label htmlFor="password" className="absolute left-3 top-1 text-gray-500 text-sm transition-all peer-placeholder-shown:top-3.5 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:top-1 peer-focus:text-xs peer-focus:text-gray-700">
+                <Field
+                  name="password"
+                  type={showPassword ? "text" : "password"}
+                  placeholder=" "
+                  autoComplete="off"
+                  className="peer h-12 w-full border border-gray-300 rounded px-3 pr-10 pt-5 placeholder-transparent text-sm focus-visible:ring-0 focus-visible:ring-offset-0 focus:outline-none"
+                />
+                <label
+                  htmlFor="password"
+                  className="absolute left-3 top-1 text-gray-500 text-sm transition-all 
+      peer-placeholder-shown:top-3.5 peer-placeholder-shown:text-base 
+      peer-placeholder-shown:text-gray-400 peer-focus:top-1 
+      peer-focus:text-xs peer-focus:text-gray-700"
+                >
                   Password
                 </label>
+
+                {/* 👁️ Eye Icon */}
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none"
+                  tabIndex={-1}
+                >
+                  {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                </button>
+
                 <div className="absolute left-0 top-full mt-1 text-red-500 text-xs">
                   <ErrorMessage name="password" />
                 </div>
               </div>
-
               {/* Buttons */}
               <div className="flex justify-between items-center text-sm text-gray-600 mt-6">
                 <label className="flex items-center space-x-2">
                   <input type="checkbox" className="accent-orange-500" />
                   <span>Remember Me</span>
                 </label>
-                <a href="#" className="text-blue-600 hover:underline">Forgot Password?</a>
+                <Link to="/login/forgot" className="text-blue-600 hover:underline">Forgot Password?</Link>
               </div>
 
               <Button type="submit" className="w-full bg-orange-500 hover:bg-orange-600 text-white mt-3">

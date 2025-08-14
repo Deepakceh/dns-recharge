@@ -18,6 +18,7 @@ export interface SignUpRawData {
   companyType?: string;
   userId?: string;
   password?: string;
+  confirmPassword?: string;
 }
 
 // ...keep rest of the code same
@@ -54,6 +55,13 @@ export const authPayload = (action: string, data: unknown): Record<string, unkno
         userName: d.mobile || "",
         isOTP: true,
         otp: d.otp || ""
+      };
+    case "SIGN_IN_FORGOT":
+      return {
+        userName: d.mobile || '',
+        passWord: d.confirmPassword || '',
+        isOTP: true,
+        otp: d.otp || ''
       };
     default:
       throw new Error(`Unknown action: ${action}`);

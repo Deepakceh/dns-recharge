@@ -21,7 +21,9 @@ interface InputFieldProps {
   showVerificationIcon?: boolean;
   verifiedStatus?: boolean | null;
   onVerificationIconClick?: () => void;
+  inputMode?: 'int' | 'num' | 'alpha' | 'alphanum';
 }
+
 
 const InputField: React.FC<InputFieldProps> = ({
   name,
@@ -36,7 +38,8 @@ const InputField: React.FC<InputFieldProps> = ({
   labelType = "top",
   showVerificationIcon,
   verifiedStatus,
-  onVerificationIconClick
+  onVerificationIconClick,
+  inputMode
 }) => {
   const { setFieldValue } = useFormikContext<Record<string, unknown>>();
 
@@ -50,6 +53,59 @@ const InputField: React.FC<InputFieldProps> = ({
       setFieldValue(name, value);
     }
   };
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    const allowedKeys = ['Backspace', 'Tab', 'ArrowLeft', 'ArrowRight', 'Delete'];
+    if (allowedKeys.includes(e.key)) return;
+
+    switch (inputMode) {
+      case 'int':
+        if (!/^[0-9]$/.test(e.key)) e.preventDefault();
+        break;
+
+      case 'num':
+        if (!/^[0-9.]$/.test(e.key)) {
+          e.preventDefault();
+        } else {
+          const inputValue = (e.target as HTMLInputElement).value;
+          // Prevent multiple dots
+          if (e.key === '.' && inputValue.includes('.')) {
+            e.preventDefault();
+          }
+        }
+        break;
+      case 'alpha':
+        if (!/^[a-zA-Z\s]$/.test(e.key)) e.preventDefault();
+        break;
+      case 'alphanum':
+        if (!/^[a-zA-Z0-9]$/.test(e.key)) e.preventDefault();
+        break;
+      default:
+        // Allow all
+        break;
+    }
+  };
+
+  let htmlInputMode: string | undefined;
+  let pattern: string | undefined;
+
+  switch (inputMode) {
+    case 'int':
+    case 'num':
+      htmlInputMode = 'numeric';
+      pattern = '[0-9]*';
+      break;
+    case 'alpha':
+      pattern = '[a-zA-Z]*';
+      break;
+    case 'alphanum':
+      pattern = '[a-zA-Z0-9]*';
+      break;
+    default:
+      htmlInputMode = undefined;
+      pattern = undefined;
+  }
+
+
 
   // Conditionally apply height
   const heightClass = labelType === "top" ? "h-9" : "h-12 pt-4 peer placeholder-transparent";
@@ -63,6 +119,7 @@ const InputField: React.FC<InputFieldProps> = ({
       )}
 
       <Field
+        id={name} // ✅ Make label clickable
         name={name}
         type={type}
         as={Input}
@@ -70,14 +127,16 @@ const InputField: React.FC<InputFieldProps> = ({
         autoComplete="off"
         placeholder={placeholder}
         onChange={handleChange}
+        onKeyDown={handleKeyDown}
+        inputMode={htmlInputMode}
+        pattern={pattern}
         disabled={disabled}
-        className={`w-full border border-gray-300 rounded px-3 pr-10 text-sm focus-visible:ring-0 focus-visible:ring-offset-0 focus:outline-none ${heightClass} ${className}`}
+        className={`peer w-full border border-gray-300 rounded px-3 pr-10 text-sm focus-visible:ring-0 focus-visible:ring-offset-0 focus:outline-none ${heightClass} ${className}`} // ✅ Added peer
       />
 
-      {/* ✅ Floating Label */}
       {labelType === "floating" && (
         <label
-          htmlFor={name}
+          htmlFor={name} // ✅ Match input ID
           className="absolute left-3 top-1 text-gray-500 text-sm transition-all 
         peer-placeholder-shown:top-3.5 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 
         peer-focus:top-1 peer-focus:text-xs peer-focus:text-gray-700"
@@ -86,20 +145,22 @@ const InputField: React.FC<InputFieldProps> = ({
         </label>
       )}
 
-      {/* ✅ Verification Icon */}
       {showVerificationIcon && verifiedStatus !== null && (
         <div className="absolute right-3 top-1/2 transform -translate-y-1/2 text-lg">
           {verifiedStatus ? (
             <span className="text-green-500"><BadgeCheck /></span>
           ) : (
-            <button type="button" onClick={onVerificationIconClick} className="text-red-500 hover:text-red-700 focus:outline-none transition-colors">
+            <button
+              type="button"
+              onClick={onVerificationIconClick}
+              className="text-red-500 hover:text-red-700 focus:outline-none transition-colors"
+            >
               <BadgeCheck />
             </button>
           )}
         </div>
       )}
 
-      {/* ✅ Error Message */}
       <div className="absolute left-0 top-full mt-1 text-red-500 text-xs">
         <ErrorMessage name={name} />
       </div>
