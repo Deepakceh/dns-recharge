@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { Button } from "@/components/ui/button";
@@ -8,6 +9,8 @@ import { Link } from "react-router-dom";
 import { authService } from "@/api/auth/services";
 import { showToast } from "@/utils/toast";
 import { useNavigate } from "react-router-dom";
+import { Loader2 } from "lucide-react"; // 🌀 Import spinner icon
+
 interface LoginFormValues {
   userId: string;
   password: string;
@@ -20,7 +23,11 @@ const LoginSchema = Yup.object().shape({
 
 const Login: React.FC = () => {
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+
+
   const handleSubmit = async (values: LoginFormValues, { resetForm }: { resetForm: () => void }) => {
+    setLoading(true);
     try {
       const res = await authService.SignIn(values);
       if (res?.success) {
@@ -31,6 +38,7 @@ const Login: React.FC = () => {
         showToast.error(res?.message || "Failed to login");
       }
     } catch (err) {
+      setLoading(false);
       console.error("State API Error:", err);
     }
   };
@@ -84,7 +92,10 @@ const Login: React.FC = () => {
                 <a href="#" className="text-blue-600 hover:underline">Forgot Password?</a>
               </div>
 
-              <Button type="submit" className="w-full bg-orange-500 hover:bg-orange-600 text-white mt-3">Login</Button>
+              <Button type="submit" className="w-full bg-orange-500 hover:bg-orange-600 text-white mt-3">
+                {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                {loading ? "Logging in..." : "Login"}
+              </Button>
 
               <div className="text-center text-sm text-gray-500 my-4">OR</div>
               <Link to="/login/otp">

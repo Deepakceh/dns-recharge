@@ -1,12 +1,7 @@
 import * as Yup from "yup";
 
 // Common validation function
-export const getValidationSchema = ({
-  isRequired = false,
-  type = "text",
-  minLength = 0,
-  maxLength = 255,
-}: {
+export const getValidationSchema = ({ isRequired = false, type = "text", minLength = 0, maxLength = 255 }: {
   isRequired?: boolean;
   type?: "text" | "email" | "number" | "phone" | "aadhar" | "pan" | "gst";
   minLength?: number;
