@@ -1,6 +1,7 @@
 import React from "react";
 import { Field, ErrorMessage, useFormikContext } from "formik";
 import { Input } from "@/components/ui/input";
+import { BadgeCheck } from 'lucide-react';
 
 interface InputFieldProps {
   name: string;
@@ -89,14 +90,10 @@ const InputField: React.FC<InputFieldProps> = ({
       {showVerificationIcon && verifiedStatus !== null && (
         <div className="absolute right-3 top-1/2 transform -translate-y-1/2 text-lg">
           {verifiedStatus ? (
-            <span className="text-green-500">✔️</span>
+            <span className="text-green-500"><BadgeCheck /></span>
           ) : (
-            <button
-              type="button"
-              onClick={onVerificationIconClick}
-              className="text-red-500 focus:outline-none"
-            >
-              ❌
+            <button type="button" onClick={onVerificationIconClick} className="text-red-500 hover:text-red-700 focus:outline-none transition-colors">
+              <BadgeCheck />
             </button>
           )}
         </div>

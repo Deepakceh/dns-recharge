@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { Button } from "@/components/ui/button";
@@ -6,6 +7,10 @@ import { motion } from "framer-motion";
 import { Input } from "@/components/ui/input";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import { showToast } from "@/utils/toast";
+import { authService } from "@/api/auth/services";
+import { Loader2 } from "lucide-react"; // 🌀 Import spinner icon
+
 interface LoginFormValues {
     mobile: string;
 }
@@ -16,10 +21,23 @@ const LoginSchema = Yup.object().shape({
 
 const LoginWithOtp: React.FC = () => {
     const navigate = useNavigate()
-    const handleSubmit = (values: LoginFormValues, { resetForm }: { resetForm: () => void }) => {
-        console.log("Form Data:", values);
-        resetForm();
-        navigate('/login/otp/verify')
+    const [loading, setLoading] = useState(false);
+
+    const handleSubmit = async (values: LoginFormValues) => {
+        setLoading(true);
+        try {
+            const res = await authService.SendOTP(values.mobile);
+            setLoading(false);
+            if (res?.success) {
+                navigate('/login/otp/verify', { state: { mobile: values.mobile } });
+                showToast.success(res?.message || "OTP sent successfully");
+            } else {
+                showToast.error(res?.message || "Failed to send OTP");
+            }
+        } catch (err) {
+            setLoading(false);
+            console.error(err);
+        }
     };
 
     return (
@@ -30,7 +48,7 @@ const LoginWithOtp: React.FC = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6 }}
             >
-                <h2 className="text-3xl font-bold text-center mb-14 text-gray-800">Login With OTP</h2>
+                <h2 className="text-3xl font-bold text-center mb-10 text-gray-800">Login With OTP</h2>
                 <p className="text-center text-gray-600 mb-6">Please enter registered mobile number.</p>
                 <Formik
                     initialValues={{ mobile: "" }}
@@ -49,10 +67,13 @@ const LoginWithOtp: React.FC = () => {
                                 </div>
                             </div>
 
-                            <Button type="submit" className="w-full bg-orange-500 hover:bg-orange-600 text-white mt-6">Send</Button>
-                            <Button type="button" className="w-full bg-blue-900 hover:bg-blue-800 text-white mt-6">
-                                <Link to="/login">Cancel</Link>
+                            <Button type="submit" className="w-full bg-orange-500 hover:bg-orange-600 text-white mt-6">
+                                {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                                {loading ? "Sending..." : "Send"}
                             </Button>
+                            <Link to="/login"><Button type="button" className="w-full bg-blue-900 hover:bg-blue-800 text-white mt-6">
+                                Cancel
+                            </Button></Link>
                         </Form>
                     )}
                 </Formik>

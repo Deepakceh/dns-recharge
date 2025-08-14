@@ -30,9 +30,21 @@ export const authService = {
   },
 
   // sign in service
-  SignIn: async (data: SignUpRawData): Promise<ApiResponse> => {
-    const payload = authPayload("SIGN_IN", data);
+  SignIn: async (action: string, data: SignUpRawData): Promise<ApiResponse> => {
+    const payload = authPayload(action, data);
     return await request("post", auth.SignIn, payload, true);
-  }
+  },
+
+  // send otp service
+  SendOTP: async (mobile: string): Promise<ApiResponse> => {
+    try {
+      const url = `${auth.SendOTP}?MobileNumber=${mobile}`;
+      const res = await request<ApiResponse>("get", url, null, true)
+      return res;
+    } catch (error) {
+      console.error(`Error in SendOTP:`, error);
+      throw error;
+    }
+  },
 
 };

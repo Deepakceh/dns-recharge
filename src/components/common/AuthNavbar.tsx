@@ -33,7 +33,7 @@ export default function AuthNavbar() {
   };
 
   return (
-<header className="sticky top-0 z-50 flex h-12 items-center justify-between gap-4 bg-white px-4 shadow-sm">
+    <header className="sticky top-0 z-50 flex h-12 items-center justify-between gap-4 bg-white px-4 shadow-sm">
       {/* Left section: SidebarTrigger + Search */}
       <div className="flex items-center gap-4">
         <SidebarTrigger className="-ml-1" />

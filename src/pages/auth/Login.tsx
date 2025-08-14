@@ -29,7 +29,8 @@ const Login: React.FC = () => {
   const handleSubmit = async (values: LoginFormValues, { resetForm }: { resetForm: () => void }) => {
     setLoading(true);
     try {
-      const res = await authService.SignIn(values);
+      const res = await authService.SignIn("SIGN_IN", values);
+      setLoading(false);
       if (res?.success) {
         navigate('/dashboard')
         resetForm();
@@ -39,7 +40,7 @@ const Login: React.FC = () => {
       }
     } catch (err) {
       setLoading(false);
-      console.error("State API Error:", err);
+      console.error(err);
     }
   };
 

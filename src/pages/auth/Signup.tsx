@@ -12,6 +12,7 @@ import { authService } from "@/api/auth/services";
 import { OtpModal } from "@/components/common/OtpModal";
 import { showToast } from "@/utils/toast";
 import CircleLoader from "@/components/common/loader/CircleLoader";
+import { Link } from "react-router-dom";
 
 interface SignupFormValues {
   name: string;
@@ -90,7 +91,7 @@ const Signup: React.FC = () => {
         setStateData(states);
       }
     } catch (err) {
-      console.error("State API Error:", err);
+      console.error(err);
     }
   };
 
@@ -105,7 +106,7 @@ const Signup: React.FC = () => {
       const districts = data.map((district) => ({ id: district.id, name: district.districtName }));
       setDistrictData(districts);
     } catch (err) {
-      console.error("Error fetching districts:", err);
+      console.error(err);
     }
   };
 
@@ -119,7 +120,7 @@ const Signup: React.FC = () => {
         setCompanyTypeData(companies);
       }
     } catch (err) {
-      console.error("State API Error:", err);
+      console.error(err);
     }
   };
 
@@ -138,7 +139,7 @@ const Signup: React.FC = () => {
       }
     } catch (err) {
       setLoader(false);
-      console.error("State API Error:", err);
+      console.error(err);
     }
   };
 
@@ -158,13 +159,9 @@ const Signup: React.FC = () => {
       }
     } catch (err) {
       setLoader(false)
-      console.error("State API Error:", err);
+      console.error(err);
     }
   };
-
-
-
-
 
   return (
     <>
@@ -198,9 +195,14 @@ const Signup: React.FC = () => {
               }}
               validationSchema={validationSchema}
               onSubmit={handleSubmit}
+
             >
               {({ values, setFieldValue }) => (
-                <Form>
+                <Form onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                  }
+                }}>
                   <div className="flex justify-center mb-6 gap-8">
                     <label className="flex items-center gap-2">
                       <Field type="radio" name="role" value="4" onChange={() => {
@@ -228,7 +230,7 @@ const Signup: React.FC = () => {
                     <InputField name="pincode" label="Pincode" type="text" maxLength={6} placeholder="Enter Pincode" labelType='floating' className="border" />
                     <InputField name="aadhar" label="Aadhar" type="text" maxLength={12} capitalize={true} placeholder="Enter Aadhar Number" labelType='floating' className="border"
                       showVerificationIcon={true}
-                      verifiedStatus={false}
+                      verifiedStatus={true}
                       onVerificationIconClick={() => {
                         alert("Verification icon clicked");
                       }} />
@@ -256,7 +258,7 @@ const Signup: React.FC = () => {
 
                   <div className="flex gap-4 mt-10">
                     <Button type="submit" className="w-full bg-orange-500 text-white hover:brightness-90">Submit</Button>
-                    <Button type="button" variant="outline" className="w-full border border-blue-900 text-blue-900 hover:bg-blue-50">Cancel</Button>
+                    <Link to="/login" className="w-full"><Button type="button" variant="outline" className="w-full border border-blue-900 text-blue-900 hover:bg-blue-50">Cancel</Button></Link>
                   </div>
                 </Form>
               )}

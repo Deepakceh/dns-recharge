@@ -49,6 +49,12 @@ export const authPayload = (action: string, data: unknown): Record<string, unkno
         userName: d.userId || "",
         passWord: d.password || "",
       };
+    case "SIGN_IN_OTP":
+      return {
+        userName: d.mobile || "",
+        isOTP: true,
+        otp: d.otp || ""
+      };
     default:
       throw new Error(`Unknown action: ${action}`);
   }
