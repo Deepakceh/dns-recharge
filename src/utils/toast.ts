@@ -13,9 +13,9 @@ export const showToast = {
   warning: (message: string, duration: number = 3000) =>
     toast.warning(message, { duration }),
 
-  custom: (
-    message: string,
-    duration: number = 3000,
-    options?: any
-  ) => toast(message, { duration, ...options }),
+  // custom: (
+  //   message: string,
+  //   duration: number = 3000,
+  //   options?: aunny
+  // ) => toast(message, { duration, ...options }),
 };

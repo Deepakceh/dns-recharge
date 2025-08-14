@@ -1,16 +1,17 @@
 import React from "react";
 import { Outlet } from "react-router-dom";  // Import Outlet for nested routes
+import { SidebarInset, SidebarProvider } from "../ui/sidebar";
+import { AppSidebar } from "../app-sidebar";
 import AuthNavbar from "../common/AuthNavbar";
-
 const AuthLayout: React.FC<{ children?: React.ReactNode }> = ({ children }) => {
   return (
-    <div className="admin-layout">
-      <AuthNavbar />
-      <main>
-        {/*Render children or Outlet */}
+    <SidebarProvider>
+      <AppSidebar />
+      <SidebarInset>
+        <AuthNavbar />
         {children || <Outlet />}
-      </main>
-    </div>
+      </SidebarInset>
+    </SidebarProvider>
   );
 };
 

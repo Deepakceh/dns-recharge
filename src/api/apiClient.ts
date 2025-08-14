@@ -44,7 +44,7 @@ api.interceptors.response.use(
 export const request = async <T>(
   method: "get" | "post" | "put" | "delete",
   url: string,
-  data?: any,
+  data?: unknown,
   skipAuth: boolean = false  // Add a flag for skipping auth
 ): Promise<T> => {
   try {
@@ -62,7 +62,7 @@ export const request = async <T>(
     } else {
       throw new Error(response.data.responseMessage || "Something went wrong!");
     }
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("API Error:", error);
     throw error;
   }

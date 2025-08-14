@@ -1,12 +1,7 @@
 import * as Yup from "yup";
 
 // Common validation function
-export const getValidationSchema = ({
-  isRequired = false,
-  type = "text",
-  minLength = 0,
-  maxLength = 255,
-}: {
+export const getValidationSchema = ({ isRequired = false, type = "text", minLength = 0, maxLength = 255 }: {
   isRequired?: boolean;
   type?: "text" | "email" | "number" | "phone" | "aadhar" | "pan" | "gst";
   minLength?: number;
@@ -36,7 +31,8 @@ export const getValidationSchema = ({
       validator = validator.matches(/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/, "Invalid PAN number");
       break;
     case "gst":
-      validator = validator.matches(/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/, "Invalid GST number");
+      // GSTIN: 2 digits, 5 letters, 4 digits, 1 letter, 1 alphanumeric, Z, 1 alphanumeric
+      validator = validator.matches(/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[A-Z0-9]{1}Z[A-Z0-9]{1}$/, "Invalid GST number");
       break;
     case "number":
       validator = validator.matches(/^\d+$/, "Only numbers are allowed");
