@@ -24,9 +24,11 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { SidebarTrigger } from "../ui/sidebar";
 import { clearAllCookies } from "@/utils/cookieHandler";
-
+import { useNavigate } from "react-router-dom";
 export default function AuthNavbar() {
+  const navigate = useNavigate()
   const handleLogout = () => {
+    navigate('/login')
     clearAllCookies();
     localStorage.clear();
     sessionStorage.clear();

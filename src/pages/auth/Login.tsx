@@ -117,7 +117,7 @@ const Login: React.FC = () => {
                 <Link to="/login/forgot" className="text-blue-600 hover:underline">Forgot Password?</Link>
               </div>
 
-              <Button type="submit" className="w-full bg-orange-500 hover:bg-orange-600 text-white mt-3">
+              <Button type="submit" className="w-full bg-orange-500 hover:bg-orange-600 text-white mt-3" disabled={loading}>
                 {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                 {loading ? "Logging in..." : "Login"}
               </Button>
