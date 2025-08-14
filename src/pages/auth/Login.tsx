@@ -5,7 +5,9 @@ import signupBg from "@/assets/images/dns/signup_bg.svg";
 import { motion } from "framer-motion";
 import { Input } from "@/components/ui/input";
 import { Link } from "react-router-dom";
-
+import { authService } from "@/api/auth/services";
+import { showToast } from "@/utils/toast";
+import { useNavigate } from "react-router-dom";
 interface LoginFormValues {
   userId: string;
   password: string;
@@ -17,11 +19,22 @@ const LoginSchema = Yup.object().shape({
 });
 
 const Login: React.FC = () => {
-  const handleSubmit = (values: LoginFormValues, { resetForm }: { resetForm: () => void }) => {
-    console.log("Form Data:", values);
-    resetForm();
-    alert("Login Successful");
+  const navigate = useNavigate();
+  const handleSubmit = async (values: LoginFormValues, { resetForm }: { resetForm: () => void }) => {
+    try {
+      const res = await authService.SignIn(values);
+      if (res?.success) {
+        navigate('/dashboard')
+        resetForm();
+        showToast.success(res?.message || "Login successful");
+      } else {
+        showToast.error(res?.message || "Failed to login");
+      }
+    } catch (err) {
+      console.error("State API Error:", err);
+    }
   };
+
 
   return (
     <div className="min-h-screen bg-cover bg-center flex items-center justify-center px-4" style={{ backgroundImage: `url(${signupBg})` }}>

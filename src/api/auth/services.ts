@@ -9,7 +9,6 @@ export const authService = {
   SendSignUpOTP: async (mobile: string, email: string): Promise<ApiResponse> => {
     try {
       const url = `${auth.SendSignUpOTP}?MobileNumber=${mobile}&Email=${email}`;
-
       const res = await request<ApiResponse>("get", url, null, true)
       return res;
     } catch (error) {
@@ -19,20 +18,21 @@ export const authService = {
   },
 
   // signup service
-  SignUp: async (action: "SIGN_UP", data: SignUpRawData): Promise<ApiResponse> => {
+  SignUp: async (data: SignUpRawData): Promise<ApiResponse> => {
     try {
-      const payload = authPayload(action, data);
+      const payload = authPayload("SIGN_UP", data);
       const res = await request<ApiResponse>("post", auth.SignUp, payload, true);
       return res;
     } catch (error) {
-      console.error(`Error in ${action}:`, error);
+      console.error(`Error in SIGN_UP}:`, error);
       throw error;
     }
-  }
+  },
 
-  // Login: async (data: { email: string; password: string }): Promise<ApiResponse> => {
-  //   const payload = authPayload("LOGIN", data);
-  //   return await request("post", auth.Login, payload, true);
-  // }
+  // sign in service
+  SignIn: async (data: SignUpRawData): Promise<ApiResponse> => {
+    const payload = authPayload("SIGN_IN", data);
+    return await request("post", auth.SignIn, payload, true);
+  }
 
 };

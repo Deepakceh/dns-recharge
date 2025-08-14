@@ -16,6 +16,8 @@ export interface SignUpRawData {
   gst?: string;
   domainName?: string;
   companyType?: string;
+  userId?: string;
+  password?: string;
 }
 
 // ...keep rest of the code same
@@ -27,22 +29,26 @@ export const authPayload = (action: string, data: unknown): Record<string, unkno
     case "SIGN_UP":
       return {
         otp: d.otp || "",
-        Role: parseInt(d.role || "0", 10),
-        Name: d.name || "",
-        ShopName: d.shopName || "",
-        Mobile: d.mobile || "",
-        Email: d.email || "",
-        State: parseInt(d.state || "0", 10),
-        District: parseInt(d.district || "0", 10),
-        Address: d.address || "",
-        Pincode: d.pincode || "",
-        Aadhar: d.aadhar || "",
-        Pan: d.pan || "",
-        Gst: d.gst || "",
-        DomainName: d.domainName || "",
-        CompanyType: parseInt(d.companyType || "0", 10),
+        roleId: parseInt(d.role || "0", 10),
+        fullName: d.name || "",
+        orgName: d.shopName || "",
+        mobileNumber: d.mobile || "",
+        email: d.email || "",
+        stateId: parseInt(d.state || "0", 10),
+        districtId: parseInt(d.district || "0", 10),
+        address: d.address || "",
+        pincode: d.pincode || "",
+        aadharNumber: d.aadhar || "",
+        panCardNumber: d.pan || "",
+        gstNumber: d.gst || "",
+        domainName: d.domainName || "",
+        companyTypeId: parseInt(d.companyType || "0", 10),
       };
-
+    case "SIGN_IN":
+      return {
+        userName: d.userId || "",
+        passWord: d.password || "",
+      };
     default:
       throw new Error(`Unknown action: ${action}`);
   }

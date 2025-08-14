@@ -140,7 +140,7 @@ const Signup: React.FC = () => {
   const handleOtpSubmit = async (otp: string) => {
     try {
       if (!formValues) return;
-      const res = await authService.SignUp("SIGN_UP", { ...formValues, otp });
+      const res = await authService.SignUp({ ...formValues, otp });
       if (res?.success) {
         setShowOtp(false);
         showToast.success(res?.message || "Signup successful");
