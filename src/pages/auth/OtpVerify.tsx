@@ -53,7 +53,7 @@ const OtpVerify: React.FC = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6 }}
             >
-                <h2 className="text-3xl font-bold text-center mb-10 text-gray-800">Login With OTP</h2>
+                <h2 className="text-3xl font-bold text-center mb-10 text-gray-800">Verify OTP</h2>
                 <p className="text-center text-gray-600 mb-6">Please confirm the security code received on your registered mobile number.</p>
 
                 <Formik initialValues={{ otp: "" }} validationSchema={OtpSchema} onSubmit={handleSubmit}>
