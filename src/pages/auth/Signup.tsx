@@ -8,6 +8,9 @@ import signupBg from "@/assets/images/dns/signup_bg.svg";
 import { getValidationSchema } from "@/utils/validation";
 import { motion } from "framer-motion";
 import { commonService } from "@/api/common/service";
+import { authService } from "@/api/auth/services";
+import { OtpModal } from "@/components/common/OtpModal";
+import { showToast } from "@/utils/toast";
 
 interface SignupFormValues {
   name: string;
@@ -37,23 +40,39 @@ const validationSchema = Yup.object({
   pincode: getValidationSchema({ isRequired: true, type: "number", minLength: 6, maxLength: 6 }),
   aadhar: getValidationSchema({ isRequired: false, type: "aadhar", minLength: 12, maxLength: 12 }),
   pan: getValidationSchema({ isRequired: false, type: "pan", minLength: 10, maxLength: 10 }),
-  gst: getValidationSchema({ isRequired: false, type: "gst", minLength: 15, maxLength: 15 }),
-  companyType: getValidationSchema({ isRequired: true, type: "text" }),
-  domainName: getValidationSchema({ isRequired: true, type: "text" }),
+
+  // ✅ Conditionally required for API users only
+  // gst: Yup.string().when("role", {
+  //   is: "2",
+  //   then: getValidationSchema({ isRequired: true, type: "gst", minLength: 15, maxLength: 15 }),
+  //   otherwise: Yup.string().notRequired(),
+  // }),
+  // domainName: Yup.string().when("role", {
+  //   is: "2",
+  //   then: getValidationSchema({ isRequired: true, type: "text", minLength: 2 }),
+  //   otherwise: Yup.string().notRequired(),
+  // }),
+  // companyType: Yup.string().when("role", {
+  //   is: "2",
+  //   then: getValidationSchema({ isRequired: true, type: "text" }),
+  //   otherwise: Yup.string().notRequired(),
+  // }),
+
   role: getValidationSchema({ isRequired: true, type: "text" }),
 });
 
+
 const Signup: React.FC = () => {
-  interface OptionType {
-    id: number;
-    name: string;
-  }
+  interface OptionType { id: number; name: string; }
+  const [formValues, setFormValues] = useState<SignupFormValues | null>(null);
 
   const [stateData, setStateData] = useState<OptionType[]>([]);
   const [districtData, setDistrictData] = useState<OptionType[]>([]);
   const [companyTypeData, setCompanyTypeData] = useState<OptionType[]>([]);
+  const [showOtp, setShowOtp] = useState<boolean>(false);
 
   useEffect(() => {
+    // setShowOtp(true);
     getStateService();
     getCompanyService()
   }, []);
@@ -72,6 +91,21 @@ const Signup: React.FC = () => {
     }
   };
 
+  // Handle state change to fetch districts
+  const handleStateChange = async (stateId: string, setFieldValue: (field: string, value: string) => void) => {
+    setFieldValue("district", "");
+    setDistrictData([]);
+    if (!stateId) return;
+    try {
+      const res = await commonService.common_district(stateId);
+      const data = res.data as Array<{ id: number; districtName: string }>;
+      const districts = data.map((district) => ({ id: district.id, name: district.districtName }));
+      setDistrictData(districts);
+    } catch (err) {
+      console.error("Error fetching districts:", err);
+    }
+  };
+
   //  api call for get company data 
   const getCompanyService = async () => {
     try {
@@ -86,28 +120,42 @@ const Signup: React.FC = () => {
     }
   };
 
-  const handleSubmit = (values: SignupFormValues, { resetForm }: { resetForm: () => void }) => {
-    console.log("Form Data:", values);
-    resetForm();
-    alert("Signup Successful");
-  };
-
-  const handleStateChange = async (stateId: string, setFieldValue: (field: string, value: string) => void) => {
-    // Reset district value
-    setFieldValue("district", "");
-    setDistrictData([]);
-
-    if (!stateId) return;
-
+  // const handleSubmit = async (values: SignupFormValues, { resetForm }: { resetForm: () => void }) => {
+  const handleSubmit = async (values: SignupFormValues) => {
+    setFormValues(values);
     try {
-      const res = await commonService.common_district(stateId);
-      const data = res.data as Array<{ id: number; districtName: string }>;
-      const districts = data.map((district) => ({ id: district.id, name: district.districtName }));
-      setDistrictData(districts);
+      const res = await authService.SendSignUpOTP(values.mobile, values.email);
+      if (res?.success) {
+        setShowOtp(true);
+        showToast.success(res?.message || "OTP sent successfully");
+      } else {
+        showToast.error(res?.message || "Failed to send OTP");
+      }
     } catch (err) {
-      console.error("Error fetching districts:", err);
+      console.error("State API Error:", err);
     }
   };
+
+  // Handle OTP submission with signup data
+  const handleOtpSubmit = async (otp: string) => {
+    try {
+      if (!formValues) return;
+      const res = await authService.SignUp("SIGN_UP", { ...formValues, otp });
+      if (res?.success) {
+        setShowOtp(false);
+        showToast.success(res?.message || "Signup successful");
+        setFormValues(null); // Clear formValues state as well
+      } else {
+        showToast.error(res?.message || "");
+      }
+    } catch (err) {
+      console.error("State API Error:", err);
+    }
+  };
+
+
+
+
 
   return (
     <div className="min-h-screen bg-cover bg-center" style={{ backgroundImage: `url(${signupBg})` }}>
@@ -135,7 +183,7 @@ const Signup: React.FC = () => {
               gst: "",
               companyType: "",
               domainName: "",
-              role: "RETAILER",
+              role: "4",
             }}
             validationSchema={validationSchema}
             onSubmit={handleSubmit}
@@ -144,11 +192,16 @@ const Signup: React.FC = () => {
               <Form>
                 <div className="flex justify-center mb-6 gap-8">
                   <label className="flex items-center gap-2">
-                    <Field type="radio" name="role" value="RETAILER" onChange={() => setFieldValue("role", "RETAILER")} />
+                    <Field type="radio" name="role" value="4" onChange={() => {
+                      setFieldValue("role", "4");
+                      setFieldValue("gst", "");
+                      setFieldValue("domainName", "");
+                      setFieldValue("companyType", "");
+                    }} />
                     Retailer
                   </label>
                   <label className="flex items-center gap-2">
-                    <Field type="radio" name="role" value="API_USER" onChange={() => setFieldValue("role", "API_USER")} />
+                    <Field type="radio" name="role" value="2" onChange={() => setFieldValue("role", "2")} />
                     API User
                   </label>
                 </div>
@@ -166,8 +219,8 @@ const Signup: React.FC = () => {
                   <InputField name="pan" label="PAN" type="text" maxLength={10} capitalize={true} placeholder="Enter PAN Number" labelType='floating' className="border" />
 
                   {/* Conditional fields for API_USER role */}
-                  {values.role === "API_USER" && (
-                    <                    >
+                  {values.role === "2" && (
+                    <>
                       <InputField name="gst" label="GST" type="text" maxLength={15} capitalize={true} placeholder="Enter GST Number" labelType='floating' className="border" />
                       <InputField name="domainName" label="Domain Name" type="text" placeholder="Enter Domain Name" labelType='floating' className="border" />
                       <SelectField name="companyType" label="Company Type" options={companyTypeData} labelType='floating' className="border" />
@@ -184,6 +237,15 @@ const Signup: React.FC = () => {
           </Formik>
         </motion.div>
       </div>
+      <OtpModal
+        open={showOtp}
+        onClose={() => setShowOtp(false)}
+        onSubmit={handleOtpSubmit}
+        onResend={() => {
+          if (formValues) handleSubmit(formValues);
+        }}
+        phoneOrEmail={formValues?.mobile || ""}
+      />
     </div>
   );
 };
