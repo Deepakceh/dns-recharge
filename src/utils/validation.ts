@@ -19,7 +19,7 @@ export const getValidationSchema = ({ isRequired = false, type = "text", minLeng
   // Adding specific type validations
   switch (type) {
     case "email":
-      validator = validator.email("Invalid email address");
+      validator = validator.matches(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/, "Invalid email address");
       break;
     case "phone":
       validator = validator.matches(/^\d{10}$/, "Invalid phone number");

@@ -47,4 +47,16 @@ export const authService = {
     }
   },
 
+   // signup service
+  ForgotPassWord: async (data: SignUpRawData): Promise<ApiResponse> => {
+    try {
+      const payload = authPayload("FORGOT_PASSWORD", data);
+      const res = await request<ApiResponse>("post", auth.ForgotPassWord, payload, true);
+      return res;
+    } catch (error) {
+      console.error(`Error in SIGN_UP}:`, error);
+      throw error;
+    }
+  },
+
 };

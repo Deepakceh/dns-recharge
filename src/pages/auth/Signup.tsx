@@ -40,27 +40,27 @@ const validationSchema = Yup.object({
   district: getValidationSchema({ isRequired: true, type: "text" }),
   address: getValidationSchema({ isRequired: true, type: "text" }),
   pincode: getValidationSchema({ isRequired: true, type: "number", minLength: 6, maxLength: 6 }),
-  aadhar: getValidationSchema({ isRequired: false, type: "aadhar", minLength: 12, maxLength: 12 }),
-  pan: getValidationSchema({ isRequired: false, type: "pan", minLength: 10, maxLength: 10 }),
+  aadhar: getValidationSchema({ isRequired: true, type: "aadhar", minLength: 12, maxLength: 12 }),
+  pan: getValidationSchema({ isRequired: true, type: "pan", minLength: 10, maxLength: 10 }),
 
   // ✅ Conditionally required for API users only
-  gst: Yup.string().when("role", (role, schema) =>
-    (role as unknown as string) === "2"
-      ? getValidationSchema({ isRequired: true, type: "gst", minLength: 15, maxLength: 15 })
-      : schema.notRequired()
-  ),
+  gst: Yup.string().when('role', (role, schema) => {
+    return String(role) === '2'
+      ? getValidationSchema({ isRequired: true, type: 'gst', minLength: 15, maxLength: 15 })
+      : schema.notRequired();
+  }),
 
-  domainName: Yup.string().when("role", (role, schema) =>
-    (role as unknown as string) === "2"
-      ? getValidationSchema({ isRequired: true, type: "text", minLength: 2 })
-      : schema.notRequired()
-  ),
+  domainName: Yup.string().when('role', (role, schema) => {
+    return String(role) === '2'
+      ? getValidationSchema({ isRequired: true, type: 'gst', minLength: 15, maxLength: 15 })
+      : schema.notRequired();
+  }),
 
-  companyType: Yup.string().when("role", (role, schema) =>
-    (role as unknown as string) === "2"
-      ? getValidationSchema({ isRequired: true, type: "text" })
-      : schema.notRequired()
-  ),
+  companyType: Yup.string().when('role', (role, schema) => {
+    return String(role) === '2'
+      ? getValidationSchema({ isRequired: true, type: 'gst', minLength: 15, maxLength: 15 })
+      : schema.notRequired();
+  }),
   role: getValidationSchema({ isRequired: true, type: "text" }),
 });
 
