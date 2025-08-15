@@ -129,7 +129,7 @@ const Forgot: React.FC = () => {
                                 labelType="floating"
                                 inputMode="int"
                                 className="border"
-                                disabled={showFields}
+                                disabled={loading || showFields}
                             />
 
                             {showFields && (

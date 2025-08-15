@@ -1,6 +1,6 @@
 import { constants } from "@/constants/index";
 
 export const user = {
-  getUserList: `${constants.baseUrl}User/GetUserList`,
-  addUpdateUser: `${constants.baseUrl}User/AddUpdateUser`
+  GetUserList: `${constants.baseUrl}User/GetUserList`,
+  AddUpdateUser: `${constants.baseUrl}User/AddUpdateUser`
 };

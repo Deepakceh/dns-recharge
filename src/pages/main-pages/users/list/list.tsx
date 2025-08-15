@@ -13,7 +13,7 @@ import InputField from "@/components/common/formFields/InputField";
 import SelectField from "@/components/common/formFields/SelectField";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import { userService } from "@/api/user/service";
+import { userService } from "@/api/user/services";
 
 // Register all AG Grid Community modules
 ModuleRegistry.registerModules([AllCommunityModule]);
@@ -67,10 +67,7 @@ export default function UserList() {
   //  api call for get user list data
   const getUserListService = async (page: number, size: number) => {
     try {
-      const res = await userService.getUserList("GET_USER_LIST", {
-        page: page,
-        size: size
-      });
+      const res = await userService.GetUserList("GET_USER_LIST", {page: page,size: size});
       if (res?.success) {
         console.log("User List Data:", res.data);
       }

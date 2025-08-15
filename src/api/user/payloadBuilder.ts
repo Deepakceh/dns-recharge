@@ -1,5 +1,5 @@
 // Function to build dynamic payloads
-export const getUserListPayload = (
+export const userPayload = (
     action: string,
     data: unknown
 ): Record<string, unknown> => {
