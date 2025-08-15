@@ -6,10 +6,10 @@ export const commonPayload = (
     switch (action) {
         case "COMMON_DISTRICT":
             return {
-                "stateId": (data as { id?: string })?.id || ""    
+                "stateId": (data as { id?: string })?.id || ""
             };
 
         default:
-            throw new Error(`Unknown action: ${action}`);  
+            throw new Error(`Unknown action: ${action}`);
     }
 };

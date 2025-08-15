@@ -21,8 +21,6 @@ export interface SignUpRawData {
   confirmPassword?: string;
 }
 
-// ...keep rest of the code same
-
 export const authPayload = (action: string, data: unknown): Record<string, unknown> => {
   const d = data as SignUpRawData;
 
