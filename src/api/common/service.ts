@@ -5,35 +5,57 @@ import { commonUrls } from "./urls";
 
 export const commonService = {
 
-  // State Function
-  common_state: async (): Promise<ApiResponse> => {
+  // state data service
+  StateList: async (): Promise<ApiResponse> => {
     try {
-      const response = await request<ApiResponse>("get", commonUrls.state, null, true)
-      return response;
+      const res = await request<ApiResponse>("get", commonUrls.StateList, null, true)
+      return res;
     } catch (error) {
       console.error(`Error in common_state:`, error);
       throw error;
     }
   },
 
-  // District Function
-  common_district: async (id: string): Promise<ApiResponse> => {
+  // district data service
+  DistrictList: async (id: string): Promise<ApiResponse> => {
     try {
-      const url = `${commonUrls.district}?stateId=${id}`;
+      const url = `${commonUrls.DistrictList}?stateId=${id}`;
 
-      const response = await request<ApiResponse>("get", url, null, true)
-      return response;
+      const res = await request<ApiResponse>("get", url, null, true)
+      return res;
     } catch (error) {
       console.error(`Error in common_district:`, error);
       throw error;
     }
   },
 
-  // company Function
-  company: async (): Promise<ApiResponse> => {
+  // company data service
+  CompanyType: async (): Promise<ApiResponse> => {
     try {
-      const response = await request<ApiResponse>("get", commonUrls.company, null, true)
-      return response;
+      const res = await request<ApiResponse>("get", commonUrls.CompanyType, null, true)
+      return res;
+    } catch (error) {
+      console.error(`Error in common_state:`, error);
+      throw error;
+    }
+  },
+
+  // user dropdown service
+  UserDropdown: async (): Promise<ApiResponse> => {
+    try {
+      const res = await request<ApiResponse>("get", commonUrls.UserDropdown, null, true)
+      return res;
+    } catch (error) {
+      console.error(`Error in common_state:`, error);
+      throw error;
+    }
+  },
+
+  // role dropdown service
+  GetRoles: async (): Promise<ApiResponse> => {
+    try {
+      const res = await request<ApiResponse>("get", commonUrls.GetRoles, null, true)
+      return res;
     } catch (error) {
       console.error(`Error in common_state:`, error);
       throw error;

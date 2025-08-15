@@ -76,7 +76,6 @@ const Signup: React.FC = () => {
   const [showOtp, setShowOtp] = useState<boolean>(false);
 
   useEffect(() => {
-    // setShowOtp(true);
     getStateService();
     getCompanyService()
   }, []);
@@ -84,7 +83,7 @@ const Signup: React.FC = () => {
   //  api call for get states data
   const getStateService = async () => {
     try {
-      const res = await commonService.common_state();
+      const res = await commonService.StateList();
       if (res?.success) {
         const data = res.data as Array<{ id: number; stateName: string }>;
         const states = data.map((state) => ({ id: state.id, name: state.stateName }));
@@ -101,7 +100,7 @@ const Signup: React.FC = () => {
     setDistrictData([]);
     if (!stateId) return;
     try {
-      const res = await commonService.common_district(stateId);
+      const res = await commonService.DistrictList(stateId);
       const data = res.data as Array<{ id: number; districtName: string }>;
       const districts = data.map((district) => ({ id: district.id, name: district.districtName }));
       setDistrictData(districts);
@@ -113,7 +112,7 @@ const Signup: React.FC = () => {
   //  api call for get company data 
   const getCompanyService = async () => {
     try {
-      const res = await commonService.company();
+      const res = await commonService.CompanyType();
       if (res?.success) {
         const data = res.data as Array<{ id: number; typeName: string }>;
         const companies = data.map((company) => ({ id: company.id, name: company.typeName }));
