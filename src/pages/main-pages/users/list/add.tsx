@@ -1,42 +1,100 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Formik, Form } from "formik";
 import InputField from "@/components/common/formFields/InputField";
 import SelectField from "@/components/common/formFields/SelectField";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { useNavigate } from "react-router-dom";
+import { commonService } from "@/api/common/service";
+import { getValidationSchema } from "@/utils/validation";
+import * as Yup from "yup";
+import { userService } from "@/api/user/services";
+import { useLocation } from 'react-router-dom';
+import { showToast } from "@/utils/toast";
+
 interface formValues {
-  name: string;
+  fullName: string;
   email: string;
-  mobile: string;
-  role: string;
-  package: string;
+  mobileNumber: string;
+  roleId: string;
+  packageId: string;
   userName: string;
   password: string;
+  isActive: boolean;
+  isLocked: boolean;
 }
+interface OptionType { id: number; name: string; }
 
-export default function AddUser() {
+const validationSchema = Yup.object({
+  fullName: getValidationSchema({ isRequired: true, minLength: 2, maxLength: 100 }),
+  email: getValidationSchema({ isRequired: true, type: "email", minLength: 5, maxLength: 100 }),
+  mobileNumber: getValidationSchema({ isRequired: true, type: "phone", minLength: 10, maxLength: 10 }),
+  roleId: getValidationSchema({ isRequired: true }),
+  packageId: getValidationSchema({ isRequired: true }),
+  userName: getValidationSchema({ isRequired: true }),
+  password: getValidationSchema({ isRequired: true })
+});
+
+const AddUser: React.FC = () => {
+  const location = useLocation();
   const navigate = useNavigate()
-  const [dropdown] = useState({
-    package: [
-      { value: "", label: "Select" },
-      { value: "package1", label: "Package 1" },
-      { value: "package2", label: "Package 2" },
-    ],
-    role: [
-      { value: "", label: "Select" },
-      { value: "role1", label: "Role 1" },
-      { value: "role2", label: "Role 2" },
-    ],
-  });
+  const id = location.state?.userId || 0;
 
-  const handleSubmit = (
-    values: formValues,
-    { resetForm }: { resetForm: () => void }
-  ) => {
-    console.log("filter Data:", values);
-    resetForm();
+  const [roleData, setRoleData] = useState<OptionType[]>([]);
+  const [packageData, setPackageData] = useState<OptionType[]>([]);
+
+
+  useEffect(() => {
+    getRoleDropdwonService()
+    getPackageDropdwonService()
+  }, []);
+
+  //  api call for get role dropdown data
+  const getRoleDropdwonService = async () => {
+    try {
+      const res = await commonService.GetRoles();
+      if (res?.success) {
+        const data = res.data as Array<{ id: number; name: string }>;
+        const role = data.map((role) => ({ id: role.id, name: role.name }));
+        setRoleData(role);
+      }
+    } catch (err) {
+      console.error(err);
+    }
   };
+
+  //  api call for get role dropdown data
+  const getPackageDropdwonService = async () => {
+    try {
+      const res = await commonService.PackageDropdown();
+      if (res?.success) {
+        const data = res.data as Array<{ value: number; text: string }>;
+        const role = data.map((role) => ({ id: role.value, name: role.text }));
+        setPackageData(role);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleSubmit = async (values: formValues) => {
+    // console.log('get data', { ...values, id })
+    try {
+      const res = await userService.AddUpdateUser({ ...values, id });
+      if (res?.success) {
+        showToast.success(res?.message || "User added successful");
+        setTimeout(() => {
+          navigate('/users/list');
+        }, 2000);
+      } else {
+        showToast.error(res?.message || "Faild");
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+
 
   return (
     <div className="p-4">
@@ -46,26 +104,33 @@ export default function AddUser() {
 
         <Formik
           initialValues={{
-            name: "",
+            fullName: "",
             email: "",
-            mobile: "",
-            role: "",
-            package: "",
+            mobileNumber: "",
+            roleId: "",
+            packageId: "",
             userName: "",
             password: "",
+            isActive: true,
+            isLocked: false
           }}
+          validationSchema={validationSchema}
           onSubmit={handleSubmit}
         >
-          {() => (
-            <Form className="space-y-6">
+          {({ values, setFieldValue }) => (
+            <Form className="space-y-6" onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault();
+              }
+            }}>
               <div>
                 <h4 className="text-base font-semibold text-gray-700 mt-3 mb-3">General Info</h4>
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                  <InputField name="name" label="Name" type="text" placeholder="Enter Your Name" />
+                  <InputField name="fullName" label="Name" type="text" placeholder="Enter Your Name" inputMode='alpha' />
                   <InputField name="email" label="Email Id" type="email" placeholder="Enter your Email id" />
-                  <InputField name="mobile" label="Contact Number" type="text" placeholder="+91 XXX XXXX XXX" />
-                  <SelectField name="role" label="Role Id" options={dropdown.role} />
-                  <SelectField name="package" label="Package Id" options={dropdown.package} />
+                  <InputField name="mobileNumber" label="Contact Number" type="text" placeholder="+91 XXX XXXX XXX" inputMode='int' maxLength={10} />
+                  <SelectField name="roleId" label="Role Id" options={roleData} />
+                  <SelectField name="packageId" label="Package Id" options={packageData} />
                 </div>
               </div>
               <div>
@@ -74,13 +139,40 @@ export default function AddUser() {
                   <InputField name="userName" label="Username" type="text" placeholder="Enter Your Username" />
                   <InputField name="password" label="Password" type="password" placeholder="Enter Your Password" />
                   <div className="flex flex-wrap gap-6 mt-2">
+                    {/* IsActive */}
                     <div className="flex items-center gap-2">
-                      <input type="radio" id="isActive" name="status" className="accent-orange-500" />
-                      <label htmlFor="isActive" className="text-sm">IsActive</label>
+                      <input
+                        type="radio"
+                        id="isActive"
+                        name="status"
+                        checked={values.isActive === true}
+                        onChange={() => {
+                          setFieldValue("isActive", true);
+                          setFieldValue("isLocked", false);
+                        }}
+                        className="accent-orange-500"
+                      />
+                      <label htmlFor="isActive" className="text-sm">
+                        IsActive
+                      </label>
                     </div>
+
+                    {/* IsLocked */}
                     <div className="flex items-center gap-2">
-                      <input type="radio" id="isLocked" name="status" className="accent-orange-500" />
-                      <label htmlFor="isLocked" className="text-sm">IsLocked</label>
+                      <input
+                        type="radio"
+                        id="isLocked"
+                        name="status"
+                        checked={values.isLocked === true}
+                        onChange={() => {
+                          setFieldValue("isLocked", true);
+                          setFieldValue("isActive", false);
+                        }}
+                        className="accent-orange-500"
+                      />
+                      <label htmlFor="isLocked" className="text-sm">
+                        IsLocked
+                      </label>
                     </div>
                   </div>
                 </div>
@@ -92,7 +184,7 @@ export default function AddUser() {
                   Submit
                 </Button>
                 <Button
-                  type="button" onClick={()=>navigate(-1)}
+                  type="button" onClick={() => navigate(-1)}
                   variant="outline"
                   className="w-full sm:w-48 border-blue-900 text-blue-900 hover:bg-blue-50"
                 >
@@ -106,3 +198,6 @@ export default function AddUser() {
     </div>
   );
 }
+export default AddUser;
+
+

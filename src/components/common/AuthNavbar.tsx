@@ -23,16 +23,25 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { SidebarTrigger } from "../ui/sidebar";
-import { clearAllCookies } from "@/utils/cookieHandler";
 import { useNavigate } from "react-router-dom";
+// import Cookies from "node_modules/@types/js-cookie";
 export default function AuthNavbar() {
   const navigate = useNavigate()
-  const handleLogout = () => {
-    navigate('/login')
-    clearAllCookies();
-    localStorage.clear();
-    sessionStorage.clear();
-  };
+
+  // const userData = JSON.parse(Cookies.get('userData') || '{}');
+
+ const handleLogout = () => {
+  // Remove specific cookies
+  // Cookies.remove('token');
+  // Cookies.remove('userData');
+
+  // Clear other storage
+  localStorage.clear();
+  sessionStorage.clear();
+
+  // Redirect to login page
+  navigate('/login');
+};
 
   return (
     <header className="sticky top-0 z-50 flex h-12 items-center justify-between gap-4 bg-white px-4 shadow-sm">

@@ -14,19 +14,33 @@ import SelectField from "@/components/common/formFields/SelectField";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { userService } from "@/api/user/services";
+import { commonService } from "@/api/common/service";
+import { ToggleStatusIndicator } from "@/components/common/ToggleStatusIndicator";
+import { showToast } from "@/utils/toast";
 
 // Register all AG Grid Community modules
 ModuleRegistry.registerModules([AllCommunityModule]);
 
 type UserRowData = {
   id: number;
-  name: string;
+  // roleId: number;
+  fullName: string;
+  // roleName: string;
+  // parentName: string;
+  // email: string;
+  // mobileNumber: string;
   orgName: string;
-  p2pBalance: string;
-  p2aBalance: string;
-  status: "ON" | "OFF";
+  p2PBalance: number;
+  p2ABalance: number;
+  isOn: boolean;
+  isActive: boolean;
 };
-
+interface UserState {
+  page: number;
+  size: number;
+  search: string;
+  data: UserRowData[];
+}
 interface filterFormValues {
   mobile: string;
   email: string;
@@ -35,41 +49,70 @@ interface filterFormValues {
   status: string;
 }
 
-export default function UserList() {
+const UserList: React.FC = () => {
+  interface OptionType { id: number; name: string; }
   const navigate = useNavigate()
   const gridRef = useRef(null);
   const [open, setOpen] = useState(false);
-  const [user] = useState({
-    page: 1, size: 100, search: '', data: []
-  })
-  const [dropdown] = useState({
-    user: [
-      { id: 0, name: "Select" },
-      { id: 1, name: "User 1" },
-      { id: 2, name: "User 2" },
-    ],
-    role: [
-      { id: 0, name: "Select" },
-      { id: 1, name: "Role 1" },
-      { id: 2, name: "Role 2" },
-    ],
-    status: [
-      { id: 0, name: "Select" },
-      { id: 1, name: "ON" },
-      { id: 2, name: "OFF" },
-    ],
+  const [userData, setUserData] = useState<OptionType[]>([]);
+  const [roleData, setRoleData] = useState<OptionType[]>([]);
+  const [user, setUser] = useState<UserState>({
+    page: 1,
+    size: 100,
+    search: '',
+    data: []
   });
 
+  const status = [
+    { id: 1, name: "ON" },
+    { id: 2, name: "OFF" },
+    { id: 3, name: "Lock" },
+  ]
+
   useEffect(() => {
+    getUserDropdwonService()
+    getRoleDropdwonService()
     getUserListService(user.page, user.size);
   }, [user.page, user.size]);
+
+  //  api call for get user dropdown data
+  const getUserDropdwonService = async () => {
+    try {
+      const res = await commonService.UserDropdown();
+      if (res?.success) {
+        const data = res.data as Array<{ value: number; text: string }>;
+        const user = data.map((user) => ({ id: user.value, name: user.text }));
+        setUserData(user)
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  //  api call for get role dropdown data
+  const getRoleDropdwonService = async () => {
+    try {
+      const res = await commonService.GetRoles();
+      if (res?.success) {
+        console.log('get role', res)
+        const data = res.data as Array<{ id: number; name: string }>;
+        const role = data.map((role) => ({ id: role.id, name: role.name }));
+        setRoleData(role);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   //  api call for get user list data
   const getUserListService = async (page: number, size: number) => {
     try {
-      const res = await userService.GetUserList("GET_USER_LIST", {page: page,size: size});
-      if (res?.success) {
-        console.log("User List Data:", res.data);
+      const res = await userService.GetUserList("GET_USER_LIST", { page: page, size: size });
+      if (res?.success && Array.isArray(res?.data)) {
+        setUser((prev) => ({
+          ...prev,
+          data: res.data as UserRowData[]
+        }));
       }
     } catch (err) {
       console.error("User API Error:", err);
@@ -80,14 +123,33 @@ export default function UserList() {
     console.log("filter Data:", values);
     resetForm();
   };
+
+  const handleToggle = async (rowData: UserRowData) => {
+    const newStatus = !rowData.isActive;
+    try {
+      const res = await userService.UpdateUserStatus({ ...rowData, isActive: newStatus });
+      if (res?.success) {
+        showToast.success(res.message || 'Updated Successfully');
+
+        // Update the row in your local state
+        setUser((prev) => ({
+          ...prev,
+          data: prev.data.map((user) =>
+            user.id === rowData.id
+              ? { ...user, isActive: newStatus }
+              : user
+          ),
+        }));
+      }
+    } catch (err) {
+      console.error("User API Error:", err);
+    }
+  };
+
+
   // ag grig table 
   const columnDefs: ColDef[] = [
-    {
-      headerName: "S.No.",
-      field: "id",
-      width: 60,
-      suppressSizeToFit: true,
-    },
+    { headerName: "S.No.", field: "id", width: 60, suppressSizeToFit: true },
     {
       headerName: "ACTION",
       field: "action",
@@ -103,95 +165,21 @@ export default function UserList() {
     },
     {
       headerName: "STATUS",
-      field: "status",
+      field: "isActive",
       width: 100,
       suppressSizeToFit: true,
-      cellRenderer: (params: ICellRendererParams<UserRowData, string>) => {
-        const isOn = params.value === "ON";
+      cellRenderer: (params: ICellRendererParams<UserRowData, boolean>) => {
+        const { value, data } = params;
+        if (!data) return null;
         return (
-          <div
-            className={`w-12 h-6 flex items-center justify-between px-1 rounded-full cursor-pointer text-xs font-medium relative
-    ${isOn ? "bg-green-500 text-white" : "bg-gray-300 text-gray-700"}`}
-          >
-            <span className="z-10">{isOn ? "ON" : "OFF"}</span>
-            <div
-              className={`w-4 h-4 rounded-full bg-white shadow absolute top-1 left-1 transition-transform duration-200
-      ${isOn ? "translate-x-6" : "translate-x-0"}`}
-            />
-          </div>
-
+          <ToggleStatusIndicator isOn={!!value} onToggle={() => handleToggle(data)} />
         );
       },
-    }
-    ,
-    { headerName: "FULL NAME", field: "name", flex: 1 },
+    },
+    { headerName: "FULL NAME", field: "fullName", flex: 1 },
     { headerName: "ORG. NAME", field: "orgName", flex: 1 },
-    {
-      headerName: "P2P BALANCE",
-      field: "p2pBalance",
-      width: 140,
-      suppressSizeToFit: true,
-    },
-    {
-      headerName: "P2A BALANCE",
-      field: "p2aBalance",
-      width: 140,
-      suppressSizeToFit: true,
-    },
-  ];
-
-
-  const rowData: Record<string, unknown>[] = [
-    { id: 1, name: "Edns Solutions Pvt Ltd", orgName: "DNS Pvt. Ltd.", p2pBalance: "1,987,464", p2aBalance: "746,843,747", status: "ON" },
-    { id: 2, name: "SoftTech India Ltd", orgName: "ST Pvt. Ltd.", p2pBalance: "2,345,123", p2aBalance: "984,123,111", status: "OFF" },
-    { id: 3, name: "Alpha Techno", orgName: "Alpha Pvt. Ltd.", p2pBalance: "3,456,789", p2aBalance: "123,456,789", status: "ON" },
-    { id: 4, name: "Beta Corp", orgName: "Beta Pvt. Ltd.", p2pBalance: "5,678,123", p2aBalance: "234,567,891", status: "OFF" },
-    { id: 5, name: "Gamma Innovations", orgName: "Gamma Pvt. Ltd.", p2pBalance: "9,123,456", p2aBalance: "345,678,912", status: "ON" },
-    { id: 6, name: "Delta Services", orgName: "Delta Pvt. Ltd.", p2pBalance: "7,891,234", p2aBalance: "456,789,123", status: "OFF" },
-    { id: 7, name: "Epsilon Tech", orgName: "Epsilon Pvt. Ltd.", p2pBalance: "4,567,891", p2aBalance: "567,891,234", status: "ON" },
-    { id: 8, name: "Zeta Solutions", orgName: "Zeta Pvt. Ltd.", p2pBalance: "8,234,567", p2aBalance: "678,912,345", status: "OFF" },
-    { id: 9, name: "Eta Enterprises", orgName: "Eta Pvt. Ltd.", p2pBalance: "6,789,123", p2aBalance: "789,123,456", status: "ON" },
-    { id: 10, name: "Theta Labs", orgName: "Theta Pvt. Ltd.", p2pBalance: "2,345,678", p2aBalance: "891,234,567", status: "OFF" },
-    { id: 11, name: "Iota Systems", orgName: "Iota Pvt. Ltd.", p2pBalance: "1,234,567", p2aBalance: "912,345,678", status: "ON" },
-    { id: 12, name: "Kappa Technologies", orgName: "Kappa Pvt. Ltd.", p2pBalance: "9,876,543", p2aBalance: "123,456,789", status: "OFF" },
-    { id: 13, name: "Lambda Corp", orgName: "Lambda Pvt. Ltd.", p2pBalance: "3,210,987", p2aBalance: "234,567,890", status: "ON" },
-    { id: 14, name: "Mu Solutions", orgName: "Mu Pvt. Ltd.", p2pBalance: "7,654,321", p2aBalance: "345,678,901", status: "OFF" },
-    { id: 15, name: "Nu Enterprises", orgName: "Nu Pvt. Ltd.", p2pBalance: "5,432,109", p2aBalance: "456,789,012", status: "ON" },
-    { id: 16, name: "Xi Technologies", orgName: "Xi Pvt. Ltd.", p2pBalance: "8,765,432", p2aBalance: "567,890,123", status: "OFF" },
-    { id: 17, name: "Omicron Tech", orgName: "Omicron Pvt. Ltd.", p2pBalance: "4,321,098", p2aBalance: "678,901,234", status: "ON" },
-    { id: 18, name: "Pi Solutions", orgName: "Pi Pvt. Ltd.", p2pBalance: "6,543,210", p2aBalance: "789,012,345", status: "OFF" },
-    { id: 19, name: "Rho Enterprises", orgName: "Rho Pvt. Ltd.", p2pBalance: "2,109,876", p2aBalance: "890,123,456", status: "ON" },
-    { id: 20, name: "Sigma Technologies", orgName: "Sigma Pvt. Ltd.", p2pBalance: "9,876,543", p2aBalance: "901,234,567", status: "OFF" },
-    { id: 21, name: "Tau Labs", orgName: "Tau Pvt. Ltd.", p2pBalance: "3,210,987", p2aBalance: "123,456,780", status: "ON" },
-    { id: 22, name: "Upsilon Corp", orgName: "Upsilon Pvt. Ltd.", p2pBalance: "7,654,321", p2aBalance: "234,567,890", status: "OFF" },
-    { id: 23, name: "Phi Solutions", orgName: "Phi Pvt. Ltd.", p2pBalance: "5,432,109", p2aBalance: "345,678,901", status: "ON" },
-    { id: 24, name: "Chi Enterprises", orgName: "Chi Pvt. Ltd.", p2pBalance: "8,765,432", p2aBalance: "456,789,012", status: "OFF" },
-    { id: 25, name: "Psi Technologies", orgName: "Psi Pvt. Ltd.", p2pBalance: "4,321,098", p2aBalance: "567,890,123", status: "ON" },
-    { id: 26, name: "Omega Corp", orgName: "Omega Pvt. Ltd.", p2pBalance: "6,543,210", p2aBalance: "678,901,234", status: "OFF" },
-    { id: 27, name: "Apex Solutions", orgName: "Apex Pvt. Ltd.", p2pBalance: "2,109,876", p2aBalance: "789,012,345", status: "ON" },
-    { id: 28, name: "Beacon Enterprises", orgName: "Beacon Pvt. Ltd.", p2pBalance: "9,876,543", p2aBalance: "890,123,456", status: "OFF" },
-    { id: 29, name: "Crest Technologies", orgName: "Crest Pvt. Ltd.", p2pBalance: "3,210,987", p2aBalance: "901,234,567", status: "ON" },
-    { id: 30, name: "Dawn Labs", orgName: "Dawn Pvt. Ltd.", p2pBalance: "7,654,321", p2aBalance: "123,456,789", status: "OFF" },
-    { id: 31, name: "Echo Solutions", orgName: "Echo Pvt. Ltd.", p2pBalance: "5,432,109", p2aBalance: "234,567,890", status: "ON" },
-    { id: 32, name: "Falcon Enterprises", orgName: "Falcon Pvt. Ltd.", p2pBalance: "8,765,432", p2aBalance: "345,678,901", status: "OFF" },
-    { id: 33, name: "Glory Technologies", orgName: "Glory Pvt. Ltd.", p2pBalance: "4,321,098", p2aBalance: "456,789,012", status: "ON" },
-    { id: 34, name: "Horizon Corp", orgName: "Horizon Pvt. Ltd.", p2pBalance: "6,543,210", p2aBalance: "567,890,123", status: "OFF" },
-    { id: 35, name: "Icon Labs", orgName: "Icon Pvt. Ltd.", p2pBalance: "2,109,876", p2aBalance: "678,901,234", status: "ON" },
-    { id: 36, name: "Juno Solutions", orgName: "Juno Pvt. Ltd.", p2pBalance: "9,876,543", p2aBalance: "789,012,345", status: "OFF" },
-    { id: 37, name: "Kite Enterprises", orgName: "Kite Pvt. Ltd.", p2pBalance: "3,210,987", p2aBalance: "890,123,456", status: "ON" },
-    { id: 38, name: "Luna Technologies", orgName: "Luna Pvt. Ltd.", p2pBalance: "7,654,321", p2aBalance: "901,234,567", status: "OFF" },
-    { id: 39, name: "Mira Labs", orgName: "Mira Pvt. Ltd.", p2pBalance: "5,432,109", p2aBalance: "123,456,789", status: "ON" },
-    { id: 40, name: "Nexus Corp", orgName: "Nexus Pvt. Ltd.", p2pBalance: "8,765,432", p2aBalance: "234,567,890", status: "OFF" },
-    { id: 41, name: "Orion Solutions", orgName: "Orion Pvt. Ltd.", p2pBalance: "4,321,098", p2aBalance: "345,678,901", status: "ON" },
-    { id: 42, name: "Phoenix Enterprises", orgName: "Phoenix Pvt. Ltd.", p2pBalance: "6,543,210", p2aBalance: "456,789,012", status: "OFF" },
-    { id: 43, name: "Quantum Technologies", orgName: "Quantum Pvt. Ltd.", p2pBalance: "2,109,876", p2aBalance: "567,890,123", status: "ON" },
-    { id: 44, name: "Raven Labs", orgName: "Raven Pvt. Ltd.", p2pBalance: "9,876,543", p2aBalance: "678,901,234", status: "OFF" },
-    { id: 45, name: "Solaris Corp", orgName: "Solaris Pvt. Ltd.", p2pBalance: "3,210,987", p2aBalance: "789,012,345", status: "ON" },
-    { id: 46, name: "Titan Solutions", orgName: "Titan Pvt. Ltd.", p2pBalance: "7,654,321", p2aBalance: "890,123,456", status: "OFF" },
-    { id: 47, name: "Umbra Enterprises", orgName: "Umbra Pvt. Ltd.", p2pBalance: "5,432,109", p2aBalance: "901,234,567", status: "ON" },
-    { id: 48, name: "Vortex Technologies", orgName: "Vortex Pvt. Ltd.", p2pBalance: "8,765,432", p2aBalance: "123,456,789", status: "OFF" },
-    { id: 49, name: "Waves Labs", orgName: "Waves Pvt. Ltd.", p2pBalance: "4,321,098", p2aBalance: "234,567,890", status: "ON" },
-    { id: 50, name: "Xenon Corp", orgName: "Xenon Pvt. Ltd.", p2pBalance: "6,543,210", p2aBalance: "345,678,901", status: "OFF" },
+    { headerName: "P2P BALANCE", field: "p2PBalance", width: 140, suppressSizeToFit: true },
+    { headerName: "P2A BALANCE", field: "p2ABalance", width: 140, suppressSizeToFit: true },
   ];
 
 
@@ -241,7 +229,7 @@ export default function UserList() {
           <AgGridReact
             ref={gridRef}
             columnDefs={columnDefs}
-            rowData={rowData}
+            rowData={user.data}
             rowHeight={40}
             headerHeight={35}
             defaultColDef={{
@@ -272,9 +260,9 @@ export default function UserList() {
                   <div className="grid md:grid-cols-2 gap-6">
                     <InputField name="mobile" label="Mobile" type="text" maxLength={10} placeholder="Enter Mobile" className="border" />
                     <InputField name="email" label="Email" type="email" placeholder="Enter Email" className="border" />
-                    <SelectField name="user" label="User" options={dropdown.user} className="border" />
-                    <SelectField name="role" label="Role" options={dropdown.role} className="border" />
-                    <SelectField name="status" label="Status" options={dropdown.status} className="border" />
+                    <SelectField name="user" label="User" options={userData} className="border" />
+                    <SelectField name="role" label="Role" options={roleData} className="border" />
+                    <SelectField name="status" label="Status" options={status} className="border" />
                   </div>
 
                   <div className="flex gap-4 mt-10">
@@ -290,5 +278,6 @@ export default function UserList() {
       </Sheet>
     </div>
   );
-
 }
+
+export default UserList;

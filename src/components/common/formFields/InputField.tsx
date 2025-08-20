@@ -95,7 +95,7 @@ const InputField: React.FC<InputFieldProps> = ({
       pattern = '[0-9]*';
       break;
     case 'alpha':
-      pattern = '[a-zA-Z]*';
+      pattern = '[A-Za-z]+( [A-Za-z]+)*';
       break;
     case 'alphanum':
       pattern = '[a-zA-Z0-9]*';

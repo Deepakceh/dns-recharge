@@ -43,7 +43,7 @@ export const commonService = {
   // user dropdown service
   UserDropdown: async (): Promise<ApiResponse> => {
     try {
-      const res = await request<ApiResponse>("get", commonUrls.UserDropdown, null, true)
+      const res = await request<ApiResponse>("get", commonUrls.UserDropdown, null, false)
       return res;
     } catch (error) {
       console.error(`Error in common_state:`, error);
@@ -54,7 +54,18 @@ export const commonService = {
   // role dropdown service
   GetRoles: async (): Promise<ApiResponse> => {
     try {
-      const res = await request<ApiResponse>("get", commonUrls.GetRoles, null, true)
+      const res = await request<ApiResponse>("get", commonUrls.GetRoles, null, false)
+      return res;
+    } catch (error) {
+      console.error(`Error in common_state:`, error);
+      throw error;
+    }
+  },
+
+   // package dropdown service
+  PackageDropdown: async (): Promise<ApiResponse> => {
+    try {
+      const res = await request<ApiResponse>("get", commonUrls.PackageDropdown, null, false)
       return res;
     } catch (error) {
       console.error(`Error in common_state:`, error);

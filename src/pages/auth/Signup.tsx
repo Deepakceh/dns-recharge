@@ -32,8 +32,8 @@ interface SignupFormValues {
 }
 
 const validationSchema = Yup.object({
-  name: getValidationSchema({ isRequired: true, type: "text", minLength: 2, maxLength: 100 }),
-  shopName: getValidationSchema({ isRequired: true, type: "text", minLength: 2, maxLength: 100 }),
+  name: getValidationSchema({ isRequired: true, type: "text", minLength: 3, maxLength: 100 }),
+  shopName: getValidationSchema({ isRequired: true, type: "text", minLength: 3, maxLength: 100 }),
   mobile: getValidationSchema({ isRequired: true, type: "phone", minLength: 10, maxLength: 10 }),
   email: getValidationSchema({ isRequired: true, type: "email", minLength: 5, maxLength: 100 }),
   state: getValidationSchema({ isRequired: true, type: "text" }),

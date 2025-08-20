@@ -109,6 +109,23 @@ const data = {
         }
       ],
     },
+      {
+      title: "Configuration",
+      url: "#",
+      icon: UserRoundPlus,
+      isActive: false,
+      items: [
+        {
+          title: "IP Address",
+          url: "/ip-address",
+        },
+        {
+          title: "Callback",
+          url: "/callback",
+        },
+        
+      ],
+    },
   ]
 }
 
