@@ -100,8 +100,8 @@ const AddUser: React.FC = () => {
       const res = await userService.GetUserById(userId);
       setLoader(false)
       if (res?.success) {
-        const data = res.data;
-        setInitialValues({
+        const data = res.data as Partial<FormValues>;
+        const formData: FormValues = {
           fullName: data.fullName || "",
           email: data.email || "",
           mobileNumber: data.mobileNumber || "",
@@ -111,7 +111,9 @@ const AddUser: React.FC = () => {
           passWord: data.passWord || '', // blank on edit for security
           isActive: data.isActive ?? true,
           isLocked: data.isLocked ?? false,
-        });
+        };
+        setInitialValues(formData);
+
       }
     } catch (err) {
       console.error(err);
