@@ -39,5 +39,17 @@ export const userService = {
       console.error(`Error in AddUpdateUser:`, error);
       throw error;
     }
+  },
+
+  // get data by user id service
+  GetUserById: async (id:string): Promise<ApiResponse> => {
+    try {
+      const url = `${user.GetUserById}/${id}`
+      const res = await request<ApiResponse>("post", url, null, false)
+      return res;
+    } catch (error) {
+      console.error(`Error in AddUpdateUser:`, error);
+      throw error;
+    }
   }
 }

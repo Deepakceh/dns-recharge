@@ -1,16 +1,16 @@
 import { toast } from "sonner";
 
 export const showToast = {
-  success: (message: string, duration: number = 3000) =>
+  success: (message: string, duration: number = 2000) =>
     toast.success(message, { duration }),
 
-  error: (message: string, duration: number = 3000) =>
+  error: (message: string, duration: number = 2000) =>
     toast.error(message, { duration }),
 
-  info: (message: string, duration: number = 3000) =>
+  info: (message: string, duration: number = 2000) =>
     toast.info(message, { duration }),
 
-  warning: (message: string, duration: number = 3000) =>
+  warning: (message: string, duration: number = 2000) =>
     toast.warning(message, { duration }),
 
   // custom: (

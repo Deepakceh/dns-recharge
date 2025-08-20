@@ -28,6 +28,7 @@ const Role = React.lazy(() => import('@/pages/main-pages/users/role-permission/r
 const Permission = React.lazy(() => import('@/pages/main-pages/users/role-permission/permission'));
 const PackageList = React.lazy(() => import('@/pages/main-pages/users/package-commission/list'));
 const Wallet = React.lazy(() => import('@/pages/main-pages/users/wallet/wallet'));
+const UserNotification = React.lazy(() => import('@/pages/main-pages/users/notification/list'));
 
 // bank routes
 const BankLayout = React.lazy(() => import('@/pages/main-pages/bank/layout'));
@@ -67,11 +68,12 @@ const AppRoutes: React.FC = () => {
                     <Route path="/users" element={<UsersLayout />}>
                         <Route index element={<Navigate to="list" />} />
                         <Route path="list" element={<UserList />} />
-                        <Route path="list/:page" element={<AddUser />} />
+                        <Route path="list/:mode/:id?" element={<AddUser />} />
                         <Route path="role" element={<Role />} />
                         <Route path="role/permission" element={<Permission />} />
                         <Route path="package-list" element={<PackageList />} />
                         <Route path="wallet" element={<Wallet />} />
+                        <Route path="notification" element={<UserNotification />} />
                     </Route>
 
                     {/* bank routes */}

@@ -57,7 +57,7 @@ export const userPayload = (action: string, data: unknown): Record<string, unkno
         case "USER_STATUS": {
             return {
                 id: d?.id ?? 0,
-                isDelete: true
+                isActive: d?.isActive
             };
         }
         case "USER_DELETE": {

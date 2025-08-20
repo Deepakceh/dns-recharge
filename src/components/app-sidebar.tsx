@@ -53,7 +53,7 @@ const data = {
 
         {
           title: "Add Notification",
-          url: "#",
+          url: "/users/notification",
         },
       ],
     },
