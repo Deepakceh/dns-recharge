@@ -124,22 +124,37 @@ const UserList: React.FC = () => {
     resetForm();
   };
 
-  const handleToggle = async (rowData: UserRowData) => {
-    const newStatus = !rowData.isActive;
+  const handleToggle = async (action: string, rowData: UserRowData) => {
+    let payload: UserRowData;
+    const status = !rowData.isActive;
+    // Prepare payload based on action
+    if (action === 'USER_STATUS') {
+      payload = { ...rowData, isActive: status };
+    } else {
+      payload = rowData; // For delete or other actions
+    }
     try {
-      const res = await userService.UpdateUserStatus({ ...rowData, isActive: newStatus });
+      const res = await userService.UpdateUserStatus(action, payload);
       if (res?.success) {
         showToast.success(res.message || 'Updated Successfully');
 
-        // Update the row in your local state
-        setUser((prev) => ({
-          ...prev,
-          data: prev.data.map((user) =>
-            user.id === rowData.id
-              ? { ...user, isActive: newStatus }
-              : user
-          ),
-        }));
+        setUser((prev) => {
+          let updatedData;
+
+          if (action === 'USER_STATUS') {
+            // ✅ Toggle isActive value
+            updatedData = prev.data.map((user) =>
+              user.id === rowData.id ? { ...user, isActive: status } : user
+            );
+          } else {
+            // ✅ Remove the row for other actions (like delete)
+            updatedData = prev.data.filter((user) => user.id !== rowData.id);
+          }
+          return {
+            ...prev,
+            data: updatedData,
+          };
+        });
       }
     } catch (err) {
       console.error("User API Error:", err);
@@ -155,13 +170,17 @@ const UserList: React.FC = () => {
       field: "action",
       width: 130,
       suppressSizeToFit: true,
-      cellRenderer: () => (
-        <div className="flex items-center gap-2 justify-center">
-          <span title="Edit"><Pencil className="text-indigo-500 cursor-pointer w-4 h-4" /></span>
-          <span title="Add" onClick={() => navigate('/users/wallet')}><SquarePlus className="text-indigo-400 cursor-pointer w-5 h-5" /></span>
-          <span title="Delete"><Trash2 className="text-indigo-500 cursor-pointer w-4 h-4" /></span>
-        </div>
-      ),
+      cellRenderer: (params: ICellRendererParams<UserRowData>) => {
+        const { data } = params;
+        if (!data) return null;
+        return (
+          <div className="flex items-center gap-2 justify-center">
+            <span title="Edit"><Pencil className="text-indigo-500 cursor-pointer w-4 h-4" /></span>
+            <span title="Add" onClick={() => navigate('/users/wallet')}><SquarePlus className="text-indigo-400 cursor-pointer w-5 h-5" /></span>
+            <span title="Delete" onClick={() => handleToggle('USER_DELETE', data)}><Trash2 className="text-indigo-500 cursor-pointer w-4 h-4" /></span>
+          </div>
+        )
+      },
     },
     {
       headerName: "STATUS",
@@ -172,7 +191,7 @@ const UserList: React.FC = () => {
         const { value, data } = params;
         if (!data) return null;
         return (
-          <ToggleStatusIndicator isOn={!!value} onToggle={() => handleToggle(data)} />
+          <ToggleStatusIndicator isOn={!!value} onToggle={() => handleToggle('USER_STATUS', data)} />
         );
       },
     },

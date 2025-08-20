@@ -54,10 +54,16 @@ export const userPayload = (action: string, data: unknown): Record<string, unkno
                 isLocked: d?.isLocked ?? false,
             };
         }
-        case "USER_TOGGLE": {
+        case "USER_STATUS": {
             return {
                 id: d?.id ?? 0,
-                isActive: d?.isActive
+                isDelete: true
+            };
+        }
+        case "USER_DELETE": {
+            return {
+                id: d?.id ?? 0,
+                isDelete: true
             };
         }
         default:

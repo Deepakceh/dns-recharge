@@ -29,10 +29,10 @@ export const userService = {
     }
   },
 
-   // updated user toggle button service
-  UpdateUserStatus: async (data: unknown): Promise<ApiResponse> => {
+  // updated user toggle button service
+  UpdateUserStatus: async (action: string, data: unknown): Promise<ApiResponse> => {
     try {
-      const payload = userPayload('USER_TOGGLE', data);
+      const payload = userPayload(action, data);
       const res = await request<ApiResponse>("post", user.UpdateUserStatus, payload, false)
       return res;
     } catch (error) {
