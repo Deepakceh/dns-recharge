@@ -1,23 +1,39 @@
 import { useState, useRef, useEffect } from "react";
-import { Formik, Form } from "formik";
+import { Formik, Form, Field, ErrorMessage } from "formik";
+import { getValidationSchema } from "@/utils/validation";
+import * as Yup from "yup";
 import { AgGridReact } from "ag-grid-react";
 import { ModuleRegistry } from "ag-grid-community";
 import { AllCommunityModule } from "ag-grid-community";
-// import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Pencil, Trash2, Search } from "lucide-react";
 import type { ColDef, ICellRendererParams } from "ag-grid-community";
-import InputField from "@/components/common/formFields/InputField";
 import SelectField from "@/components/common/formFields/SelectField";
-import { useNavigate } from "react-router-dom";
 import { userService } from "@/api/user/services";
-import { commonService } from "@/api/common/service";
 import { ToggleStatusIndicator } from "@/components/common/ToggleStatusIndicator";
 import { showToast } from "@/utils/toast";
-
+import { commonService } from "@/api/common/service";
+import { AppDialog } from "@/components/common/AppDialog"
 // Register all AG Grid Community modules
 ModuleRegistry.registerModules([AllCommunityModule]);
+
+interface FormValues {
+    roleId: string;
+    notificationMsg: string;
+    remark: string;
+}
+
+interface OptionType {
+    id: number;
+    name: string;
+}
+
+const validationSchema = Yup.object({
+    roleId: getValidationSchema({ isRequired: true }),
+    notificationMsg: getValidationSchema({ isRequired: true, minLength: 5, maxLength: 100 }),
+    remark: getValidationSchema({ isRequired: true, minLength: 3, maxLength: 100 })
+});
 
 type UserRowData = {
     id: number;
@@ -39,20 +55,11 @@ interface UserState {
     search: string;
     data: UserRowData[];
 }
-interface filterFormValues {
-    mobile: string;
-    email: string;
-    user: string;
-    role: string;
-    status: string;
-}
 
 const UserNotification: React.FC = () => {
-    interface OptionType { id: number; name: string; }
-    const navigate = useNavigate()
     const gridRef = useRef(null);
-    const [open, setOpen] = useState(false);
-    const [userData, setUserData] = useState<OptionType[]>([]);
+    const [open, setOpen] = useState(false)
+    const [id] = useState('0')
     const [roleData, setRoleData] = useState<OptionType[]>([]);
     const [user, setUser] = useState<UserState>({
         page: 1,
@@ -60,32 +67,32 @@ const UserNotification: React.FC = () => {
         search: '',
         data: []
     });
+    const [initialValues] = useState<FormValues>({
+        roleId: '',
+        notificationMsg: '',
+        remark: ''
+    });
 
     useEffect(() => {
-        getRoleDropdwonService()
-        getUserListService(user.page, user.size);
+        getRoleDropdownService()
+        getUserNotificationListService(user.page, user.size);
     }, [user.page, user.size]);
 
-
-    //  api call for get role dropdown data
-    const getRoleDropdwonService = async () => {
+    const getRoleDropdownService = async () => {
         try {
             const res = await commonService.GetRoles();
             if (res?.success) {
-                console.log('get role', res)
                 const data = res.data as Array<{ id: number; name: string }>;
-                const role = data.map((role) => ({ id: role.id, name: role.name }));
-                setRoleData(role);
+                setRoleData(data.map(({ id, name }) => ({ id, name })));
             }
         } catch (err) {
             console.error(err);
         }
     };
-
-    //  api call for get user list data
-    const getUserListService = async (page: number, size: number) => {
+    //  api call for get notification list data
+    const getUserNotificationListService = async (page: number, size: number) => {
         try {
-            const res = await userService.GetUserList("GET_USER_LIST", { page: page, size: size });
+            const res = await userService.GetNotificationBarData({ page: page, size: size });
             if (res?.success && Array.isArray(res?.data)) {
                 setUser((prev) => ({
                     ...prev,
@@ -97,30 +104,42 @@ const UserNotification: React.FC = () => {
         }
     };
 
-    // const handleSubmit = (values: filterFormValues, { resetForm }: { resetForm: () => void }) => {
-    //     console.log("filter Data:", values);
-    //     resetForm();
-    // };
+    const handleSubmit = async (values: FormValues) => {
+        //    setLoader(true)
+        try {
+            const res = await userService.AddUpdateNotificationBar({ ...values, id: id || undefined });
+            //  setLoader(false)
+            if (res?.success) {
+                showToast.success(res.message || (id !== "0" ? "User updated successfully" : "User added successfully"));
+                setOpen(false)
+            } else {
+                showToast.error(res?.message || "Failed");
+            }
+        } catch (err) {
+            console.error(err);
+            //  setLoader(false)
+        }
+    };
 
     // function for user update status & delete data
     const handleToggle = async (action: string, rowData: UserRowData) => {
         let payload: UserRowData;
         const status = !rowData.isActive;
         // Prepare payload based on action
-        if (action === 'USER_STATUS') {
+        if (action === 'USER_NOTIFICATION_STATUS') {
             payload = { ...rowData, isActive: status };
         } else {
             payload = rowData; // For delete or other actions
         }
         try {
-            const res = await userService.UpdateUserStatus(action, payload);
+            const res = await commonService.CommonToggle(action, 'UpdateNotificationBarStatus', payload);
             if (res?.success) {
                 showToast.success(res.message || 'Updated Successfully');
 
                 setUser((prev) => {
                     let updatedData;
 
-                    if (action === 'USER_STATUS') {
+                    if (action === 'USER_NOTIFICATION_STATUS') {
                         // ✅ Toggle isActive value
                         updatedData = prev.data.map((user) =>
                             user.id === rowData.id ? { ...user, isActive: status } : user
@@ -155,7 +174,7 @@ const UserNotification: React.FC = () => {
                 return (
                     <div className="flex items-center gap-2 justify-center">
                         <span title="Edit"><Pencil className="text-indigo-500 cursor-pointer w-4 h-4" /></span>
-                        <span title="Delete" onClick={() => handleToggle('USER_DELETE', data)}><Trash2 className="text-indigo-500 cursor-pointer w-4 h-4" /></span>
+                        <span title="Delete" onClick={() => handleToggle('USER_NOTIFICATION_DELETE', data)}><Trash2 className="text-indigo-500 cursor-pointer w-4 h-4" /></span>
                     </div>
                 )
             },
@@ -170,7 +189,7 @@ const UserNotification: React.FC = () => {
                 const { value, data } = params;
                 if (!data) return null;
                 return (
-                    <ToggleStatusIndicator isOn={!!value} onToggle={() => handleToggle('USER_STATUS', data)} />
+                    <ToggleStatusIndicator isOn={!!value} onToggle={() => handleToggle('USER_NOTIFICATION_STATUS', data)} />
                 );
             },
         },
@@ -200,7 +219,7 @@ const UserNotification: React.FC = () => {
                         </div>
                     </div>
                     <div className="flex items-center gap-2">
-                        <Button className="h-8 px-5 text-sm bg-orange-500 hover:bg-orange-600 text-white">
+                        <Button type='button' onClick={() => setOpen(true)} className="h-8 px-5 text-sm bg-orange-500 hover:bg-orange-600 text-white">
                             ADD
                         </Button>
                     </div>
@@ -219,6 +238,54 @@ const UserNotification: React.FC = () => {
                     />
                 </div>
             </div>
+
+            <AppDialog
+                open={open}
+                onOpenChange={setOpen}
+                title="Add Notification"
+            >
+                <Formik
+                    enableReinitialize
+                    initialValues={initialValues}
+                    validationSchema={validationSchema}
+                    onSubmit={handleSubmit}
+                >
+                    {() => (
+                        <Form
+                            className="space-y-6"
+                            onKeyDown={(e) => {
+                                if (e.key === "Enter") e.preventDefault()
+                            }}
+                        >
+                            <div>
+                                <SelectField name="roleId" label="Role" options={roleData} />
+                                <div className="grid grid-cols-2 gap-4 mt-5">
+                                    <div>
+                                        <label className="text-sm font-medium">Notification Message</label>
+                                        <Field as="textarea" name="notificationMsg" placeholder="Enter Message" className="border rounded-md w-full p-2" />
+                                        <ErrorMessage name="notificationMsg" component="p" className="text-xs text-red-500" />
+                                    </div>
+                                    <div>
+                                        <label className="text-sm font-medium">Remark</label>
+                                        <Field as="textarea" name="remark" placeholder="Enter Remark" className="border rounded-md w-full p-2" />
+                                        <ErrorMessage name="remark" component="p" className="text-xs text-red-500" />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="flex justify-end gap-2">
+                                <Button type="submit" className="bg-orange-500 text-white hover:bg-orange-600">
+                                    Submit
+                                </Button>
+                                <Button type="button" onClick={() => setOpen(false)} className="px-4 py-2 border border-red-400 text-red-500 rounded hover:bg-red-50">
+                                    Cancel
+                                </Button>
+                            </div>
+                        </Form>
+                    )}
+                </Formik>
+            </AppDialog>
+
         </div>
     );
 }

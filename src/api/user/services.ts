@@ -5,7 +5,7 @@ import { userPayload } from "./payloadBuilder";
 
 export const userService = {
 
-  // user list Function
+  // user list service
   GetUserList: async (action: string, data: unknown): Promise<ApiResponse> => {
     try {
       const payload = userPayload(action, data);
@@ -29,20 +29,8 @@ export const userService = {
     }
   },
 
-  // updated user toggle button service
-  UpdateUserStatus: async (action: string, data: unknown): Promise<ApiResponse> => {
-    try {
-      const payload = userPayload(action, data);
-      const res = await request<ApiResponse>("post", user.UpdateUserStatus, payload, false)
-      return res;
-    } catch (error) {
-      console.error(`Error in AddUpdateUser:`, error);
-      throw error;
-    }
-  },
-
   // get data by user id service
-  GetUserById: async (id:string): Promise<ApiResponse> => {
+  GetUserById: async (id: string): Promise<ApiResponse> => {
     try {
       const url = `${user.GetUserById}/${id}`
       const res = await request<ApiResponse>("post", url, null, false)
@@ -51,5 +39,29 @@ export const userService = {
       console.error(`Error in AddUpdateUser:`, error);
       throw error;
     }
-  }
+  },
+
+  // user list service
+  GetNotificationBarData: async (data: unknown): Promise<ApiResponse> => {
+    try {
+      const payload = userPayload('GET_NOTIFICATION_LIST', data);
+      const res = await request<ApiResponse>("post", user.GetNotificationBarData, payload, false)
+      return res;
+    } catch (error) {
+      console.error(`Error in user notification}:`, error);
+      throw error;
+    }
+  },
+
+  // add updated notification service
+  AddUpdateNotificationBar: async (data: unknown): Promise<ApiResponse> => {
+    try {
+      const payload = userPayload('ADD_UPDATE_NOTIFICATION', data);
+      const res = await request<ApiResponse>("post", user.AddUpdateNotificationBar, payload, false)
+      return res;
+    } catch (error) {
+      console.error(`Error in AddUpdateUser:`, error);
+      throw error;
+    }
+  },
 }

@@ -7,5 +7,6 @@ export const commonUrls = {
   UserDropdown: `${constants.baseUrl}Account/UserDropdown`,
   GetRoles: `${constants.baseUrl}RolePermission/GetRoles`,
   PackageDropdown: `${constants.baseUrl}Account/PackageDropdown`,
+  CommonToggle: `${constants.baseUrl}CommonToggleDelete/`,
 
 };

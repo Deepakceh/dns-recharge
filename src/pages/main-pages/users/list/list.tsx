@@ -137,7 +137,7 @@ const UserList: React.FC = () => {
       payload = rowData; // For delete or other actions
     }
     try {
-      const res = await userService.UpdateUserStatus(action, payload);
+      const res = await commonService.CommonToggle(action, 'UpdateUserStatus', payload);
       if (res?.success) {
         setLoader(false)
         showToast.success(res.message || 'Updated Successfully');

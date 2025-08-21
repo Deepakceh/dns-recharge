@@ -1,7 +1,7 @@
 import { ApiResponse } from "@/types/apiResponse";
 import { request } from "../apiClient";
 import { commonUrls } from "./urls";
-// import { commonPayload } from "./payloadBuilder";
+import { commonPayload } from "./payloadBuilder";
 
 export const commonService = {
 
@@ -62,13 +62,26 @@ export const commonService = {
     }
   },
 
-   // package dropdown service
+  // package dropdown service
   PackageDropdown: async (): Promise<ApiResponse> => {
     try {
       const res = await request<ApiResponse>("get", commonUrls.PackageDropdown, null, false)
       return res;
     } catch (error) {
       console.error(`Error in common_state:`, error);
+      throw error;
+    }
+  },
+
+  // updated user toggle button service
+  CommonToggle: async (action: string, method: string, data: unknown): Promise<ApiResponse> => {
+    try {
+      const url = `${commonUrls.CommonToggle}${method}`
+      const payload = commonPayload(action, data);
+      const res = await request<ApiResponse>("post", url, payload, false)
+      return res;
+    } catch (error) {
+      console.error(`Error in AddUpdateUser:`, error);
       throw error;
     }
   },

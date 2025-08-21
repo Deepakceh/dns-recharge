@@ -9,6 +9,8 @@ export interface userData {
     passWord?: string;
     isActive?: boolean;
     isLocked?: boolean;
+    notificationMsg?:string
+    remark?:string
 }
 export const userPayload = (action: string, data: unknown): Record<string, unknown> => {
 
@@ -54,16 +56,37 @@ export const userPayload = (action: string, data: unknown): Record<string, unkno
                 isLocked: d?.isLocked ?? false,
             };
         }
-        case "USER_STATUS": {
+        case "GET_NOTIFICATION_LIST": {
+            const { page = 1, size = 100 } = data as { page?: number; size?: number };
             return {
-                id: d?.id ?? 0,
-                isActive: d?.isActive
-            };
+                "pageNumber": page,
+                "pageSize": size,
+                "filter": {
+                    "accountNumber": "",
+                    "accountHolderName": "",
+                    "ifscCode": "",
+                    "mobileNumber": "",
+                    "email": "",
+                    "userId": 0,
+                    "roleId": 0,
+                    "statusId": 0,
+                    "gstTypeId": 0,
+                    "bankAccountId": 0,
+                    "transferTypeId": 0,
+                    "packageId": 0,
+                    "operatorId": 0,
+                    "paymentReferenceNumber": "",
+                    "fromDate": "",
+                    "toDate": ""
+                }
+            }
         }
-        case "USER_DELETE": {
+         case "ADD_UPDATE_NOTIFICATION": {
             return {
                 id: d?.id ?? 0,
-                isDelete: true
+                roleId: parseInt(d.roleId || "0", 10),
+                notificationMsg: d?.notificationMsg ?? "",
+                remark: d?.remark ?? ""
             };
         }
         default:
