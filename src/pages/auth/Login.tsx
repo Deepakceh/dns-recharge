@@ -36,9 +36,9 @@ const Login: React.FC = () => {
       setLoading(false);
       if (res?.success) {
         // Save token and data to cookies
-        localStorage.setItem('token', res?.token || '')
-        // Cookies.set('token', res?.token, { expires: 7 }); // expires in 7 days
-        Cookies.set('userData', JSON.stringify(res?.data), { expires: 7 });
+        // localStorage.setItem('token', res?.token || '')
+        Cookies.set("token", res?.token || "");
+        Cookies.set("userData", JSON.stringify(res?.data));
 
         navigate('/dashboard');
         showToast.success(res?.message || "Login successful");

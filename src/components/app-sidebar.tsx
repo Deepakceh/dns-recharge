@@ -4,11 +4,13 @@ import { NavMain } from "@/components/nav-main"
 import { NavUser } from "@/components/nav-user"
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarRail } from "@/components/ui/sidebar"
 import sidebar_logo from '../assets/images/dns/sidebar_logo.svg'
+import { constants } from "@/constants/index";
+
 // This is sample data.
 const data = {
   user: {
-    name: "Deepak Kumar",
-    email: "",
+    name: constants?.user?.orgName || '',
+    email: constants?.user?.email || '',
     avatar: "/avatars/shadcn.jpg",
   },
   teams: [
@@ -109,7 +111,7 @@ const data = {
         }
       ],
     },
-      {
+    {
       title: "Configuration",
       url: "#",
       icon: UserRoundPlus,
@@ -123,7 +125,7 @@ const data = {
           title: "Callback",
           url: "/configuration/callback",
         },
-        
+
       ],
     },
   ]

@@ -11,8 +11,8 @@ const api = axios.create({
 
 // Add request interceptor
 api.interceptors.request.use((constants) => {
-  // const token = Cookies.get("token");
-  const token = localStorage.getItem('token')
+  const token = Cookies.get("token");
+  // const token = localStorage.getItem('token')
   // Skip adding token if `skipAuth` is set to true
   if (!constants.headers.skipAuth && token) {
     constants.headers.Authorization = `Bearer ${token}`;
