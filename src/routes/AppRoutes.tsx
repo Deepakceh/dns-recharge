@@ -29,15 +29,16 @@ const Permission = React.lazy(() => import('@/pages/main-pages/users/role-permis
 const PackageList = React.lazy(() => import('@/pages/main-pages/users/package-commission/list'));
 const Wallet = React.lazy(() => import('@/pages/main-pages/users/wallet/wallet'));
 const UserNotification = React.lazy(() => import('@/pages/main-pages/users/notification/list'));
-// callback routes
-const Callback = React.lazy(() => import('@/pages/main-pages/configuration/Callback'));
-
 
 // bank routes
 const BankLayout = React.lazy(() => import('@/pages/main-pages/bank/layout'));
 const AccountList = React.lazy(() => import('@/pages/main-pages/bank/account/list'));
 const AddAccount = React.lazy(() => import('@/pages/main-pages/bank/account/add'));
 const StatementList = React.lazy(() => import('@/pages/main-pages/bank/statement/list'));
+
+// callback routes
+const Callback = React.lazy(() => import('@/pages/main-pages/configuration/Callback'));
+const IPAddress = React.lazy(() => import('@/pages/main-pages/configuration/IPAddress'));
 
 
 // Other
@@ -78,7 +79,6 @@ const AppRoutes: React.FC = () => {
                         <Route path="wallet" element={<Wallet />} />
                         <Route path="notification" element={<UserNotification />} />
                     </Route>
-                        <Route path="callback" element={<Callback />} />
 
                     {/* bank routes */}
                     <Route path="/bank" element={<BankLayout />}>
@@ -86,6 +86,13 @@ const AppRoutes: React.FC = () => {
                         <Route path="account-list" element={<AccountList />} />
                         <Route path="account-list/:page" element={<AddAccount />} />
                         <Route path="statement-list/" element={<StatementList />} />
+                    </Route>
+
+                    {/* configuration routes */}
+                    <Route path="/configuration" element={<BankLayout />}>
+                        <Route index element={<Navigate to="callback" />} />
+                        <Route path="callback" element={<Callback />} />
+                        <Route path="ip-address" element={<IPAddress />} />
                     </Route>
 
 

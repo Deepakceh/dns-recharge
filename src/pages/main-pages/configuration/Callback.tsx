@@ -10,9 +10,9 @@ import { Input } from "@/components/ui/input";
 import { Pencil, Trash2, Search } from "lucide-react";
 import type { ColDef, ICellRendererParams } from "ag-grid-community";
 import SelectField from "@/components/common/formFields/SelectField";
-import { userService } from "@/api/user/services";
-import { ToggleStatusIndicator } from "@/components/common/ToggleStatusIndicator";
+import { configService } from "@/api/configuration/services";
 import { showToast } from "@/utils/toast";
+import { dropdownService } from "@/api/dropdown/service";
 import { commonService } from "@/api/common/service";
 import { AppDialog } from "@/components/common/AppDialog"
 // Register all AG Grid Community modules
@@ -20,8 +20,9 @@ ModuleRegistry.registerModules([AllCommunityModule]);
 
 interface FormValues {
     id: number;
-    roleId: string;
-    notificationMsg: string;
+    // userId: string;
+    callBackTypeId: string;
+    url: string;
     remark: string;
 }
 
@@ -31,18 +32,19 @@ interface OptionType {
 }
 
 const validationSchema = Yup.object({
-    roleId: getValidationSchema({ isRequired: true }),
-    notificationMsg: getValidationSchema({ isRequired: true, minLength: 5, maxLength: 100 }),
+    callBackTypeId: getValidationSchema({ isRequired: true }),
+    url: getValidationSchema({ isRequired: true, minLength: 5, maxLength: 100 }),
     remark: getValidationSchema({ isRequired: true, minLength: 3, maxLength: 100 })
 });
 
 type UserRowData = {
     id: number;
-    roleId: string;
+    callBackTypeId: string;
+    url: string;
     fullName: string;
     notificationMsg: string;
     remark: string;
-    isActive:boolean;
+    isActive: boolean;
 
 };
 interface UserState {
@@ -56,7 +58,7 @@ const Callback: React.FC = () => {
     const gridRef = useRef(null);
     const [open, setOpen] = useState(false)
     const [id] = useState('0')
-    const [roleData, setRoleData] = useState<OptionType[]>([]);
+    const [callbackData, setCallbackData] = useState<OptionType[]>([]);
     const [user, setUser] = useState<UserState>({
         page: 1,
         size: 100,
@@ -65,31 +67,33 @@ const Callback: React.FC = () => {
     });
     const [initialValues, setInitialValues] = useState<FormValues>({
         id: 0,
-        roleId: '',
-        notificationMsg: '',
+        callBackTypeId: '',
+        url: '',
         remark: ''
     });
 
     useEffect(() => {
-        getRoleDropdownService()
-        getUserNotificationListService(user.page, user.size);
+        getCallbackTypeDropdownService()
+        getCallbackListService(user.page, user.size);
     }, [user.page, user.size]);
 
-    const getRoleDropdownService = async () => {
+    const getCallbackTypeDropdownService = async () => {
         try {
-            const res = await commonService.GetRoles();
+            const res = await dropdownService.CallBackType();
             if (res?.success) {
-                const data = res.data as Array<{ id: number; name: string }>;
-                setRoleData(data.map(({ id, name }) => ({ id, name })));
+                const data = res.data as Array<{ id: number; typeName: string }>;
+                const callback = data.map((callback) => ({ id: callback.id, name: callback.typeName }));
+                setCallbackData(callback);
+
             }
         } catch (err) {
             console.error(err);
         }
     };
     //  api call for get notification list data
-    const getUserNotificationListService = async (page: number, size: number) => {
+    const getCallbackListService = async (page: number, size: number) => {
         try {
-            const res = await userService.GetNotificationBarData({ page: page, size: size });
+            const res = await configService.GetCallBackURLData({ page: page, size: size });
             if (res?.success && Array.isArray(res?.data)) {
                 setUser((prev) => ({
                     ...prev,
@@ -104,10 +108,10 @@ const Callback: React.FC = () => {
     const handleSubmit = async (values: FormValues) => {
         //    setLoader(true)
         try {
-            const res = await userService.AddUpdateNotificationBar(values);
+            const res = await configService.AddUpdateCallBackURL(values);
             //  setLoader(false)
             if (res?.success) {
-                showToast.success(res.message || (id !== "0" ? "User updated successfully" : "User added successfully"));
+                showToast.success(res.message || (id !== "0" ? "Updated successfully" : "Added successfully"));
                 setOpen(false)
             } else {
                 showToast.error(res?.message || "Failed");
@@ -160,8 +164,8 @@ const Callback: React.FC = () => {
         setOpen(true)
         const formData: FormValues = {
             id: data.id || 0,
-            roleId: data.roleId?.toString() || "",
-            notificationMsg: data.notificationMsg || "",
+            callBackTypeId: data.callBackTypeId?.toString() || "",
+            url: data.url || "",
             remark: data.remark || "",
         };
         setInitialValues(formData);
@@ -189,7 +193,7 @@ const Callback: React.FC = () => {
         },
         { headerName: "ORG. NAME", field: "orgName" },
         { headerName: "CALLBACK TYPE", field: "callbackType" },
-        { headerName: "CALLBACK URL", field: "callbackUrl", flex:1 },
+        { headerName: "CALLBACK URL", field: "callbackUrl", flex: 1 },
         { headerName: "REMARKS", field: "remark" }
     ];
 
@@ -231,11 +235,7 @@ const Callback: React.FC = () => {
                 </div>
             </div>
 
-            <AppDialog
-                open={open}
-                onOpenChange={setOpen}
-                title="Add Notification"
-            >
+            <AppDialog open={open} onOpenChange={setOpen} title="Add Call Back URL">
                 <Formik
                     enableReinitialize
                     initialValues={initialValues}
@@ -250,11 +250,11 @@ const Callback: React.FC = () => {
                             }}
                         >
                             <div>
-                                <SelectField name="roleId" label="Role" options={roleData} />
+                                <SelectField name="callBackTypeId" label="CallBack Type" options={callbackData} />
                                 <div className="grid grid-cols-2 gap-4 mt-5">
                                     <div>
-                                        <label className="text-sm font-medium">Notification Message</label>
-                                        <Field as="textarea" name="notificationMsg" placeholder="Enter Message" className="border rounded-md w-full p-2" />
+                                        <label className="text-sm font-medium">Callback URL</label>
+                                        <Field as="textarea" name="url" placeholder="Enter Message" className="border rounded-md w-full p-2" />
                                         <ErrorMessage name="notificationMsg" component="p" className="text-xs text-red-500" />
                                     </div>
                                     <div>

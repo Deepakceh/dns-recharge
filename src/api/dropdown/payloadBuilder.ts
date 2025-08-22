@@ -2,7 +2,7 @@ export interface commonData {
     id?: number;
     isActive?: boolean;
 }
-export const commonPayload = (action: string, data: unknown): Record<string, unknown> => {
+export const dropdownPayload = (action: string, data: unknown): Record<string, unknown> => {
     const d = data as commonData;
 
     switch (action) {
@@ -18,8 +18,7 @@ export const commonPayload = (action: string, data: unknown): Record<string, unk
             };
         }
         case "USER_DELETE":
-        case "USER_NOTIFICATION_DELETE":
-        case "CONFIG_IP_DELETE": {
+        case "USER_NOTIFICATION_DELETE": {
             return {
                 id: d?.id ?? 0,
                 isDelete: true

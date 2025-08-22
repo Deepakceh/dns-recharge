@@ -7,7 +7,7 @@ import SelectField from "@/components/common/formFields/SelectField";
 import signupBg from "@/assets/images/dns/signup_bg.svg";
 import { getValidationSchema } from "@/utils/validation";
 import { motion } from "framer-motion";
-import { commonService } from "@/api/common/service";
+import { dropdownService } from "@/api/dropdown/service";
 import { authService } from "@/api/auth/services";
 import { OtpModal } from "@/components/common/OtpModal";
 import { showToast } from "@/utils/toast";
@@ -83,7 +83,7 @@ const Signup: React.FC = () => {
   //  api call for get states data
   const getStateService = async () => {
     try {
-      const res = await commonService.StateList();
+      const res = await dropdownService.StateList();
       if (res?.success) {
         const data = res.data as Array<{ id: number; stateName: string }>;
         const states = data.map((state) => ({ id: state.id, name: state.stateName }));
@@ -100,7 +100,7 @@ const Signup: React.FC = () => {
     setDistrictData([]);
     if (!stateId) return;
     try {
-      const res = await commonService.DistrictList(stateId);
+      const res = await dropdownService.DistrictList(stateId);
       const data = res.data as Array<{ id: number; districtName: string }>;
       const districts = data.map((district) => ({ id: district.id, name: district.districtName }));
       setDistrictData(districts);
@@ -112,7 +112,7 @@ const Signup: React.FC = () => {
   //  api call for get company data 
   const getCompanyService = async () => {
     try {
-      const res = await commonService.CompanyType();
+      const res = await dropdownService.CompanyType();
       if (res?.success) {
         const data = res.data as Array<{ id: number; typeName: string }>;
         const companies = data.map((company) => ({ id: company.id, name: company.typeName }));

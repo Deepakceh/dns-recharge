@@ -13,6 +13,7 @@ import SelectField from "@/components/common/formFields/SelectField";
 import { userService } from "@/api/user/services";
 import { ToggleStatusIndicator } from "@/components/common/ToggleStatusIndicator";
 import { showToast } from "@/utils/toast";
+import { dropdownService } from "@/api/dropdown/service";
 import { commonService } from "@/api/common/service";
 import { AppDialog } from "@/components/common/AppDialog"
 // Register all AG Grid Community modules
@@ -76,7 +77,7 @@ const UserNotification: React.FC = () => {
 
     const getRoleDropdownService = async () => {
         try {
-            const res = await commonService.GetRoles();
+            const res = await dropdownService.GetRoles();
             if (res?.success) {
                 const data = res.data as Array<{ id: number; name: string }>;
                 setRoleData(data.map(({ id, name }) => ({ id, name })));

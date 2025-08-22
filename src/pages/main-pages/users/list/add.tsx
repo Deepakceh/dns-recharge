@@ -4,7 +4,7 @@ import SelectField from "@/components/common/formFields/SelectField";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { useNavigate, useParams } from "react-router-dom";
-import { commonService } from "@/api/common/service";
+import { dropdownService } from "@/api/dropdown/service";
 import { Formik, Form } from "formik";
 import { getValidationSchema } from "@/utils/validation";
 import * as Yup from "yup";
@@ -74,7 +74,7 @@ const AddUser: React.FC = () => {
 
   const getRoleDropdownService = async () => {
     try {
-      const res = await commonService.GetRoles();
+      const res = await dropdownService.GetRoles();
       if (res?.success) {
         const data = res.data as Array<{ id: number; name: string }>;
         setRoleData(data.map(({ id, name }) => ({ id, name })));
@@ -86,7 +86,7 @@ const AddUser: React.FC = () => {
 
   const getPackageDropdownService = async () => {
     try {
-      const res = await commonService.PackageDropdown();
+      const res = await dropdownService.PackageDropdown();
       if (res?.success) {
         const data = res.data as Array<{ value: number; text: string }>;
         setPackageData(data.map(({ value, text }) => ({ id: value, name: text })));

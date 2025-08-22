@@ -117,11 +117,11 @@ const data = {
       items: [
         {
           title: "IP Address",
-          url: "/ip-address",
+          url: "/configuration/ip-address",
         },
         {
           title: "Callback",
-          url: "/callback",
+          url: "/configuration/callback",
         },
         
       ],

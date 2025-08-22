@@ -13,6 +13,7 @@ import SelectField from "@/components/common/formFields/SelectField";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { userService } from "@/api/user/services";
+import { dropdownService } from "@/api/dropdown/service";
 import { commonService } from "@/api/common/service";
 import { ToggleStatusIndicator } from "@/components/common/ToggleStatusIndicator";
 import { showToast } from "@/utils/toast";
@@ -80,7 +81,7 @@ const UserList: React.FC = () => {
   //  api call for get user dropdown data
   const getUserDropdwonService = async () => {
     try {
-      const res = await commonService.UserDropdown();
+      const res = await dropdownService.UserDropdown();
       if (res?.success) {
         const data = res.data as Array<{ value: number; text: string }>;
         const user = data.map((user) => ({ id: user.value, name: user.text }));
@@ -94,7 +95,7 @@ const UserList: React.FC = () => {
   //  api call for get role dropdown data
   const getRoleDropdwonService = async () => {
     try {
-      const res = await commonService.GetRoles();
+      const res = await dropdownService.GetRoles();
       if (res?.success) {
         console.log('get role', res)
         const data = res.data as Array<{ id: number; name: string }>;
