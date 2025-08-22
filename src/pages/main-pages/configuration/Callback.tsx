@@ -42,7 +42,7 @@ type UserRowData = {
     fullName: string;
     notificationMsg: string;
     remark: string;
-    isActive: boolean;
+    isActive:boolean;
 
 };
 interface UserState {
@@ -52,9 +52,10 @@ interface UserState {
     data: UserRowData[];
 }
 
-const UserNotification: React.FC = () => {
+const Callback: React.FC = () => {
     const gridRef = useRef(null);
     const [open, setOpen] = useState(false)
+    const [id] = useState('0')
     const [roleData, setRoleData] = useState<OptionType[]>([]);
     const [user, setUser] = useState<UserState>({
         page: 1,
@@ -100,17 +101,14 @@ const UserNotification: React.FC = () => {
         }
     };
 
-    const handleSubmit = async (values: FormValues, { resetForm }: { resetForm: () => void }) => {
+    const handleSubmit = async (values: FormValues) => {
         //    setLoader(true)
         try {
             const res = await userService.AddUpdateNotificationBar(values);
             //  setLoader(false)
             if (res?.success) {
-                resetForm()
-                showToast.success(res.message || (values.id !== 0 ? "User updated successfully" : "User added successfully"));
+                showToast.success(res.message || (id !== "0" ? "User updated successfully" : "User added successfully"));
                 setOpen(false)
-                getUserNotificationListService(user.page, user.size);
-
             } else {
                 showToast.error(res?.message || "Failed");
             }
@@ -152,8 +150,6 @@ const UserNotification: React.FC = () => {
                         data: updatedData,
                     };
                 });
-            } else {
-                showToast.error(res.message || 'Failed');
             }
         } catch (err) {
             console.error("User API Error:", err);
@@ -191,26 +187,10 @@ const UserNotification: React.FC = () => {
                 )
             },
         },
-        { headerName: "ROLE", field: "roleName" },
-        {
-            headerName: "STATUS",
-            field: "isActive",
-            width: 100,
-            suppressSizeToFit: true,
-            cellRenderer: (params: ICellRendererParams<UserRowData, boolean>) => {
-                const { value, data } = params;
-                if (!data) return null;
-                return (
-                    <ToggleStatusIndicator isOn={!!value} onToggle={() => handleToggle('USER_NOTIFICATION_STATUS', data)} />
-                );
-            },
-        },
-        { headerName: "MESSAGE", field: "notificationMsg" },
-        { headerName: "Remark", field: "remark" },
-        { headerName: "CREATED DATE", field: "addedDate" },
-        { headerName: "CREATED BY", field: "addedBy" },
-        { headerName: "UPDATED DATE", field: "updatedDate" },
-        { headerName: "UPDATED BY", field: "updatedBy" }
+        { headerName: "ORG. NAME", field: "orgName" },
+        { headerName: "CALLBACK TYPE", field: "callbackType" },
+        { headerName: "CALLBACK URL", field: "callbackUrl", flex:1 },
+        { headerName: "REMARKS", field: "remark" }
     ];
 
 
@@ -251,15 +231,24 @@ const UserNotification: React.FC = () => {
                 </div>
             </div>
 
-            <AppDialog open={open} onOpenChange={setOpen} title="Add Notification">
+            <AppDialog
+                open={open}
+                onOpenChange={setOpen}
+                title="Add Notification"
+            >
                 <Formik
-                    // enableReinitialize
+                    enableReinitialize
                     initialValues={initialValues}
                     validationSchema={validationSchema}
                     onSubmit={handleSubmit}
                 >
                     {() => (
-                        <Form className="space-y-6" onKeyDown={(e) => { if (e.key === "Enter") e.preventDefault() }}>
+                        <Form
+                            className="space-y-6"
+                            onKeyDown={(e) => {
+                                if (e.key === "Enter") e.preventDefault()
+                            }}
+                        >
                             <div>
                                 <SelectField name="roleId" label="Role" options={roleData} />
                                 <div className="grid grid-cols-2 gap-4 mt-5">
@@ -293,4 +282,4 @@ const UserNotification: React.FC = () => {
     );
 }
 
-export default UserNotification;
+export default Callback;

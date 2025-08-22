@@ -29,6 +29,9 @@ const Permission = React.lazy(() => import('@/pages/main-pages/users/role-permis
 const PackageList = React.lazy(() => import('@/pages/main-pages/users/package-commission/list'));
 const Wallet = React.lazy(() => import('@/pages/main-pages/users/wallet/wallet'));
 const UserNotification = React.lazy(() => import('@/pages/main-pages/users/notification/list'));
+// callback routes
+const Callback = React.lazy(() => import('@/pages/main-pages/configuration/Callback'));
+
 
 // bank routes
 const BankLayout = React.lazy(() => import('@/pages/main-pages/bank/layout'));
@@ -75,6 +78,7 @@ const AppRoutes: React.FC = () => {
                         <Route path="wallet" element={<Wallet />} />
                         <Route path="notification" element={<UserNotification />} />
                     </Route>
+                        <Route path="callback" element={<Callback />} />
 
                     {/* bank routes */}
                     <Route path="/bank" element={<BankLayout />}>

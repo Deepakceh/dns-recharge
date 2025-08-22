@@ -61,24 +61,6 @@ export const userPayload = (action: string, data: unknown): Record<string, unkno
             return {
                 "pageNumber": page,
                 "pageSize": size,
-                "filter": {
-                    "accountNumber": "",
-                    "accountHolderName": "",
-                    "ifscCode": "",
-                    "mobileNumber": "",
-                    "email": "",
-                    "userId": 0,
-                    "roleId": 0,
-                    "statusId": 0,
-                    "gstTypeId": 0,
-                    "bankAccountId": 0,
-                    "transferTypeId": 0,
-                    "packageId": 0,
-                    "operatorId": 0,
-                    "paymentReferenceNumber": "",
-                    "fromDate": "",
-                    "toDate": ""
-                }
             }
         }
          case "ADD_UPDATE_NOTIFICATION": {

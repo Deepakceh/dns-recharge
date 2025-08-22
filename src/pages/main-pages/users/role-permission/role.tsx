@@ -57,9 +57,6 @@ export default function Role() {
                     <span title="Edit">
                         <Pencil className="text-indigo-500 cursor-pointer w-4 h-4" />
                     </span>
-                    <span title="Delete">
-                        <Trash2 className="text-indigo-500 cursor-pointer w-4 h-4" />
-                    </span>
                     <span title="Setting" onClick={()=>navigate('/users/role/permission')}>
                         <Settings className="text-indigo-500 cursor-pointer w-4 h-4" />
                     </span>

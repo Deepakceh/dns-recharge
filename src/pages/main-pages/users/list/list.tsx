@@ -8,7 +8,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Pencil, Trash2, SquarePlus, Filter, Search } from "lucide-react";
 import type { ColDef, ICellRendererParams } from "ag-grid-community";
-import { Sheet, SheetContent, SheetHeader, SheetTitle, } from "@/components/ui/sheet"
 import InputField from "@/components/common/formFields/InputField";
 import SelectField from "@/components/common/formFields/SelectField";
 import { Link } from "react-router-dom";
@@ -18,6 +17,7 @@ import { commonService } from "@/api/common/service";
 import { ToggleStatusIndicator } from "@/components/common/ToggleStatusIndicator";
 import { showToast } from "@/utils/toast";
 import CircleLoader from "@/components/common/loader/CircleLoader";
+import { SearchSheet } from "@/components/common/SearchSheet";
 
 // Register all AG Grid Community modules
 ModuleRegistry.registerModules([AllCommunityModule]);
@@ -200,8 +200,12 @@ const UserList: React.FC = () => {
         );
       },
     },
-    { headerName: "FULL NAME", field: "fullName", flex: 1 },
-    { headerName: "ORG. NAME", field: "orgName", flex: 1 },
+    { headerName: "FULL NAME", field: "fullName" },
+    { headerName: "ROLE", field: "roleName" },
+    { headerName: "PARENT", field: "parentName" },
+    { headerName: "MOBILE NUMBER", field: "mobileNumber" },
+    { headerName: "EMAIL", field: "email" },
+    { headerName: "ORG. NAME", field: "orgName" },
     { headerName: "P2P BALANCE", field: "p2PBalance", width: 140, suppressSizeToFit: true },
     { headerName: "P2A BALANCE", field: "p2ABalance", width: 140, suppressSizeToFit: true },
   ];
@@ -265,43 +269,45 @@ const UserList: React.FC = () => {
             />
           </div>
         </div>
-        <Sheet open={open} onOpenChange={setOpen}>
-          <SheetContent className="!w-[600px] !max-w-none bg-white shadow-xl p-4">
-            <SheetHeader>
-              <SheetTitle>Search Panel</SheetTitle>
-            </SheetHeader>
-            <div className="mt-5">
-              <Formik
-                initialValues={{
-                  mobile: "",
-                  email: "",
-                  user: "",
-                  role: "",
-                  status: "",
-                }}
-                onSubmit={handleSubmit}
-              >
-                {() => (
-                  <Form>
-                    <div className="grid md:grid-cols-2 gap-6">
-                      <InputField name="mobile" label="Mobile" type="text" maxLength={10} placeholder="Enter Mobile" className="border" />
-                      <InputField name="email" label="Email" type="email" placeholder="Enter Email" className="border" />
-                      <SelectField name="user" label="User" options={userData} className="border" />
-                      <SelectField name="role" label="Role" options={roleData} className="border" />
-                      <SelectField name="status" label="Status" options={status} className="border" />
-                    </div>
+        <SearchSheet
+          open={open}
+          onOpenChange={setOpen}
+          title="Search Panel"
+        >
+          <Formik
+            initialValues={{
+              mobile: "",
+              email: "",
+              user: "",
+              role: "",
+              status: "",
+            }}
+            onSubmit={handleSubmit}
+          >
+            {() => (
+              <Form className="space-y-6"
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") e.preventDefault()
+                }}>
+                <div>
+                  <div className="grid md:grid-cols-2 gap-6">
+                    <InputField name="mobile" label="Mobile" type="text" maxLength={10} placeholder="Enter Mobile" className="border" />
+                    <InputField name="email" label="Email" type="email" placeholder="Enter Email" className="border" />
+                    <SelectField name="user" label="User" options={userData} className="border" />
+                    <SelectField name="role" label="Role" options={roleData} className="border" />
+                    <SelectField name="status" label="Status" options={status} className="border" />
+                  </div>
 
-                    <div className="flex gap-4 mt-10">
-                      <Button type="submit" className="w-full bg-orange-500 text-white hover:brightness-90">Search</Button>
-                      <Button type="button" onClick={() => setOpen(false)}
-                        variant="outline" className="w-full border border-blue-900 text-blue-900 hover:bg-blue-50">Cancel</Button>
-                    </div>
-                  </Form>
-                )}
-              </Formik>
-            </div>
-          </SheetContent>
-        </Sheet>
+                  <div className="flex gap-4 mt-10">
+                    <Button type="submit" className="w-full bg-orange-500 text-white hover:brightness-90">Search</Button>
+                    <Button type="button" onClick={() => setOpen(false)}
+                      variant="outline" className="w-full border border-blue-900 text-blue-900 hover:bg-blue-50">Cancel</Button>
+                  </div>
+                </div>
+              </Form>
+            )}
+          </Formik>
+        </SearchSheet>
       </div>
     </>
   );

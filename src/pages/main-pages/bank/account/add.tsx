@@ -27,10 +27,7 @@ export default function AddAccount() {
         ]
     });
 
-    const handleSubmit = (
-        values: formValues,
-        { resetForm }: { resetForm: () => void }
-    ) => {
+    const handleSubmit = (values: formValues,{ resetForm }: { resetForm: () => void }) => {
         console.log("filter Data:", values);
         resetForm();
     };

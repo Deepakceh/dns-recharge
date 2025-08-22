@@ -28,15 +28,17 @@ interface OptionType {
   name: string;
 }
 
-const validationSchema = Yup.object({
-  fullName: getValidationSchema({ isRequired: true, minLength: 2, maxLength: 100 }),
-  email: getValidationSchema({ isRequired: true, type: "email", minLength: 5, maxLength: 100 }),
-  mobileNumber: getValidationSchema({ isRequired: true, type: "phone", minLength: 10, maxLength: 10 }),
-  roleId: getValidationSchema({ isRequired: true }),
-  packageId: getValidationSchema({ isRequired: true }),
-  userName: getValidationSchema({ isRequired: true }),
-  passWord: getValidationSchema({ isRequired: true })
-});
+const validationSchema = (page: string) =>
+  Yup.object({
+    fullName: getValidationSchema({ isRequired: true, minLength: 2, maxLength: 100 }),
+    email: getValidationSchema({ isRequired: true, type: "email", minLength: 5, maxLength: 100 }),
+    mobileNumber: getValidationSchema({ isRequired: true, type: "phone", minLength: 10, maxLength: 10 }),
+    roleId: getValidationSchema({ isRequired: true }),
+    packageId: getValidationSchema({ isRequired: true }),
+    userName: page === "ADD" ? getValidationSchema({ isRequired: true }) : Yup.string().nullable(),
+    passWord: page === "ADD" ? getValidationSchema({ isRequired: true }) : Yup.string().nullable(),
+  });
+
 
 const AddUser: React.FC = () => {
   const navigate = useNavigate();
@@ -154,7 +156,7 @@ const AddUser: React.FC = () => {
           <Formik
             enableReinitialize
             initialValues={initialValues}
-            validationSchema={validationSchema}
+            validationSchema={validationSchema(page || "")}
             onSubmit={handleSubmit}
           >
             {({ values, setFieldValue }) => (
@@ -175,10 +177,16 @@ const AddUser: React.FC = () => {
                   </div>
                 </div>
                 <div>
-                  <h4 className="text-base font-semibold text-gray-700 mb-3">Login Info</h4>
+                  {page === 'ADD' && (
+                    <h4 className="text-base font-semibold text-gray-700 mb-3">Login Info</h4>
+                  )}
                   <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                    <InputField name="userName" label="Username" type="text" placeholder="Enter Your Username" disabled={isViewMode} />
-                    <InputField name="passWord" label="Password" type="password" placeholder="Enter Your Password" disabled={isViewMode} />
+                    {page === 'ADD' && (
+                      <>
+                        <InputField name="userName" label="Username" type="text" placeholder="Enter Your Username" disabled={isViewMode} />
+                        <InputField name="passWord" label="Password" type="password" placeholder="Enter Your Password" disabled={isViewMode} />
+                      </>
+                    )}
                     <div className="flex flex-wrap gap-6 mt-2">
                       {/* IsActive */}
                       <div className="flex items-center gap-2">
@@ -241,7 +249,7 @@ const AddUser: React.FC = () => {
             )}
           </Formik>
         </div>
-      </div>
+      </div >
     </>
   );
 };
