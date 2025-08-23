@@ -11,19 +11,20 @@ export interface userData {
     isLocked?: boolean;
     notificationMsg?: string
     remark?: string;
-    userId?:string;
-    bankId?:string;
-    accountNumber?:string;
-    addedById?:string;  
-    blockAmount?:string;
-    accountTypeId?:string;
+    userId?: string;
+    bankId?: string;
+    accountNumber?: string;
+    addedById?: string;
+    blockAmount?: string;
+    accountTypeId?: string;
 }
 export const bankPayload = (action: string, data: unknown): Record<string, unknown> => {
 
     const d = data as userData;
     switch (action) {
 
-        case "GET_BANK_LIST": {
+        case "GET_BANK_LIST":
+        case "GET_BANK_STATEMENT": {
             const { page = 1, size = 100 } = data as { page?: number; size?: number };
             return {
                 "pageNumber": page,

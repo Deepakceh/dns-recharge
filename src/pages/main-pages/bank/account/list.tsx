@@ -106,12 +106,10 @@ export default function AccountList() {
     { headerName: "UPI ADDRESS", field: "upiAddress", width: 130 },
     { headerName: "USER", field: "User", width: 120 },
     { headerName: "VENDOR", field: "Vendor", width: 120 },
-    { headerName: "REMARKS", field: "remark", width: 160 },
     { headerName: "BALANCE", field: "Balance", width: 120 },
     { headerName: "MIN. LIMIT", field: "MinLimit", width: 120 },
+    { headerName: "REMARKS", field: "remark", width: 160 }
   ];
-
-
 
   return (
     <>

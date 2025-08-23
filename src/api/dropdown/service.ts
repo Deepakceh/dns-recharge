@@ -83,4 +83,26 @@ export const dropdownService = {
       throw error;
     }
   },
+
+  // account type dropdown service
+  AccountType: async (): Promise<ApiResponse> => {
+    try {
+      const res = await request<ApiResponse>("get", dropdownUrls.AccountType, null, false)
+      return res;
+    } catch (error) {
+      console.error(`Error in common_state:`, error);
+      throw error;
+    }
+  },
+
+  // bank name dropdown service
+  BankDropdown: async (): Promise<ApiResponse> => {
+    try {
+      const res = await request<ApiResponse>("get", dropdownUrls.BankDropdown, null, false)
+      return res;
+    } catch (error) {
+      console.error(`Error in common_state:`, error);
+      throw error;
+    }
+  },
 };

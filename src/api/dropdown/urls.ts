@@ -8,4 +8,6 @@ export const dropdownUrls = {
   GetRoles: `${constants.baseUrl}RolePermission/GetRoles`,
   PackageDropdown: `${constants.baseUrl}Account/PackageDropdown`,
   CallBackType: `${constants.baseUrl}Account/CallBackType`,
+  AccountType: `${constants.baseUrl}/Bank/AccountType`,
+  BankDropdown: `${constants.baseUrl}/Bank/BankDropdown`,
 };

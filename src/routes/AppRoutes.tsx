@@ -84,7 +84,7 @@ const AppRoutes: React.FC = () => {
                     <Route path="/bank" element={<BankLayout />}>
                         <Route index element={<Navigate to="account-list" />} />
                         <Route path="account-list" element={<AccountList />} />
-                        <Route path="account-list/:page" element={<AddAccount />} />
+                        <Route path="account-list/:mode/:id?" element={<AddAccount />} />
                         <Route path="statement-list/" element={<StatementList />} />
                     </Route>
 

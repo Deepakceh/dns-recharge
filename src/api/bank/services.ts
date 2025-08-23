@@ -40,4 +40,16 @@ export const bankService = {
       throw error;
     }
   },
+
+  // bank statement service
+  GetBankStatementData: async (action: string, data: unknown): Promise<ApiResponse> => {
+    try {
+      const payload = bankPayload(action, data);
+      const res = await request<ApiResponse>("post", bank.GetBankStatementData, payload, false)
+      return res;
+    } catch (error) {
+      console.error(`Error in ${action}:`, error);
+      throw error;
+    }
+  },
 }

@@ -28,16 +28,15 @@ interface OptionType {
   name: string;
 }
 
-const validationSchema = (page: string) =>
-  Yup.object({
-    fullName: getValidationSchema({ isRequired: true, minLength: 2, maxLength: 100 }),
-    email: getValidationSchema({ isRequired: true, type: "email", minLength: 5, maxLength: 100 }),
-    mobileNumber: getValidationSchema({ isRequired: true, type: "phone", minLength: 10, maxLength: 10 }),
-    roleId: getValidationSchema({ isRequired: true }),
-    packageId: getValidationSchema({ isRequired: true }),
-    userName: page === "ADD" ? getValidationSchema({ isRequired: true }) : Yup.string().nullable(),
-    passWord: page === "ADD" ? getValidationSchema({ isRequired: true }) : Yup.string().nullable(),
-  });
+const validationSchema = (page: string) => Yup.object({
+  fullName: getValidationSchema({ isRequired: true, minLength: 2, maxLength: 100 }),
+  email: getValidationSchema({ isRequired: true, type: "email", minLength: 5, maxLength: 100 }),
+  mobileNumber: getValidationSchema({ isRequired: true, type: "phone", minLength: 10, maxLength: 10 }),
+  roleId: getValidationSchema({ isRequired: true }),
+  packageId: getValidationSchema({ isRequired: true }),
+  userName: page === "ADD" ? getValidationSchema({ isRequired: true }) : Yup.string().nullable(),
+  passWord: page === "ADD" ? getValidationSchema({ isRequired: true }) : Yup.string().nullable(),
+});
 
 
 const AddUser: React.FC = () => {
@@ -152,7 +151,6 @@ const AddUser: React.FC = () => {
             {page === "EDIT" ? "Edit User" : page === "VIEW" ? "View User" : "Add User"}
           </h3>
           <Separator className="my-2 bg-gray-200" />
-
           <Formik
             enableReinitialize
             initialValues={initialValues}
@@ -160,12 +158,7 @@ const AddUser: React.FC = () => {
             onSubmit={handleSubmit}
           >
             {({ values, setFieldValue }) => (
-              <Form
-                className="space-y-6"
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") e.preventDefault();
-                }}
-              >
+              <Form className="space-y-6" onKeyDown={(e) => {if (e.key === "Enter") e.preventDefault()}}>
                 <div>
                   <h4 className="text-base font-semibold text-gray-700 mt-3 mb-3">General Info</h4>
                   <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
