@@ -51,8 +51,8 @@ interface filterFormValues {
   status: string;
 }
 
+interface OptionType { id: number; name: string; }
 const UserList: React.FC = () => {
-  interface OptionType { id: number; name: string; }
   const navigate = useNavigate()
   const gridRef = useRef(null);
   const [loader, setLoader] = useState(false)
@@ -270,11 +270,7 @@ const UserList: React.FC = () => {
             />
           </div>
         </div>
-        <SearchSheet
-          open={open}
-          onOpenChange={setOpen}
-          title="Search Panel"
-        >
+        <SearchSheet open={open} onOpenChange={setOpen} title="Search Panel">
           <Formik
             initialValues={{
               mobile: "",
@@ -286,10 +282,7 @@ const UserList: React.FC = () => {
             onSubmit={handleSubmit}
           >
             {() => (
-              <Form className="space-y-6"
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") e.preventDefault()
-                }}>
+              <Form className="space-y-6" onKeyDown={(e) => { if (e.key === "Enter") e.preventDefault() }}>
                 <div>
                   <div className="grid md:grid-cols-2 gap-6">
                     <InputField name="mobile" label="Mobile" type="text" maxLength={10} placeholder="Enter Mobile" className="border" />

@@ -33,7 +33,7 @@ interface OptionType {
 
 const validationSchema = Yup.object({
     callBackTypeId: getValidationSchema({ isRequired: true }),
-    url: getValidationSchema({ isRequired: true, minLength: 5, maxLength: 100 }),
+    url: getValidationSchema({ isRequired: true, type: "url", minLength: 5, maxLength: 100 }),
     remark: getValidationSchema({ isRequired: true, minLength: 3, maxLength: 100 })
 });
 
@@ -57,7 +57,6 @@ interface UserState {
 const Callback: React.FC = () => {
     const gridRef = useRef(null);
     const [open, setOpen] = useState(false)
-    const [id] = useState('0')
     const [callbackData, setCallbackData] = useState<OptionType[]>([]);
     const [user, setUser] = useState<UserState>({
         page: 1,
@@ -90,6 +89,7 @@ const Callback: React.FC = () => {
             console.error(err);
         }
     };
+
     //  api call for get notification list data
     const getCallbackListService = async (page: number, size: number) => {
         try {
@@ -111,8 +111,9 @@ const Callback: React.FC = () => {
             const res = await configService.AddUpdateCallBackURL(values);
             //  setLoader(false)
             if (res?.success) {
-                showToast.success(res.message || (id !== "0" ? "Updated successfully" : "Added successfully"));
+                showToast.success(res.message || (values.id !== 0 ? "Updated successfully" : "Added successfully"));
                 setOpen(false)
+                getCallbackListService(user.page, user.size);
             } else {
                 showToast.error(res?.message || "Failed");
             }
@@ -192,8 +193,8 @@ const Callback: React.FC = () => {
             },
         },
         { headerName: "ORG. NAME", field: "orgName" },
-        { headerName: "CALLBACK TYPE", field: "callbackType" },
-        { headerName: "CALLBACK URL", field: "callbackUrl", flex: 1 },
+        { headerName: "CALLBACK TYPE", field: "callBackType" },
+        { headerName: "CALLBACK URL", field: "url", flex: 1 },
         { headerName: "REMARKS", field: "remark" }
     ];
 
@@ -255,7 +256,7 @@ const Callback: React.FC = () => {
                                     <div>
                                         <label className="text-sm font-medium">Callback URL</label>
                                         <Field as="textarea" name="url" placeholder="Enter Message" className="border rounded-md w-full p-2" />
-                                        <ErrorMessage name="notificationMsg" component="p" className="text-xs text-red-500" />
+                                        <ErrorMessage name="url" component="p" className="text-xs text-red-500" />
                                     </div>
                                     <div>
                                         <label className="text-sm font-medium">Remark</label>

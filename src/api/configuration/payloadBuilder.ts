@@ -22,7 +22,7 @@ export const configPayload = (action: string, data: unknown): Record<string, unk
         case "ADD_UPDATE_CALLBACK": {
             return {
                 id: d?.id ?? 0,
-                userId: d?.userId ?? 0,
+                // userId: d?.userId ?? 0,
                 callBackTypeId: parseInt(d.callBackTypeId || "0", 10),
                 url: d?.url ?? "",
                 remark: d?.remark ?? ""

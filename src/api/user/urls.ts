@@ -6,5 +6,4 @@ export const user = {
   GetUserById: `${constants.baseUrl}User/GetUserById`,
   GetNotificationBarData: `${constants.baseUrl}User/GetNotificationBarData`,
   AddUpdateNotificationBar: `${constants.baseUrl}User/AddUpdateNotificationBar`,
-
 };

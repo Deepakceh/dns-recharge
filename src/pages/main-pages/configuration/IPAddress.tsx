@@ -44,7 +44,7 @@ interface UserState {
 }
 
 const validationSchema = Yup.object({
-    ipAddress: getValidationSchema({ isRequired: true })
+    ipAddress: getValidationSchema({ isRequired: true, type: "ip" })
 });
 
 const IPAddress: React.FC = () => {
@@ -81,7 +81,7 @@ const IPAddress: React.FC = () => {
 
     const handleSubmit = async () => {
         try {
-            const res = await authService.SendSignUpOTP('8859192935', 'deepakceh');
+            const res = await authService.SendSignUpOTP('8859192935', 'deepakceh@gmail.com');
             setLoader(false);
             if (res?.success) {
                 setShowOtp(true);
@@ -186,7 +186,7 @@ const IPAddress: React.FC = () => {
         },
         { headerName: "ORG. NAME", field: "orgName", flex: 1 },
         { headerName: "IP ADDRESS", field: "ipAddress", flex: 1 },
-        { headerName: "UPDATED DATE & TIME", field: "updateDateAndTime", flex: 1 }
+        { headerName: "UPDATED DATE & TIME", field: "updatedDate", flex: 1 }
     ];
 
 

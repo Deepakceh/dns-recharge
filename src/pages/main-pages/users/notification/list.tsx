@@ -172,7 +172,6 @@ const UserNotification: React.FC = () => {
         setInitialValues(formData);
     }
 
-
     // ag grig table 
     const columnDefs: ColDef[] = [
         { headerName: "S.No.", field: "id", width: 60, suppressSizeToFit: true },
