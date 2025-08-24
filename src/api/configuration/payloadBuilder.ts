@@ -4,19 +4,21 @@ export interface userData {
     callBackTypeId?: string;
     url?: string;
     remark?: string;
-    ip?:string;
-    otp?:string;
+    ipAddress?: string;
+    otp?: string;
 }
-export const configPayload = (action: string, data: unknown): Record<string, unknown> => {
+export const configPayload = (action: string, data?: unknown): Record<string, unknown> => {
 
     const d = data as userData;
     switch (action) {
 
         case "GET_CALLBACK_LIST": {
-            const { page = 1, size = 100 } = data as { page?: number; size?: number };
             return {
-                "pageNumber": page,
-                "pageSize": size,
+                "pageNumber": 1,
+                "pageSize": 100,
+                "filter": {
+                    "userId": 0,
+                }
             }
         }
         case "ADD_UPDATE_CALLBACK": {
@@ -28,10 +30,15 @@ export const configPayload = (action: string, data: unknown): Record<string, unk
                 remark: d?.remark ?? ""
             };
         }
+        case "GET_RECHARGE_IP": {
+            return {
+                "pageNumber": 1,
+                "pageSize": 100,
+            }
+        }
         case "ADD_RECHARGE_IP": {
             return {
-                userId: d?.userId ?? 0,
-                ip: d?.ip ?? '',
+                ip: d?.ipAddress ?? '',
                 otp: d?.otp ?? ''
             };
         }

@@ -20,7 +20,6 @@ import { constants } from "@/constants/index";
 export default function AuthNavbar() {
   const navigate = useNavigate()
 
-  console.log('get data', constants)
   const handleLogout = () => {
     // Remove specific cookies
     Cookies.remove('token');

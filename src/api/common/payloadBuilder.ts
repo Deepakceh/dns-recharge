@@ -11,7 +11,8 @@ export const commonPayload = (action: string, data: unknown): Record<string, unk
                 "stateId": (data as { id?: string })?.id || ""
             };
         case "USER_STATUS":
-        case "USER_NOTIFICATION_STATUS": {
+        case "USER_NOTIFICATION_STATUS":
+        case "CONFIG_IP_STATUS": {
             return {
                 id: d?.id ?? 0,
                 isActive: d?.isActive
@@ -19,6 +20,7 @@ export const commonPayload = (action: string, data: unknown): Record<string, unk
         }
         case "USER_DELETE":
         case "USER_NOTIFICATION_DELETE":
+        case "CONFIG_CALLBACK_DELETE":
         case "CONFIG_IP_DELETE": {
             return {
                 id: d?.id ?? 0,

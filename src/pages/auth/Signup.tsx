@@ -268,9 +268,7 @@ const Signup: React.FC = () => {
           open={showOtp}
           onClose={() => setShowOtp(false)}
           onSubmit={handleOtpSubmit}
-          onResend={() => {
-            if (formValues) handleSubmit(formValues);
-          }}
+          onResend={() => { if (formValues) handleSubmit(formValues) }}
           phoneOrEmail={formValues?.mobile || ""}
         />
       </div>

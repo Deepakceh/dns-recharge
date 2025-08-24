@@ -1,5 +1,6 @@
 // components/common/AppDialog.tsx
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { Separator } from "@/components/ui/separator";
 
 type AppDialogProps = {
   open: boolean
@@ -19,6 +20,7 @@ export function AppDialog({ open, onOpenChange, title, children }: AppDialogProp
       >
         <DialogHeader>
           <DialogTitle className="text-xl font-semibold">{title}</DialogTitle>
+          <Separator className="my-0 bg-gray-200" />
         </DialogHeader>
         <div>{children}</div>
       </DialogContent>

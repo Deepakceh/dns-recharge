@@ -73,7 +73,7 @@ const Callback: React.FC = () => {
 
     useEffect(() => {
         getCallbackTypeDropdownService()
-        getCallbackListService(user.page, user.size);
+        getCallbackListService(user.page, user.size,);
     }, [user.page, user.size]);
 
     const getCallbackTypeDropdownService = async () => {
@@ -106,55 +106,30 @@ const Callback: React.FC = () => {
     };
 
     const handleSubmit = async (values: FormValues) => {
-        //    setLoader(true)
         try {
             const res = await configService.AddUpdateCallBackURL(values);
-            //  setLoader(false)
             if (res?.success) {
                 showToast.success(res.message || (values.id !== 0 ? "Updated successfully" : "Added successfully"));
-                setOpen(false)
+                setOpen(false);
                 getCallbackListService(user.page, user.size);
             } else {
                 showToast.error(res?.message || "Failed");
             }
         } catch (err) {
             console.error(err);
-            //  setLoader(false)
         }
     };
 
     // function for user update status & delete data
     const handleToggle = async (action: string, rowData: UserRowData) => {
-        let payload: UserRowData;
-        const status = !rowData.isActive;
-        // Prepare payload based on action
-        if (action === 'USER_NOTIFICATION_STATUS') {
-            payload = { ...rowData, isActive: status };
-        } else {
-            payload = rowData; // For delete or other actions
-        }
         try {
-            const res = await commonService.CommonToggle(action, 'UpdateNotificationBarStatus', payload);
+            const res = await commonService.CommonToggle(action, 'DeleteCallBackURL', rowData);
             if (res?.success) {
                 showToast.success(res.message || 'Updated Successfully');
-
-                setUser((prev) => {
-                    let updatedData;
-
-                    if (action === 'USER_NOTIFICATION_STATUS') {
-                        // ✅ Toggle isActive value
-                        updatedData = prev.data.map((user) =>
-                            user.id === rowData.id ? { ...user, isActive: status } : user
-                        );
-                    } else {
-                        // ✅ Remove the row for other actions (like delete)
-                        updatedData = prev.data.filter((user) => user.id !== rowData.id);
-                    }
-                    return {
-                        ...prev,
-                        data: updatedData,
-                    };
-                });
+                setUser((prev) => ({
+                    ...prev,
+                    data: prev.data.filter((user) => user.id !== rowData.id)
+                }));
             }
         } catch (err) {
             console.error("User API Error:", err);
@@ -187,7 +162,7 @@ const Callback: React.FC = () => {
                 return (
                     <div className="flex items-center gap-2 justify-center">
                         <span title="Edit" onClick={() => handleEdit(data)}><Pencil className="text-indigo-500 cursor-pointer w-4 h-4" /></span>
-                        <span title="Delete" onClick={() => handleToggle('USER_NOTIFICATION_DELETE', data)}><Trash2 className="text-indigo-500 cursor-pointer w-4 h-4" /></span>
+                        <span title="Delete" onClick={() => handleToggle('CONFIG_CALLBACK_DELETE', data)}><Trash2 className="text-indigo-500 cursor-pointer w-4 h-4" /></span>
                     </div>
                 )
             },
@@ -216,7 +191,15 @@ const Callback: React.FC = () => {
                         </div>
                     </div>
                     <div className="flex items-center gap-2">
-                        <Button type='button' onClick={() => setOpen(true)} className="h-8 px-5 text-sm bg-orange-500 hover:bg-orange-600 text-white">
+                        <Button type='button' onClick={() => {
+                            setInitialValues({
+                                id: 0,
+                                callBackTypeId: '',
+                                url: '',
+                                remark: ''
+                            });
+                            setOpen(true)
+                        }} className="h-8 px-5 text-sm bg-orange-500 hover:bg-orange-600 text-white">
                             ADD
                         </Button>
                     </div>

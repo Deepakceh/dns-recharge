@@ -7,7 +7,7 @@ import { ModuleRegistry } from "ag-grid-community";
 import { AllCommunityModule } from "ag-grid-community";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Trash2, Search } from "lucide-react";
+import { Trash2, Search, Loader2 } from "lucide-react";
 import type { ColDef, ICellRendererParams } from "ag-grid-community";
 import { configService } from "@/api/configuration/services";
 import { showToast } from "@/utils/toast";
@@ -18,6 +18,7 @@ import { ToggleStatusIndicator } from "@/components/common/ToggleStatusIndicator
 import { authService } from "@/api/auth/services";
 import CircleLoader from "@/components/common/loader/CircleLoader";
 import { OtpModal } from "@/components/common/OtpModal";
+import { constants } from "@/constants/index";
 // Register all AG Grid Community modules
 ModuleRegistry.registerModules([AllCommunityModule]);
 
@@ -50,6 +51,7 @@ const validationSchema = Yup.object({
 const IPAddress: React.FC = () => {
     const gridRef = useRef(null);
     const [loader, setLoader] = useState(false)
+    const [loading, setLoading] = useState(false)
     const [open, setOpen] = useState(false)
     const [showOtp, setShowOtp] = useState<boolean>(false);
     const [formValues, setFormValues] = useState<FormValues | null>(null);
@@ -61,13 +63,13 @@ const IPAddress: React.FC = () => {
     });
 
     useEffect(() => {
-        getCallbackListService(user.page, user.size);
-    }, [user.page, user.size]);
+        getRechargeIPListService();
+    }, []);
 
     //  api call for get notification list data
-    const getCallbackListService = async (page: number, size: number) => {
+    const getRechargeIPListService = async () => {
         try {
-            const res = await configService.GetCallBackURLData({ page: page, size: size });
+            const res = await configService.GetRechargeIPData();
             if (res?.success && Array.isArray(res?.data)) {
                 setUser((prev) => ({
                     ...prev,
@@ -79,24 +81,28 @@ const IPAddress: React.FC = () => {
         }
     };
 
-    const handleSubmit = async () => {
+    const handleSubmit = async (values: FormValues) => {
+        setLoading(true);
+        setFormValues(values);
         try {
-            const res = await authService.SendSignUpOTP('8859192935', 'deepakceh@gmail.com');
-            setLoader(false);
+            const res = await authService.SendOTP(constants?.user?.mobileNumber);
+            setLoading(false);
             if (res?.success) {
+                setOpen(false);
                 setShowOtp(true);
                 showToast.success(res?.message || "OTP sent successfully");
             } else {
                 showToast.error(res?.message || "Failed to send OTP");
             }
         } catch (err) {
-            setLoader(false);
+            setLoading(false);
             console.error(err);
         }
     };
 
     // Handle OTP submission with IP address
     const handleOtpSubmit = async (otp: string) => {
+        console.log('get data', formValues, otp);
         setLoader(true)
         try {
             if (!formValues) return;
@@ -104,6 +110,7 @@ const IPAddress: React.FC = () => {
             setLoader(false)
             if (res?.success) {
                 setShowOtp(false);
+                getRechargeIPListService();
                 showToast.success(res?.message || "Added successful");
                 setFormValues(null); // Clear formValues state as well
             } else {
@@ -126,7 +133,7 @@ const IPAddress: React.FC = () => {
             payload = rowData; // For delete or other actions
         }
         try {
-            const res = await commonService.CommonToggle(action, 'DeleteCallBackURL', payload);
+            const res = await commonService.CommonToggle(action, 'UpdateRechargeIPStatus', payload);
             if (res?.success) {
                 showToast.success(res.message || 'Updated Successfully');
 
@@ -180,12 +187,11 @@ const IPAddress: React.FC = () => {
                 const { value, data } = params;
                 if (!data) return null;
                 return (
-                    <ToggleStatusIndicator isOn={!!value} onToggle={() => handleToggle('`CONFIG_IP_STATUS`', data)} />
+                    <ToggleStatusIndicator isOn={!!value} onToggle={() => handleToggle('CONFIG_IP_STATUS', data)} />
                 );
             },
         },
-        { headerName: "ORG. NAME", field: "orgName", flex: 1 },
-        { headerName: "IP ADDRESS", field: "ipAddress", flex: 1 },
+        { headerName: "IP ADDRESS", field: "ip", flex: 1 },
         { headerName: "UPDATED DATE & TIME", field: "updatedDate", flex: 1 }
     ];
 
@@ -229,7 +235,7 @@ const IPAddress: React.FC = () => {
                     </div>
                 </div>
 
-                <AppDialog open={open} onOpenChange={setOpen} title="Add Call Back URL">
+                <AppDialog open={open} onOpenChange={setOpen} title="Add IP Address">
                     <Formik
                         enableReinitialize
                         initialValues={{ ipAddress: '' }}
@@ -244,12 +250,13 @@ const IPAddress: React.FC = () => {
                                 }}
                             >
                                 <div>
-                                    <InputField name="ipAddress" label="IP Address" type="text" placeholder="Enter IP Address" className="border" />
+                                    <InputField name="ipAddress" label="IP Address" type="text" placeholder="Enter IP Address" className="border" disabled={loading} />
                                 </div>
 
                                 <div className="flex justify-end gap-2">
-                                    <Button type="submit" className="bg-orange-500 text-white hover:bg-orange-600" disabled={loader}>
-                                        Submit
+                                    <Button type="submit" className="bg-orange-500 text-white hover:bg-orange-600" disabled={loading}>
+                                        {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                                        {loading ? "Submitting..." : "Submit"}
                                     </Button>
                                     <Button type="button" onClick={() => setOpen(false)} className="px-4 py-2 border border-red-400 text-red-500 rounded hover:bg-red-50">
                                         Cancel
@@ -263,8 +270,8 @@ const IPAddress: React.FC = () => {
                     open={showOtp}
                     onClose={() => setShowOtp(false)}
                     onSubmit={handleOtpSubmit}
-                    onResend={handleSubmit}
-                    phoneOrEmail={'8859192935'}
+                    onResend={() => { if (formValues) handleSubmit(formValues) }}
+                    phoneOrEmail={constants?.user?.mobileNumber || ''}
                 />
             </div>
         </>

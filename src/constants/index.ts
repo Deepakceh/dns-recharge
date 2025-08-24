@@ -13,3 +13,14 @@ export const constants = {
   user: getUserFromCookies(),
 };
 
+//  "data": {
+//         "id": 1,
+//         "roleId": 1,
+//         "mobileNumber": "8859192935",
+//         "email": "deepakceh7@gmail.com",
+//         "orgName": null,
+//         "roleName": "Admin",
+//         "p2PBalance": 0.0000,
+//         "p2ABalance": 0.0000
+//     }
+

@@ -45,7 +45,7 @@ export default function AddAccount() {
     // const page = mode?.toUpperCase();
 
     const [loader] = useState(false)
-    const [AccountTypeData, setSetAccountTypeData] = useState<OptionType[]>([]);
+    const [AccountTypeData, setAccountTypeData] = useState<OptionType[]>([]);
     const [bankData, setBankData] = useState<OptionType[]>([]);
     const [initialValues] = useState<FormValues>({
         accountNumber: "",
@@ -68,8 +68,8 @@ export default function AddAccount() {
         try {
             const res = await dropdownService.AccountType();
             if (res?.success) {
-                const data = res.data as Array<{ id: number; name: string }>;
-                setSetAccountTypeData(data.map(({ id, name }) => ({ id, name })));
+                const data = res.data as Array<{ value: number; text: string }>;
+                setAccountTypeData(data.map((acount)=>({ id: acount.value, name: acount.text })));
             }
         } catch (err) {
             console.error(err);
@@ -80,8 +80,8 @@ export default function AddAccount() {
         try {
             const res = await dropdownService.BankDropdown();
             if (res?.success) {
-                const data = res.data as Array<{ id: number; name: string }>;
-                setBankData(data.map(({ id, name }) => ({ id, name })));
+                const data = res.data as Array<{ value: number; text: string }>;
+                setBankData(data.map((bank)=>({ id: bank.value, name: bank.text })));
             }
         } catch (err) {
             console.error(err);

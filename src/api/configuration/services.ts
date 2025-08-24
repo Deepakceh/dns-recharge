@@ -29,6 +29,18 @@ export const configService = {
     }
   },
 
+   // user list service
+  GetRechargeIPData: async (): Promise<ApiResponse> => {
+    try {
+      const payload = configPayload('GET_RECHARGE_IP');
+      const res = await request<ApiResponse>("post", config.GetRechargeIPData, payload, false)
+      return res;
+    } catch (error) {
+      console.error(`Error in user notification}:`, error);
+      throw error;
+    }
+  },
+
    // add ip address service
   AddRechargeIP: async (data: unknown): Promise<ApiResponse> => {
     try {
