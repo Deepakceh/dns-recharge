@@ -191,7 +191,7 @@ export default function StatementList() {
                   <SelectField name="Bank Account" label="Bank Account" options={dropdown.bankAccount} className="border" />
                   <SelectField name="Transfer Type" label="Transfer Type" options={dropdown.transferType} className="border" />
                   <SelectField name="User" label="User" options={dropdown.user} className="border" />
-                  <SelectField name="Wallet Type" label="Wallet Type" options={dropdown.walletType} className="border" />
+                  <SelectField name="GST Type" label="GST Type" options={dropdown.walletType} className="border" />
                 </div>
 
                 <div className="flex gap-4 mt-10">

@@ -92,7 +92,7 @@ export default function AccountList() {
         return (
           <div className="flex items-center gap-2 justify-center">
             <span title="Edit" onClick={() => navigate(`/bank/account-list/edit/${data?.id}`)}><Pencil className="text-indigo-500 cursor-pointer w-4 h-4" /></span>
-            <span title="View" onClick={() => navigate('/users/wallet')}><Eye className="text-indigo-400 cursor-pointer w-5 h-5" /></span>
+            <span title="View" onClick={() => navigate('/bank/statement-list')}><Eye className="text-indigo-400 cursor-pointer w-5 h-5" /></span>
           </div>
         )
       },
@@ -100,11 +100,12 @@ export default function AccountList() {
     { headerName: "BANK NAME", field: "bankName", width: 150 },
     { headerName: "BRANCH NAME", field: "branchName", width: 180 },
     { headerName: "BRNACH ADDRESS", field: "branchAddress", width: 180 },
+    { headerName: "ACCOUNT TYPE", field: "accountType", width: 140 },
     { headerName: "ACCOUNT NO.", field: "accountNumber", width: 140 },
     { headerName: "IFSC CODE", field: "ifscCode", width: 130 },
     { headerName: "HOLDER NAME", field: "accountHolderName", width: 150 },
     { headerName: "UPI ADDRESS", field: "upiAddress", width: 130 },
-    { headerName: "USER", field: "User", width: 120 },
+    { headerName: "ORG. NAME", field: "urgName", width: 120 },
     { headerName: "VENDOR", field: "Vendor", width: 120 },
     { headerName: "BALANCE", field: "Balance", width: 120 },
     { headerName: "MIN. LIMIT", field: "MinLimit", width: 120 },

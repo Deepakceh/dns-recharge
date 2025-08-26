@@ -36,7 +36,6 @@ export default function PackageList() {
   const columnDefs: ColDef[] = [
     { headerName: "S.NO.", field: "id", width: 60, suppressSizeToFit: true },
     { headerName: "PACKAGE NAME", field: "PackageName", width: 120, flex: 1 },
-    { headerName: "MODE", field: "Mode", width: 120, flex: 1 },
     {
       headerName: "ACTION",
       field: "action",
@@ -129,9 +128,9 @@ export default function PackageList() {
               {() => (
                 <Form>
                   <div className="relative grid md:grid-cols-2 gap-6">
-                    <InputField name="roleName" label="Role Name" type="text" placeholder="Enter role name" className="border" />
+                    <InputField name="packageName" label="Package Name" type="text" placeholder="Enter package name" className="border" />
                     <div className="absolute left-0 top-full mt-1 text-red-500 text-xs">
-                      <ErrorMessage name="roleName" />
+                      <ErrorMessage name="packageName" />
                     </div>
                   </div>
 
