@@ -15,6 +15,7 @@ import { showToast } from "@/utils/toast";
 import { dropdownService } from "@/api/dropdown/service";
 import { commonService } from "@/api/common/service";
 import { AppDialog } from "@/components/common/AppDialog"
+import { constants } from "@/constants/index";
 // Register all AG Grid Community modules
 ModuleRegistry.registerModules([AllCommunityModule]);
 
@@ -25,7 +26,6 @@ interface FormValues {
     url: string;
     remark: string;
 }
-
 interface OptionType {
     id: number;
     name: string;
@@ -57,6 +57,7 @@ interface UserState {
 const Callback: React.FC = () => {
     const gridRef = useRef(null);
     const [open, setOpen] = useState(false)
+    const [userData, setUserData] = useState<OptionType[]>([]);
     const [callbackData, setCallbackData] = useState<OptionType[]>([]);
     const [user, setUser] = useState<UserState>({
         page: 1,
@@ -72,9 +73,26 @@ const Callback: React.FC = () => {
     });
 
     useEffect(() => {
+        if (constants.user?.roleId === 1) {
+            getUserDropdwonService()
+        }
         getCallbackTypeDropdownService()
-        getCallbackListService(user.page, user.size,);
+        getCallbackListService(user.page, user.size, '0');
     }, [user.page, user.size]);
+
+    //  api call for get user dropdown data
+    const getUserDropdwonService = async () => {
+        try {
+            const res = await dropdownService.UserDropdown();
+            if (res?.success) {
+                const data = res.data as Array<{ value: number; text: string }>;
+                const user = data.map((user) => ({ id: user?.value, name: user?.text }));
+                setUserData(user)
+            }
+        } catch (err) {
+            console.error(err);
+        }
+    };
 
     const getCallbackTypeDropdownService = async () => {
         try {
@@ -91,9 +109,9 @@ const Callback: React.FC = () => {
     };
 
     //  api call for get notification list data
-    const getCallbackListService = async (page: number, size: number) => {
+    const getCallbackListService = async (page: number, size: number, value: string) => {
         try {
-            const res = await configService.GetCallBackURLData({ page: page, size: size });
+            const res = await configService.GetCallBackURLData({ page: page, size: size, userId: value });
             if (res?.success && Array.isArray(res?.data)) {
                 setUser((prev) => ({
                     ...prev,
@@ -111,7 +129,7 @@ const Callback: React.FC = () => {
             if (res?.success) {
                 showToast.success(res.message || (values.id !== 0 ? "Updated successfully" : "Added successfully"));
                 setOpen(false);
-                getCallbackListService(user.page, user.size);
+                getCallbackListService(user.page, user.size, '0');
             } else {
                 showToast.error(res?.message || "Failed");
             }
@@ -119,6 +137,11 @@ const Callback: React.FC = () => {
             console.error(err);
         }
     };
+
+    const handleUserChange = (value: string) => {
+        console.log('get value', typeof value, value)
+        getCallbackListService(user.page, user.size, value)
+    }
 
     // function for user update status & delete data
     const handleToggle = async (action: string, rowData: UserRowData) => {
@@ -191,6 +214,9 @@ const Callback: React.FC = () => {
                         </div>
                     </div>
                     <div className="flex items-center gap-2">
+                        {constants.user?.roleId === 1 && (
+                            <SelectField name="user" label="User" options={userData} labelType='floating' useFormik={false} onCustomChange={(value) => handleUserChange(value)} className="h-8 text-sm w-40" />
+                        )}
                         <Button type='button' onClick={() => {
                             setInitialValues({
                                 id: 0,
@@ -227,12 +253,7 @@ const Callback: React.FC = () => {
                     onSubmit={handleSubmit}
                 >
                     {() => (
-                        <Form
-                            className="space-y-6"
-                            onKeyDown={(e) => {
-                                if (e.key === "Enter") e.preventDefault()
-                            }}
-                        >
+                        <Form className="space-y-6" onKeyDown={(e) => { if (e.key === "Enter") e.preventDefault() }}>
                             <div>
                                 <SelectField name="callBackTypeId" label="CallBack Type" options={callbackData} />
                                 <div className="grid grid-cols-2 gap-4 mt-5">
@@ -248,7 +269,6 @@ const Callback: React.FC = () => {
                                     </div>
                                 </div>
                             </div>
-
                             <div className="flex justify-end gap-2">
                                 <Button type="submit" className="bg-orange-500 text-white hover:bg-orange-600">
                                     Submit
@@ -261,7 +281,6 @@ const Callback: React.FC = () => {
                     )}
                 </Formik>
             </AppDialog>
-
         </div>
     );
 }

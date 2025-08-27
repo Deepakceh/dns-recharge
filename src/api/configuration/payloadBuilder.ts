@@ -1,6 +1,6 @@
 export interface userData {
     id?: number;
-    userId?: number;
+    userId?: string;
     callBackTypeId?: string;
     url?: string;
     remark?: string;
@@ -17,7 +17,7 @@ export const configPayload = (action: string, data?: unknown): Record<string, un
                 "pageNumber": 1,
                 "pageSize": 100,
                 "filter": {
-                    "userId": 0,
+                    "userId": parseInt(d.userId || "0", 10),
                 }
             }
         }
