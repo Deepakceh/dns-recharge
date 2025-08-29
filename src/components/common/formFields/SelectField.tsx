@@ -74,9 +74,7 @@ const SelectField: React.FC<SelectFieldProps> = ({
                 setFieldValue(name, value);
                 if (onCustomChange) onCustomChange(value);
               }}
-              className={`h-10 w-full border border-gray-300 rounded px-3 text-sm focus:outline-none focus:ring-0 focus:border-blue-500 ${className} ${!selectedValue ? "text-gray-400" : "text-black"
-                }`}
-            >
+              className={`h-10 w-full border border-gray-300 rounded px-3 text-sm focus:outline-none focus:ring-0 focus:border-blue-500 text-black`}>
               {labelType === "floating" && (
                 <option value="" disabled hidden>
                   Select {label}

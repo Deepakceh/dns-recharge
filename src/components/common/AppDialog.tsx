@@ -22,7 +22,7 @@ export function AppDialog({ open, onOpenChange, title, children }: AppDialogProp
           <DialogTitle className="text-xl font-semibold">{title}</DialogTitle>
           <Separator className="my-0 bg-gray-200" />
         </DialogHeader>
-        <div>{children}</div>
+        {children}
       </DialogContent>
     </Dialog>
   )
