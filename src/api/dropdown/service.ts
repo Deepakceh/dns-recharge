@@ -105,4 +105,26 @@ export const dropdownService = {
       throw error;
     }
   },
+
+  // transfer type dropdown service
+  TransferType: async (): Promise<ApiResponse> => {
+    try {
+      const res = await request<ApiResponse>("get", dropdownUrls.TransferType, null, false)
+      return res;
+    } catch (error) {
+      console.error(`Error in common_state:`, error);
+      throw error;
+    }
+  },
+
+  // gst type dropdown service
+  GstType: async (): Promise<ApiResponse> => {
+    try {
+      const res = await request<ApiResponse>("get", dropdownUrls.GstType, null, false)
+      return res;
+    } catch (error) {
+      console.error(`Error in common_state:`, error);
+      throw error;
+    }
+  },
 };

@@ -1,5 +1,6 @@
 import * as React from "react"
-import { GalleryVerticalEnd, UserRoundPlus, Users, LayoutGrid, Landmark } from "lucide-react"
+// import { GalleryVerticalEnd, UserRoundPlus, Users, LayoutGrid, Landmark } from "lucide-react"
+import { GalleryVerticalEnd, UserRoundPlus, LayoutGrid, Landmark } from "lucide-react"
 import { NavMain } from "@/components/nav-main"
 import { NavUser } from "@/components/nav-user"
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarRail } from "@/components/ui/sidebar"
@@ -59,38 +60,38 @@ const data = {
         },
       ],
     },
-    {
-      title: "Vendors",
-      url: "#",
-      icon: Users,
-      isActive: false,
-      items: [
-        {
-          title: "Vendor List-Add/Edit/Settings",
-          url: "#",
-        },
-        {
-          title: "Vendor TXN-Add/Pull",
-          url: "#",
-        },
-        {
-          title: "Request/Response",
-          url: "#",
-        },
-        {
-          title: "Due Amount",
-          url: "#",
-        },
-        {
-          title: "PackComm-OpWise",
-          url: "#",
-        },
-        {
-          title: "Vendor Balance",
-          url: "#",
-        }
-      ],
-    },
+    // {
+    //   title: "Vendors",
+    //   url: "#",
+    //   icon: Users,
+    //   isActive: false,
+    //   items: [
+    //     {
+    //       title: "Vendor List-Add/Edit/Settings",
+    //       url: "#",
+    //     },
+    //     {
+    //       title: "Vendor TXN-Add/Pull",
+    //       url: "#",
+    //     },
+    //     {
+    //       title: "Request/Response",
+    //       url: "#",
+    //     },
+    //     {
+    //       title: "Due Amount",
+    //       url: "#",
+    //     },
+    //     {
+    //       title: "PackComm-OpWise",
+    //       url: "#",
+    //     },
+    //     {
+    //       title: "Vendor Balance",
+    //       url: "#",
+    //     }
+    //   ],
+    // },
     {
       title: "Bank",
       url: "#",
@@ -105,10 +106,10 @@ const data = {
           title: "Bank Statement",
           url: "/bank/statement-list",
         },
-        {
-          title: "Deposit / Withdrow",
-          url: "#",
-        }
+        // {
+        //   title: "Deposit / Withdrow",
+        //   url: "#",
+        // }
       ],
     },
     {

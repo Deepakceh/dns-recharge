@@ -15,10 +15,10 @@ import { dropdownService } from "@/api/dropdown/service";
 // Register all AG Grid Community modules
 ModuleRegistry.registerModules([AllCommunityModule]);
 interface filterFormValues {
-  bankAccount: string;
-  transferType: string;
-  user: string;
-  walletType: string;
+  bankAccountId: string;
+  transferTypeId: string;
+  userId: string;
+  gstTypeId: string;
   fromDate: string;
   toDate: string;
 }
@@ -32,30 +32,30 @@ interface UserState {
 
 type UserRowData = {
   id: number;
-  // roleId: number;
-  fullName: string;
-  // roleName: string;
-  // parentName: string;
-  // email: string;
-  // mobileNumber: string;
+  bankName: string;
   orgName: string;
-  p2PBalance: number;
-  p2ABalance: number;
-  isOn: boolean;
-  isActive: boolean;
+  addedDate: number;
+  paymentReferenceNumber: number;
+  transferType: boolean;
+  gstType: boolean;
 }
 interface OptionType { id: number; name: string; }
-
+type DropdownType = {
+  bank: OptionType[];
+  transferType: OptionType[];
+  user: OptionType[];
+  gstType: OptionType[];
+};
 export default function StatementList() {
   const gridRef = useRef(null);
   const [loader] = useState(false)
   const [open, setOpen] = useState(false);
-  // const [dropdown, setdropdown] = useState<OptionType[]>({
-  //   bank: [],
-  //   transferType: [],
-  //   user: [],
-  //   walletType: []
-  // })
+  const [dropdown, setDropdown] = useState<DropdownType>({
+    bank: [],
+    transferType: [],
+    user: [],
+    gstType: []
+  });
   const [user, setUser] = useState<UserState>({
     page: 1,
     size: 100,
@@ -65,7 +65,7 @@ export default function StatementList() {
 
   // Load dropdowns
   useEffect(() => {
-    Promise.all([getBankDropdownService()]);
+    Promise.all([getBankDropdownService(), getTransferTypeDropdownService(), getGstTypeDropdownService(), getUserDropdwonService()]);
   }, []);
 
   useEffect(() => {
@@ -77,7 +77,56 @@ export default function StatementList() {
       const res = await dropdownService.BankDropdown();
       if (res?.success) {
         const data = res.data as Array<{ value: number; text: string }>;
-        setBankData(data.map((bank) => ({ id: bank.value, name: bank.text })));
+        setDropdown((prev) => ({
+          ...prev,
+          bank: data.map((bank) => ({ id: bank.value, name: bank.text }))
+        }))
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const getTransferTypeDropdownService = async () => {
+    try {
+      const res = await dropdownService.TransferType();
+      if (res?.success) {
+        const data = res.data as Array<{ value: number; text: string }>;
+        setDropdown((prev) => ({
+          ...prev,
+          transferType: data.map((type) => ({ id: type.value, name: type.text }))
+        }))
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const getGstTypeDropdownService = async () => {
+    try {
+      const res = await dropdownService.GstType();
+      if (res?.success) {
+        const data = res.data as Array<{ id: number; gstName: string }>;
+        setDropdown((prev) => ({
+          ...prev,
+          user: data.map((gst) => ({ id: gst.id, name: gst.gstName }))
+        }))
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  //  api call for get user dropdown data
+  const getUserDropdwonService = async () => {
+    try {
+      const res = await dropdownService.UserDropdown();
+      if (res?.success) {
+        const data = res.data as Array<{ value: number; text: string }>;
+        setDropdown((prev) => ({
+          ...prev,
+          gstType: data.map((user) => ({ id: user?.value, name: user?.text }))
+        }))
       }
     } catch (err) {
       console.error(err);
@@ -99,28 +148,6 @@ export default function StatementList() {
     }
   };
 
-  const [dropdown] = useState({
-    bankAccount: [
-      { value: "", label: "Select" },
-      { value: "State Bank Of India", label: "State Bank Of India" },
-      { value: "Punjab National Bank", label: "Punjab National Bank" },
-    ],
-    transferType: [
-      { value: "", label: "Select" },
-      { value: "type 1", label: "Type 1" },
-      { value: "type 2", label: "Type 2" },
-    ],
-    user: [
-      { value: "", label: "Select" },
-      { value: "user1", label: "User 1" },
-      { value: "user2", label: "User 2" },
-    ],
-    walletType: [
-      { value: "", label: "Select" },
-      { value: "type 1", label: "Type 1" },
-      { value: "type 2", label: "Type 2" },
-    ],
-  })
 
 
   const handleSubmit = (values: filterFormValues, { resetForm }: { resetForm: () => void }) => {
@@ -203,10 +230,10 @@ export default function StatementList() {
         <SearchSheet open={open} onOpenChange={setOpen} title="Search Panel">
           <Formik
             initialValues={{
-              bankAccount: '',
-              transferType: '',
-              user: '',
-              walletType: '',
+              bankAccountId: '',
+              transferTypeId: '',
+              userId: '',
+              gstTypeId: '',
               fromDate: '',
               toDate: ''
             }}
@@ -215,10 +242,10 @@ export default function StatementList() {
             {() => (
               <Form>
                 <div className="grid md:grid-cols-2 gap-6">
-                  <SelectField name="Bank Account" label="Bank Account" options={dropdown.bankAccount} className="border" />
-                  <SelectField name="Transfer Type" label="Transfer Type" options={dropdown.transferType} className="border" />
-                  <SelectField name="User" label="User" options={dropdown.user} className="border" />
-                  <SelectField name="GST Type" label="GST Type" options={dropdown.walletType} className="border" />
+                  <SelectField name="bankAccountId" label="Bank Account" options={dropdown.bank} className="border" />
+                  <SelectField name="transferTypeId" label="Transfer Type" options={dropdown.transferType} className="border" />
+                  <SelectField name="gstTypeId" label="GST Type" options={dropdown.gstType} className="border" />
+                  <SelectField name="userId" label="User" options={dropdown.user} className="border" />
                 </div>
 
                 <div className="flex gap-4 mt-10">

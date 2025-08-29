@@ -10,4 +10,6 @@ export const dropdownUrls = {
   CallBackType: `${constants.baseUrl}Account/CallBackType`,
   AccountType: `${constants.baseUrl}Bank/AccountType`,
   BankDropdown: `${constants.baseUrl}Bank/BankDropdown`,
+  TransferType: `${constants.baseUrl}Account/TransferType`,
+  GstType: `${constants.baseUrl}Account/GstType`,
 };
