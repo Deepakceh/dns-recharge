@@ -102,10 +102,8 @@ const UserNotification: React.FC = () => {
     };
 
     const handleSubmit = async (values: FormValues, { resetForm }: { resetForm: () => void }) => {
-        //    setLoader(true)
         try {
             const res = await userService.AddUpdateNotificationBar(values);
-            //  setLoader(false)
             if (res?.success) {
                 resetForm()
                 showToast.success(res.message || (values.id !== 0 ? "User updated successfully" : "User added successfully"));
@@ -117,7 +115,6 @@ const UserNotification: React.FC = () => {
             }
         } catch (err) {
             console.error(err);
-            //  setLoader(false)
         }
     };
 
@@ -253,7 +250,6 @@ const UserNotification: React.FC = () => {
 
             <AppDialog open={open} onOpenChange={setOpen} title="Add Notification">
                 <Formik
-                    // enableReinitialize
                     initialValues={initialValues}
                     validationSchema={validationSchema}
                     onSubmit={handleSubmit}
@@ -288,7 +284,6 @@ const UserNotification: React.FC = () => {
                     )}
                 </Formik>
             </AppDialog>
-
         </div>
     );
 }

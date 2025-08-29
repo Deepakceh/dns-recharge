@@ -102,7 +102,6 @@ const IPAddress: React.FC = () => {
 
     // Handle OTP submission with IP address
     const handleOtpSubmit = async (otp: string) => {
-        console.log('get data', formValues, otp);
         setLoader(true)
         try {
             if (!formValues) return;

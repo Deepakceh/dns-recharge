@@ -64,4 +64,39 @@ export const userService = {
       throw error;
     }
   },
+
+   // add updated role service
+  AddUpdateRole: async (data: unknown): Promise<ApiResponse> => {
+    try {
+      const payload = userPayload('ADD_UPDATE_ROLE', data);
+      const res = await request<ApiResponse>("post", user.AddUpdateRole, payload, false)
+      return res;
+    } catch (error) {
+      console.error(`Error in AddUpdateRole:`, error);
+      throw error;
+    }
+  },
+   // user list service
+  GetPackageData: async (data: unknown): Promise<ApiResponse> => {
+    try {
+      const payload = userPayload('GET_PACKAGE_LIST', data);
+      const res = await request<ApiResponse>("post", user.GetPackageData, payload, false)
+      return res;
+    } catch (error) {
+      console.error(`Error in package list:`, error);
+      throw error;
+    }
+  },
+
+    // add updated package service
+  AddUpdatePackage: async (data: unknown): Promise<ApiResponse> => {
+    try {
+      const payload = userPayload('ADD_UPDATE_PACKAGE', data);
+      const res = await request<ApiResponse>("post", user.AddUpdatePackage, payload, false)
+      return res;
+    } catch (error) {
+      console.error(`Error in AddUpdatePackage:`, error);
+      throw error;
+    }
+  },
 }

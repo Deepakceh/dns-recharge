@@ -11,6 +11,7 @@ import { bankService } from "@/api/bank/services";
 import { SearchSheet } from "@/components/common/SearchSheet";
 import CircleLoader from "@/components/common/loader/CircleLoader";
 import SelectField from "@/components/common/formFields/SelectField";
+import { dropdownService } from "@/api/dropdown/service";
 // Register all AG Grid Community modules
 ModuleRegistry.registerModules([AllCommunityModule]);
 interface filterFormValues {
@@ -28,6 +29,7 @@ interface UserState {
   data: UserRowData[];
 
 }
+
 type UserRowData = {
   id: number;
   // roleId: number;
@@ -42,11 +44,18 @@ type UserRowData = {
   isOn: boolean;
   isActive: boolean;
 }
+interface OptionType { id: number; name: string; }
+
 export default function StatementList() {
   const gridRef = useRef(null);
   const [loader] = useState(false)
   const [open, setOpen] = useState(false);
-  
+  // const [dropdown, setdropdown] = useState<OptionType[]>({
+  //   bank: [],
+  //   transferType: [],
+  //   user: [],
+  //   walletType: []
+  // })
   const [user, setUser] = useState<UserState>({
     page: 1,
     size: 100,
@@ -54,9 +63,26 @@ export default function StatementList() {
     data: []
   });
 
+  // Load dropdowns
+  useEffect(() => {
+    Promise.all([getBankDropdownService()]);
+  }, []);
+
   useEffect(() => {
     getStatementListService(user.page, user.size);
   }, [user.page, user.size]);
+
+  const getBankDropdownService = async () => {
+    try {
+      const res = await dropdownService.BankDropdown();
+      if (res?.success) {
+        const data = res.data as Array<{ value: number; text: string }>;
+        setBankData(data.map((bank) => ({ id: bank.value, name: bank.text })));
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   //  api call for get statement list data
   const getStatementListService = async (page: number, size: number) => {
@@ -96,6 +122,7 @@ export default function StatementList() {
     ],
   })
 
+
   const handleSubmit = (values: filterFormValues, { resetForm }: { resetForm: () => void }) => {
     console.log("filter Data:", values);
     resetForm();
@@ -103,19 +130,19 @@ export default function StatementList() {
   // ag grig table 
   const columnDefs: ColDef[] = [
     { headerName: "S.NO.", field: "id", width: 60, suppressSizeToFit: true },
-    { headerName: "BANK NAME", field: "BankName", width: 150 },
-    { headerName: "ORG. NAME", field: "OrgName", width: 180 },
-    { headerName: "ADDED DATE", field: "AddedDate", width: 120 },
-    { headerName: "PAYMENT REF. NO.", field: "PaymentRefNo", width: 140 },
-    { headerName: "TRANSFER TYPE", field: "TransferType", width: 130 },
-    { headerName: "GST TYPE", field: "GstType", width: 100 },
-    { headerName: "AMOUNT TYPE", field: "AmountType", width: 120 },
-    { headerName: "TXN TYPE", field: "TxnType", width: 100 },
-    { headerName: "CL_BAL", field: "CL_BAL", width: 100 },
-    { headerName: "DB_AMOUNT", field: "DB_AMOUNT", width: 120 },
-    { headerName: "OP_BAL", field: "OP_BAL", width: 100 },
-    { headerName: "TXN ID", field: "TxnId", width: 100 },
-    { headerName: "REMARKS", field: "Remarks", width: 120 },
+    { headerName: "BANK NAME", field: "bankName", width: 150 },
+    { headerName: "ORG. NAME", field: "orgName", width: 180 },
+    { headerName: "ADDED DATE", field: "addedDate", width: 120 },
+    { headerName: "PAYMENT REF. NO.", field: "paymentReferenceNumber", width: 140 },
+    { headerName: "TRANSFER TYPE", field: "transferType", width: 130 },
+    { headerName: "GST TYPE", field: "gstType", width: 100 },
+    { headerName: "AMOUNT TYPE", field: "amtType", width: 120 },
+    { headerName: "TXN TYPE", field: "txnType", width: 100 },
+    { headerName: "CL_BAL", field: "cL_Bal", width: 100 },
+    { headerName: "DB_AMOUNT", field: "dB_Amt", width: 120 },
+    { headerName: "OP_BAL", field: "oP_Bal", width: 100 },
+    { headerName: "TXN ID", field: "txnId", width: 100 },
+    { headerName: "REMARKS", field: "remark", width: 120 },
   ];
 
 

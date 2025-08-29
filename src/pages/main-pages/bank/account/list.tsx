@@ -6,13 +6,17 @@ import { AllCommunityModule } from "ag-grid-community";
 import type { ColDef, ICellRendererParams } from "ag-grid-community";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Pencil, Eye, Filter, Search } from "lucide-react";
+import { Pencil, Eye, Trash2, Filter, Search } from "lucide-react";
 import InputField from "@/components/common/formFields/InputField";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { bankService } from "@/api/bank/services";
 import { SearchSheet } from "@/components/common/SearchSheet";
 import CircleLoader from "@/components/common/loader/CircleLoader";
+import { ToggleStatusIndicator } from "@/components/common/ToggleStatusIndicator";
+import { commonService } from "@/api/common/service";
+import { showToast } from "@/utils/toast";
+
 // Register all AG Grid Community modules
 ModuleRegistry.registerModules([AllCommunityModule]);
 interface filterFormValues {
@@ -46,7 +50,7 @@ type UserRowData = {
 export default function AccountList() {
   const navigate = useNavigate()
   const gridRef = useRef(null);
-  const [loader] = useState(false)
+  const [loader, setLoader] = useState(false)
   const [open, setOpen] = useState(false);
   const [user, setUser] = useState<UserState>({
     page: 1,
@@ -74,10 +78,52 @@ export default function AccountList() {
     }
   };
 
+   const handleToggle = async (action: string, rowData: UserRowData) => {
+      setLoader(true)
+      let payload: UserRowData;
+      const status = !rowData.isActive;
+      // Prepare payload based on action
+      if (action === 'BANK_ACCOUNT_STATUS') {
+        payload = { ...rowData, isActive: status };
+      } else {
+        payload = rowData; // For delete or other actions
+      }
+      try {
+        const res = await commonService.CommonToggle(action, 'UpdateBankStatus', payload);
+        if (res?.success) {
+          setLoader(false)
+          showToast.success(res.message || 'Updated Successfully');
+  
+          setUser((prev) => {
+            let updatedData;
+  
+            if (action === 'BANK_ACCOUNT_STATUS') {
+              // ✅ Toggle isActive value
+              updatedData = prev.data.map((user) =>
+                user.id === rowData.id ? { ...user, isActive: status } : user
+              );
+            } else {
+              // ✅ Remove the row for other actions (like delete)
+              updatedData = prev.data.filter((user) => user.id !== rowData.id);
+            }
+            return {
+              ...prev,
+              data: updatedData,
+            };
+          });
+        }
+      } catch (err) {
+        console.error("User API Error:", err);
+        setLoader(false)
+      }
+    };
+
   const handleSubmit = (values: filterFormValues, { resetForm }: { resetForm: () => void }) => {
     console.log("filter Data:", values);
     resetForm();
   };
+
+
   // ag grig table 
   const columnDefs: ColDef[] = [
     { headerName: "S.NO.", field: "id", width: 60, suppressSizeToFit: true },
@@ -93,8 +139,22 @@ export default function AccountList() {
           <div className="flex items-center gap-2 justify-center">
             <span title="Edit" onClick={() => navigate(`/bank/account-list/edit/${data?.id}`)}><Pencil className="text-indigo-500 cursor-pointer w-4 h-4" /></span>
             <span title="View" onClick={() => navigate('/bank/statement-list')}><Eye className="text-indigo-400 cursor-pointer w-5 h-5" /></span>
+            <span title="Delete" onClick={() => handleToggle('BANK_ACCOUNT_DELETE', data)}><Trash2 className="text-indigo-500 cursor-pointer w-4 h-4" /></span>
           </div>
         )
+      },
+    },
+    {
+      headerName: "STATUS",
+      field: "isActive",
+      width: 100,
+      suppressSizeToFit: true,
+      cellRenderer: (params: ICellRendererParams<UserRowData, boolean>) => {
+        const { value, data } = params;
+        if (!data) return null;
+        return (
+          <ToggleStatusIndicator isOn={!!value} onToggle={() => handleToggle('BANK_ACCOUNT_STATUS', data)} />
+        );
       },
     },
     { headerName: "BANK NAME", field: "bankName", width: 150 },

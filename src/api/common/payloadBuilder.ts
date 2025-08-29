@@ -12,7 +12,8 @@ export const commonPayload = (action: string, data: unknown): Record<string, unk
             };
         case "USER_STATUS":
         case "USER_NOTIFICATION_STATUS":
-        case "CONFIG_IP_STATUS": {
+        case "CONFIG_IP_STATUS":
+        case "BANK_ACCOUNT_STATUS": {
             return {
                 id: d?.id ?? 0,
                 isActive: d?.isActive
@@ -21,7 +22,9 @@ export const commonPayload = (action: string, data: unknown): Record<string, unk
         case "USER_DELETE":
         case "USER_NOTIFICATION_DELETE":
         case "CONFIG_CALLBACK_DELETE":
-        case "CONFIG_IP_DELETE": {
+        case "BANK_ACCOUNT_DELETE":
+        case "CONFIG_IP_DELETE":
+        case "ROLE_DELETE": {
             return {
                 id: d?.id ?? 0,
                 isDelete: true

@@ -29,7 +29,7 @@ interface OptionType {
 }
 
 const validationSchema = () => Yup.object({
-    accountNumber: getValidationSchema({ isRequired: true }),
+    accountNumber: getValidationSchema({ isRequired: true, minLength: 9, maxLength: 18 }),
     ifscCode: getValidationSchema({ isRequired: true, type: 'ifsc', maxLength: 11 }),
     accountHolderName: getValidationSchema({ isRequired: true }),
     accountTypeId: getValidationSchema({ isRequired: true }),
@@ -121,6 +121,7 @@ const AddAccount: React.FC = () => {
     };
 
     const handleSubmit = async (values: FormValues) => {
+        console.log('get data', values)
         setLoader(true)
         try {
             const res = await bankService.AddUpdateBankAccount({ ...values, id: id || undefined });

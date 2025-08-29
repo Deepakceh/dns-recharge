@@ -35,20 +35,10 @@ export const bankPayload = (action: string, data: unknown): Record<string, unkno
                 "pageNumber": page,
                 "pageSize": size,
                 "filter": {
-                    "accountNumber": "",
-                    "accountHolderName": "",
-                    "ifscCode": "",
-                    "mobileNumber": "",
-                    "email": "",
-                    "userId": 0,
-                    "roleId": 0,
-                    "statusId": 0,
-                    "gstTypeId": 0,
                     "bankAccountId": 0,
                     "transferTypeId": 0,
-                    "packageId": 0,
-                    "operatorId": 0,
-                    "paymentReferenceNumber": "",
+                    "gstTypeId": 0,
+                    "userId": 0,
                     "fromDate": "",
                     "toDate": ""
                 }
@@ -57,17 +47,14 @@ export const bankPayload = (action: string, data: unknown): Record<string, unkno
         case "ADD_UPDATE_BANK": {
             return {
                 "id": d?.id ?? 0,
-                // "userId": parseInt(d.userId || "0", 10),
                 "bankId": parseInt(d.bankId || "0", 10),
                 "accountHolderName": d.accountHolderName || "",
-                "accountNumber": parseInt(d.accountNumber || "0", 10),
+                "accountNumber": d.accountNumber || "0",
                 "ifscCode": d?.ifscCode || "",
                 "branchName": d?.branchName || "",
                 "branchAddress": d?.branchAddress,
-                // "addedById": parseInt(d.addedById || "0", 10),
                 "remark": d?.remark || '',
                 "upiAddress": d?.upiAddress || '',
-                // "blockAmount": parseInt(d.blockAmount || "0", 10),
                 "accountTypeId": parseInt(d.accountTypeId || "0", 10)
 
             };

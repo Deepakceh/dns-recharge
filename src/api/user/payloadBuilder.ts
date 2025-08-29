@@ -9,12 +9,15 @@ export interface userData {
     passWord?: string;
     isActive?: boolean;
     isLocked?: boolean;
-    notificationMsg?:string
-    remark?:string
+    notificationMsg?: string
+    remark?: string
+    roleName?: string
+    packageName?: string
 }
 export const userPayload = (action: string, data: unknown): Record<string, unknown> => {
 
     const d = data as userData;
+    console.log('get data', d)
     switch (action) {
 
         case "GET_USER_LIST": {
@@ -63,12 +66,32 @@ export const userPayload = (action: string, data: unknown): Record<string, unkno
                 "pageSize": size,
             }
         }
-         case "ADD_UPDATE_NOTIFICATION": {
+        case "ADD_UPDATE_NOTIFICATION": {
             return {
                 id: d?.id ?? 0,
                 roleId: parseInt(d.roleId || "0", 10),
                 notificationMsg: d?.notificationMsg ?? "",
                 remark: d?.remark ?? ""
+            };
+        }
+        case "ADD_UPDATE_ROLE": {
+            return {
+                id: d?.id ?? 0,
+                name: d?.roleName || "",
+                remark: ''
+            };
+        }
+         case "GET_PACKAGE_LIST": {
+            const { page = 1, size = 100 } = data as { page?: number; size?: number };
+            return {
+                "pageNumber": page,
+                "pageSize": size,
+            }
+        }
+          case "ADD_UPDATE_PACKAGE": {
+            return {
+                id: d?.id ?? 0,
+                packageName: d?.packageName || "",
             };
         }
         default:
