@@ -3,7 +3,7 @@ import * as Yup from "yup";
 // Common validation function
 export const getValidationSchema = ({ isRequired = false, type = "text", minLength = 0, maxLength = 255 }: {
   isRequired?: boolean;
-  type?: "text" | "email" | "number" | "phone" | "aadhar" | "pan" | "gst" | "url" | "ip";
+  type?: "text" | "email" | "number" | "phone" | "aadhar" | "pan" | "gst" | "url" | "ifsc" | "ip";
   minLength?: number;
   maxLength?: number;
 }) => {
@@ -41,6 +41,12 @@ export const getValidationSchema = ({ isRequired = false, type = "text", minLeng
       validator = validator.matches(
         /^(https?:\/\/)?([\w-]+(\.[\w-]+)+)([\w.,@?^=%&:/~+#-]*[\w@?^=%&/~+#-])?$/,
         "Invalid URL"
+      );
+      break;
+    case "ifsc":
+      validator = validator.matches(
+        /^[A-Z]{4}0[A-Z0-9]{6}$/,
+        "Invalid IFSC code"
       );
       break;
     case "ip":

@@ -8,8 +8,10 @@ import { dropdownService } from "@/api/dropdown/service";
 import { Formik, Form } from "formik";
 import { getValidationSchema } from "@/utils/validation";
 import * as Yup from "yup";
-// import { showToast } from "@/utils/toast";
+import { bankService } from "@/api/bank/services";
 import CircleLoader from "@/components/common/loader/CircleLoader";
+import { showToast } from "@/utils/toast";
+
 interface FormValues {
     accountNumber: string;
     ifscCode: string;
@@ -20,8 +22,6 @@ interface FormValues {
     bankId: string;
     branchName: string;
     branchAddress: string;
-    // addedById: string;
-    // blockAmount: string;
 }
 interface OptionType {
     id: number;
@@ -29,25 +29,24 @@ interface OptionType {
 }
 
 const validationSchema = () => Yup.object({
-    accountNumber: getValidationSchema({ isRequired: true}),
-    ifscCode: getValidationSchema({ isRequired: true }),
+    accountNumber: getValidationSchema({ isRequired: true }),
+    ifscCode: getValidationSchema({ isRequired: true, type: 'ifsc', maxLength: 11 }),
     accountHolderName: getValidationSchema({ isRequired: true }),
-    upiAddress: getValidationSchema({ isRequired: true }),
     accountTypeId: getValidationSchema({ isRequired: true }),
     bankId: getValidationSchema({ isRequired: true }),
     branchName: getValidationSchema({ isRequired: true }),
     branchAddress: getValidationSchema({ isRequired: true }),
 });
 
-export default function AddAccount() {
+const AddAccount: React.FC = () => {
     const navigate = useNavigate()
-    // const { mode, id } = useParams<{ mode: string; id?: string }>();
-    // const page = mode?.toUpperCase();
+    const { mode, id } = useParams<{ mode: string; id?: string }>();
+    const page = mode?.toUpperCase();
 
-    const [loader] = useState(false)
+    const [loader, setLoader] = useState(false)
     const [AccountTypeData, setAccountTypeData] = useState<OptionType[]>([]);
     const [bankData, setBankData] = useState<OptionType[]>([]);
-    const [initialValues] = useState<FormValues>({
+    const [initialValues, setInitialValues] = useState<FormValues>({
         accountNumber: "",
         ifscCode: "",
         accountHolderName: "",
@@ -64,12 +63,18 @@ export default function AddAccount() {
         Promise.all([getAccountTypeDropdownService(), getBankDropdownService()]);
     }, []);
 
+    useEffect(() => {
+        if (page && id && page !== "ADD" && AccountTypeData.length > 0 && bankData.length > 0) {
+            getBankByIdService(id);
+        }
+    }, [page, id, AccountTypeData, bankData]);
+
     const getAccountTypeDropdownService = async () => {
         try {
             const res = await dropdownService.AccountType();
             if (res?.success) {
                 const data = res.data as Array<{ value: number; text: string }>;
-                setAccountTypeData(data.map((acount)=>({ id: acount.value, name: acount.text })));
+                setAccountTypeData(data.map((acount) => ({ id: acount.value, name: acount.text })));
             }
         } catch (err) {
             console.error(err);
@@ -81,16 +86,55 @@ export default function AddAccount() {
             const res = await dropdownService.BankDropdown();
             if (res?.success) {
                 const data = res.data as Array<{ value: number; text: string }>;
-                setBankData(data.map((bank)=>({ id: bank.value, name: bank.text })));
+                setBankData(data.map((bank) => ({ id: bank.value, name: bank.text })));
             }
         } catch (err) {
             console.error(err);
         }
     };
 
-    const handleSubmit = (values: FormValues, { resetForm }: { resetForm: () => void }) => {
-        console.log("filter Data:", values);
-        resetForm();
+    const getBankByIdService = async (userId: string) => {
+        setLoader(true)
+        try {
+            const res = await bankService.GetBankDetailsById(userId);
+            setLoader(false)
+            if (res?.success) {
+                const data = res.data as Partial<FormValues>;
+                const formData: FormValues = {
+                    accountNumber: data.accountNumber || "",
+                    ifscCode: data.ifscCode || "",
+                    accountHolderName: data.accountHolderName || "",
+                    upiAddress: data.upiAddress || "",
+                    accountTypeId: data.accountTypeId || "",
+                    remark: data.remark || '', // blank on edit for security
+                    bankId: data.bankId || "",
+                    branchName: data.branchName || "",
+                    branchAddress: data.branchAddress || ""
+                };
+                setInitialValues(formData);
+
+            }
+        } catch (err) {
+            console.error(err);
+            setLoader(false)
+        }
+    };
+
+    const handleSubmit = async (values: FormValues) => {
+        setLoader(true)
+        try {
+            const res = await bankService.AddUpdateBankAccount({ ...values, id: id || undefined });
+            setLoader(false)
+            if (res?.success) {
+                showToast.success(res.message || (page === "EDIT" ? "Updated successfully" : "Added successfully"));
+                setTimeout(() => navigate("/bank/account-list"), 2000);
+            } else {
+                showToast.error(res?.message || "Failed");
+            }
+        } catch (err) {
+            console.error(err);
+            setLoader(false)
+        }
     };
 
     return (
@@ -112,7 +156,7 @@ export default function AddAccount() {
                                     <h4 className="text-base font-semibold text-gray-700 mt-3 mb-3">Account Info</h4>
                                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                                         <InputField name="accountNumber" label="Account Number" type='text' inputMode="int" placeholder="Enter account number" />
-                                        <InputField name="ifscCode" label="IFSC Code" type="text" capitalize={true} inputMode="alphanum" placeholder="Enter ifsc code" />
+                                        <InputField name="ifscCode" label="IFSC Code" type="text" capitalize={true} maxLength={11} inputMode="alphanum" placeholder="Enter ifsc code" />
                                         <InputField name="accountHolderName" label="Holder Name" type="text" inputMode="alpha" placeholder="Enter holder name" />
                                         <InputField name="upiAddress" label="UPI Address" type="text" placeholder="Enter upi address" />
                                         <SelectField name="accountTypeId" label="account Type" options={AccountTypeData} />
@@ -123,7 +167,7 @@ export default function AddAccount() {
                                     <h4 className="text-base font-semibold text-gray-700 mb-3">Bank Details</h4>
                                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                                         <SelectField name="bankId" label="Bank Name" options={bankData} />
-                                        <InputField name="branchName" label="Branch Name" type="text"inputMode="alpha" placeholder="Enter branch name" />
+                                        <InputField name="branchName" label="Branch Name" type="text" inputMode="alpha" placeholder="Enter branch name" />
                                         <InputField name="branchAddress" label="Branch Address" type="text" placeholder="Enter branch address" />
                                     </div>
                                 </div>
@@ -149,3 +193,5 @@ export default function AddAccount() {
         </>
     );
 }
+export default AddAccount;
+

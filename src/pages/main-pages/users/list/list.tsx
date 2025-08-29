@@ -168,7 +168,6 @@ const UserList: React.FC = () => {
     }
   };
 
-
   // ag grig table 
   const columnDefs: ColDef[] = [
     { headerName: "S.No.", field: "id", width: 60, suppressSizeToFit: true },

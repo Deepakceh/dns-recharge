@@ -32,7 +32,7 @@ export const bankService = {
   // get data by bank id service
   GetBankDetailsById: async (id: string): Promise<ApiResponse> => {
     try {
-      const url = `${bank.GetBankDetailsById}/${id}`
+      const url = `${bank.GetBankDetailsById}${id}`
       const res = await request<ApiResponse>("post", url, null, false)
       return res;
     } catch (error) {

@@ -17,6 +17,11 @@ export interface userData {
     addedById?: string;
     blockAmount?: string;
     accountTypeId?: string;
+    accountHolderName?: string;
+    ifscCode?: string;
+    branchName?: string;
+    branchAddress?: string;
+    upiAddress?: string;
 }
 export const bankPayload = (action: string, data: unknown): Record<string, unknown> => {
 
@@ -52,17 +57,17 @@ export const bankPayload = (action: string, data: unknown): Record<string, unkno
         case "ADD_UPDATE_BANK": {
             return {
                 "id": d?.id ?? 0,
-                "userId": parseInt(d.userId || "0", 10),
+                // "userId": parseInt(d.userId || "0", 10),
                 "bankId": parseInt(d.bankId || "0", 10),
-                "accountHolderName": "",
+                "accountHolderName": d.accountHolderName || "",
                 "accountNumber": parseInt(d.accountNumber || "0", 10),
-                "ifscCode": "",
-                "branchName": "",
-                "branchAddress": "",
-                "addedById": parseInt(d.addedById || "0", 10),
-                "remark": "",
-                "upiAddress": "",
-                "blockAmount": parseInt(d.blockAmount || "0", 10),
+                "ifscCode": d?.ifscCode || "",
+                "branchName": d?.branchName || "",
+                "branchAddress": d?.branchAddress,
+                // "addedById": parseInt(d.addedById || "0", 10),
+                "remark": d?.remark || '',
+                "upiAddress": d?.upiAddress || '',
+                // "blockAmount": parseInt(d.blockAmount || "0", 10),
                 "accountTypeId": parseInt(d.accountTypeId || "0", 10)
 
             };
