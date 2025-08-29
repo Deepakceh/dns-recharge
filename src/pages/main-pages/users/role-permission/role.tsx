@@ -1,10 +1,10 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { AgGridReact } from "ag-grid-react";
 import { ModuleRegistry } from "ag-grid-community";
 import { AllCommunityModule } from "ag-grid-community";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Pencil, Search, Trash2, Settings } from "lucide-react";
+import { Pencil, Search, Settings } from "lucide-react";
 import type { ColDef } from "ag-grid-community";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { ErrorMessage, Form, Formik } from "formik";
@@ -13,6 +13,7 @@ import * as Yup from "yup";
 import InputField from "@/components/common/formFields/InputField";
 import { Separator } from "@/components/ui/separator";
 import { useNavigate } from "react-router-dom";
+import { dropdownService } from "@/api/dropdown/service";
 // Register all AG Grid Community modules
 ModuleRegistry.registerModules([AllCommunityModule]);
 interface formValues {
@@ -27,7 +28,27 @@ export default function Role() {
     const navigate = useNavigate()
     const gridRef = useRef(null);
     const [open, setOpen] = useState(false);
+    interface RoleData {
+        id: number;
+        RoleName: string;
+        // Add other fields if needed
+    }
+    const [data, setData] = useState<RoleData[]>([])
 
+    useEffect(() => {
+        getRoleService()
+    }, [])
+
+    const getRoleService = async () => {
+        try {
+            const res = await dropdownService.GetRoles();
+            if (res?.success) {
+                setData(res.data as RoleData[])
+            }
+        } catch (err) {
+            console.error(err);
+        }
+    };
 
     const handleSubmit = (values: formValues, { resetForm }: { resetForm: () => void }) => {
         console.log("role name", values);
@@ -35,18 +56,8 @@ export default function Role() {
     };
     // ag grig table 
     const columnDefs: ColDef[] = [
-        {
-            headerName: "S.No.",
-            field: "id",
-            width: 60,
-            suppressSizeToFit: true, // fixed width
-        },
-        {
-            headerName: "Role Name",
-            field: "RoleName",
-            flex: 1, // This makes it take all remaining space
-            minWidth: 150, // Optional: minimum width
-        },
+        { headerName: "S.No.", field: "id", width: 60, suppressSizeToFit: true },
+        { headerName: "Role Name", field: "name", flex: 1, minWidth: 150 },
         {
             headerName: "ACTION",
             field: "action",
@@ -57,22 +68,14 @@ export default function Role() {
                     <span title="Edit">
                         <Pencil className="text-indigo-500 cursor-pointer w-4 h-4" />
                     </span>
-                    <span title="Setting" onClick={()=>navigate('/users/role/permission')}>
+                    <span title="Setting" onClick={() => navigate('/users/role/permission')}>
                         <Settings className="text-indigo-500 cursor-pointer w-4 h-4" />
                     </span>
                 </div>
-            ),
-        },
+            )
+        }
     ];
 
-
-    const rowData: Record<string, unknown>[] = [
-        { id: 1, RoleName: "SuperAdmin" },
-        { id: 2, RoleName: "Admin" },
-        { id: 3, RoleName: "ApiUser" },
-        { id: 4, RoleName: "ACCOUNTS DEPARTMENT" },
-        { id: 5, RoleName: "Support Team" },
-    ];
 
 
     return (
@@ -102,7 +105,7 @@ export default function Role() {
                     <AgGridReact
                         ref={gridRef}
                         columnDefs={columnDefs}
-                        rowData={rowData}
+                        rowData={data}
                         rowHeight={40}
                         headerHeight={35}
                         defaultColDef={{
