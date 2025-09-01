@@ -8,10 +8,10 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Pencil, Trash2, Plus } from "lucide-react";
+import { AppDialog } from "@/components/common/AppDialog";
+import { Formik, Form, } from "formik";
+import MultiSelect from "@/components/common/formFields/MultiSelectField";
 
 type RowData = {
   id: number;
@@ -39,7 +39,6 @@ export default function AddUpdateSlabMargin() {
   ]);
 
   const [open, setOpen] = useState(false);
-  const [editingRow, setEditingRow] = useState<RowData | null>(null);
 
   const handleAddRow = () => {
     const newRow: RowData = {
@@ -53,25 +52,22 @@ export default function AddUpdateSlabMargin() {
       amtType: "",
     };
     setRows([...rows, newRow]);
-    setEditingRow(newRow);
     setOpen(true);
   };
 
-  const handleEdit = (row: RowData) => {
-    setEditingRow(row);
-    setOpen(true);
-  };
+  const [selected, setSelected] = useState<string[]>([])
 
-  const handleDelete = (id: number) => {
-    setRows(rows.filter((r) => r.id !== id));
-  };
-
-  const handleSave = () => {
-    if (editingRow) {
-      setRows(rows.map((r) => (r.id === editingRow.id ? editingRow : r)));
-    }
-    setOpen(false);
-  };
+  const options = [
+    { id: "1", name: "Option 1" },
+    { id: "2", name: "Option 2" },
+    { id: "3", name: "Option 3" },
+    { id: "4", name: "Option 4" },
+    { id: "4", name: "Option 4" },
+    { id: "4", name: "Option 4" },
+    { id: "4", name: "Option 4" },
+    { id: "4", name: "Option 4" },
+    { id: "4", name: "Option 4" },
+  ];
 
   return (
     <div className="p-6">
@@ -109,10 +105,10 @@ export default function AddUpdateSlabMargin() {
                 <TableCell>{row.amtType || "Discount"}</TableCell>
                 <TableCell>
                   <div className="flex gap-2">
-                    <Button size="icon" variant="outline" onClick={() => handleEdit(row)}>
+                    <Button size="icon" variant="outline" >
                       <Pencil className="w-4 h-4" />
                     </Button>
-                    <Button size="icon" variant="destructive" onClick={() => handleDelete(row.id)}>
+                    <Button size="icon" variant="destructive">
                       <Trash2 className="w-4 h-4" />
                     </Button>
                   </div>
@@ -124,69 +120,19 @@ export default function AddUpdateSlabMargin() {
       </div>
 
       {/* Edit Modal */}
-      <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="max-w-lg">
-          <DialogHeader>
-            <DialogTitle>Edit Row</DialogTitle>
-          </DialogHeader>
-          {editingRow && (
-            <div className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <Input
-                  value={editingRow.operatorType}
-                  placeholder="Operator Type"
-                  onChange={(e) => setEditingRow({ ...editingRow, operatorType: e.target.value })}
-                />
-                <Input
-                  value={editingRow.operator}
-                  placeholder="Operator"
-                  onChange={(e) => setEditingRow({ ...editingRow, operator: e.target.value })}
-                />
-                <Input
-                  value={editingRow.circle}
-                  placeholder="Circle"
-                  onChange={(e) => setEditingRow({ ...editingRow, circle: e.target.value })}
-                />
-                <Input
-                  value={editingRow.amountRange}
-                  placeholder="Ex. 10-50"
-                  onChange={(e) => setEditingRow({ ...editingRow, amountRange: e.target.value })}
-                />
-                <Input
-                  type="number"
-                  value={editingRow.commission}
-                  placeholder="0.00"
-                  onChange={(e) => setEditingRow({ ...editingRow, commission: e.target.value })}
-                />
-                <Select
-                  value={editingRow.commType}
-                  onValueChange={(val) => setEditingRow({ ...editingRow, commType: val })}
-                >
-                  <SelectTrigger><SelectValue placeholder="Comm Type" /></SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="Percent">Percent</SelectItem>
-                    <SelectItem value="Flat">Flat</SelectItem>
-                  </SelectContent>
-                </Select>
-                <Select
-                  value={editingRow.amtType}
-                  onValueChange={(val) => setEditingRow({ ...editingRow, amtType: val })}
-                >
-                  <SelectTrigger><SelectValue placeholder="Amt Type" /></SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="Discount">Discount</SelectItem>
-                    <SelectItem value="Surcharge">Surcharge</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+      <AppDialog open={open} onOpenChange={setOpen} title="Add Slab Margin">
+        <Formik
+          initialValues={{ skills: [] }}
+          onSubmit={(values) => console.log(values)}
+        >
+          <Form>
+            <div className="p-6">
+              <MultiSelect label="Select Items" options={options} value={selected} onChange={setSelected} />
             </div>
-          )}
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setOpen(false)}>Cancel</Button>
-            <Button onClick={handleSave}>Save</Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+
+          </Form>
+        </Formik>
+      </AppDialog>
     </div>
   );
 }
