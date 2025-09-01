@@ -27,6 +27,8 @@ const AddUser = React.lazy(() => import('@/pages/main-pages/users/list/add'));
 const Role = React.lazy(() => import('@/pages/main-pages/users/role-permission/role'));
 const Permission = React.lazy(() => import('@/pages/main-pages/users/role-permission/permission'));
 const PackageList = React.lazy(() => import('@/pages/main-pages/users/package-commission/list'));
+const AddUpdatePackageCommission = React.lazy(() => import('@/pages/main-pages/users/package-commission/addUpdatePackageCommission'));
+const AddUpdateSlabMargin = React.lazy(() => import('@/pages/main-pages/users/package-commission/addUpdateSlabMargin'));
 const Wallet = React.lazy(() => import('@/pages/main-pages/users/wallet/wallet'));
 const UserNotification = React.lazy(() => import('@/pages/main-pages/users/notification/list'));
 
@@ -76,6 +78,8 @@ const AppRoutes: React.FC = () => {
                         <Route path="role" element={<Role />} />
                         <Route path="role/permission" element={<Permission />} />
                         <Route path="package-list" element={<PackageList />} />
+                        <Route path="package-list/commission/:id" element={<AddUpdatePackageCommission />} />
+                        <Route path="package-list/slabMargin/:id" element={<AddUpdateSlabMargin />} />
                         <Route path="wallet" element={<Wallet />} />
                         <Route path="notification" element={<UserNotification />} />
                     </Route>

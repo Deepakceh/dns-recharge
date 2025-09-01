@@ -13,6 +13,8 @@ export interface userData {
     remark?: string
     roleName?: string
     packageName?: string
+    page?: number
+    size?: number
 }
 export const userPayload = (action: string, data: unknown): Record<string, unknown> => {
 
@@ -81,18 +83,27 @@ export const userPayload = (action: string, data: unknown): Record<string, unkno
                 remark: ''
             };
         }
-         case "GET_PACKAGE_LIST": {
+        case "GET_PACKAGE_LIST": {
             const { page = 1, size = 100 } = data as { page?: number; size?: number };
             return {
                 "pageNumber": page,
                 "pageSize": size,
             }
         }
-          case "ADD_UPDATE_PACKAGE": {
+        case "ADD_UPDATE_PACKAGE": {
             return {
                 id: d?.id ?? 0,
                 packageName: d?.packageName || "",
             };
+        }
+        case "GET_PACKAGE_WISE_MARGINS": {
+            return {
+                "pageNumber": d?.page,
+                "pageSize": d?.size,
+                "filter": {
+                    "packageId": parseInt(d.packageId || "0", 10),
+                }
+            }
         }
         default:
             throw new Error(`Unknown action: ${action}`);

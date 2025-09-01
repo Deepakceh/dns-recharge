@@ -65,7 +65,7 @@ export const userService = {
     }
   },
 
-   // add updated role service
+  // add updated role service
   AddUpdateRole: async (data: unknown): Promise<ApiResponse> => {
     try {
       const payload = userPayload('ADD_UPDATE_ROLE', data);
@@ -76,7 +76,7 @@ export const userService = {
       throw error;
     }
   },
-   // user list service
+  // user list service
   GetPackageData: async (data: unknown): Promise<ApiResponse> => {
     try {
       const payload = userPayload('GET_PACKAGE_LIST', data);
@@ -88,7 +88,7 @@ export const userService = {
     }
   },
 
-    // add updated package service
+  // add updated package service
   AddUpdatePackage: async (data: unknown): Promise<ApiResponse> => {
     try {
       const payload = userPayload('ADD_UPDATE_PACKAGE', data);
@@ -96,6 +96,30 @@ export const userService = {
       return res;
     } catch (error) {
       console.error(`Error in AddUpdatePackage:`, error);
+      throw error;
+    }
+  },
+
+  // get package wise margins service
+  GetPackageWiseMargins: async (data: unknown): Promise<ApiResponse> => {
+    try {
+      const payload = userPayload('GET_PACKAGE_WISE_MARGINS', data);
+      const res = await request<ApiResponse>("post", user.GetPackageWiseMargins, payload, false)
+      return res;
+    } catch (error) {
+      console.error(`Error in GetPackageWiseMargins:`, error);
+      throw error;
+    }
+  },
+
+  // get package wise margins service
+  GetPackageSlabMarginById: async (id: number): Promise<ApiResponse> => {
+    try {
+      const url = `${user.GetPackageSlabMarginById}${id}`
+      const res = await request<ApiResponse>("post", url, null, false)
+      return res;
+    } catch (error) {
+      console.error(`Error in GetPackageSlabMarginById:`, error);
       throw error;
     }
   },

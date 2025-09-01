@@ -111,7 +111,8 @@ export default function PackageList() {
         return (
           <div className="flex items-center gap-2 justify-center">
             <span title="Edit" onClick={() => handleEdit(data)}><Pencil className="text-indigo-500 cursor-pointer w-4 h-4" /></span>
-            <span title="Setting" onClick={() => navigate('/users/role/permission')}><Settings className="text-indigo-500 cursor-pointer w-4 h-4" /></span>
+            <span title="Setting" onClick={() => navigate(`/users/package-list/commission/${data.id}`)}><Settings className="text-indigo-500 cursor-pointer w-4 h-4" /></span>
+            <span title="Setting" onClick={() => navigate(`/users/package-list/slabMargin/${data.id}`)}><Settings className="text-indigo-500 cursor-pointer w-4 h-4" /></span>
           </div>
         )
       },
