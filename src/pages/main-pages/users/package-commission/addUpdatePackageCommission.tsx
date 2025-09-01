@@ -1,4 +1,3 @@
-
 import { useState, useRef, useEffect } from "react";
 import { AgGridReact } from "ag-grid-react";
 import { ModuleRegistry } from "ag-grid-community";
@@ -6,25 +5,23 @@ import { AllCommunityModule } from "ag-grid-community";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
-// import { ErrorMessage, Form, Formik } from "formik";
-// import * as Yup from "yup";
-import type { ColDef, } from "ag-grid-community";
+import type { ColDef } from "ag-grid-community";
 import { userService } from "@/api/user/services";
-// import InputField from "@/components/common/formFields/InputField";
-// import { useNavigate } from "react-router-dom";
-// import CircleLoader from "@/components/common/loader/CircleLoader";
-// import { userService } from "@/api/user/services";
-// import { showToast } from "@/utils/toast";
-// import { getValidationSchema } from "@/utils/validation";
-// Register all AG Grid Community modules
 import { useParams } from "react-router-dom";
+
+import "ag-grid-community/styles/ag-grid.css";
+import "ag-grid-community/styles/ag-theme-quartz.css";
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
 type UserRowData = {
   id: number;
-  packageName: string;
-
+  operatorName: string;
+  p2PCommission: number;
+  p2ACommission: number;
+  commissionType: string;
+  amountType: string;
+  dailyLimit: string;
 };
 
 interface UserState {
@@ -33,31 +30,39 @@ interface UserState {
   search: string;
   data: UserRowData[];
 }
+
 export default function AddUpdatePackageCommission() {
   const { id } = useParams<{ id?: string }>();
-
-  const gridRef = useRef(null);
+  const gridRef = useRef<AgGridReact<UserRowData>>(null);
 
   const [user, setUser] = useState<UserState>({
     page: 1,
     size: 100,
-    search: '',
-    data: []
+    search: "",
+    data: [],
   });
 
   useEffect(() => {
     if (id) {
-      getPackageMarginService(user.page, user.size, id)
+      getPackageMarginService(user.page, user.size, id);
     }
   }, [user.page, user.size, id]);
 
-  const getPackageMarginService = async (page: number, size: number, packageId: string) => {
+  const getPackageMarginService = async (
+    page: number,
+    size: number,
+    packageId: string
+  ) => {
     try {
-      const res = await userService.GetPackageWiseMargins({ page, size, packageId });
+      const res = await userService.GetPackageWiseMargins({
+        page,
+        size,
+        packageId,
+      });
       if (res?.success) {
         setUser((prev) => ({
           ...prev,
-          data: res.data as UserRowData[]
+          data: res.data as UserRowData[],
         }));
       }
     } catch (err) {
@@ -65,89 +70,74 @@ export default function AddUpdatePackageCommission() {
     }
   };
 
-  // ag grig table 
-  // Custom Input Renderer
-  // const InputRenderer = (props: unknown) => {
-  //   return (
-  //     <input
-  //       type="number"
-  //       step="0.01"
-  //       value={(props as any).value || 0}
-  //       readOnly
-  //       className="w-full px-2 py-1 border border-gray-300 rounded text-right"
-  //     />
-  //   );
-  // };
+  // ✅ Custom Input Renderer
+  const InputRenderer = (props: any) => {
+    return (
+      <input
+        type="number"
+        step="0.01"
+        value={props.value || 0}
+        onChange={(e) => props.setValue(Number(e.target.value))}
+        className="w-full px-2 py-1 border border-gray-300 rounded text-right text-sm"
+      />
+    );
+  };
 
+  // ✅ Custom Select Renderer
+  const SelectRenderer = (props: any) => {
+    const options = props.options || [];
+    return (
+      <select
+        value={props.value || ""}
+        onChange={(e) => props.setValue(e.target.value)}
+        className="w-full px-2 py-1 border border-gray-300 rounded text-sm bg-white"
+      >
+        {options.map((opt: string, i: number) => (
+          <option key={i} value={opt}>
+            {opt}
+          </option>
+        ))}
+      </select>
+    );
+  };
 
-  const columnDefs: ColDef[] = [
-    { headerName: "S.No.", field: "id", width: 60, suppressSizeToFit: true },
-    { headerName: "Operator Name", field: "operatorName", minWidth: 150 },
+  const columnDefs: ColDef<UserRowData>[] = [
+    { headerName: "S.No.", field: "id", width: 80 },
+    { headerName: "Operator Name", field: "operatorName", width: 130 },
 
-    // ✅ Numeric Input (default 0.00)
     {
       headerName: "P2P Commission",
-      field: "p2PCommission",
-      minWidth: 150,
-      editable: true,
-      valueParser: (params) => {
-        const value = parseFloat(params.newValue);
-        return isNaN(value) ? 0.0 : value;
-      },
-      cellEditor: "agTextCellEditor",
-      cellEditorParams: {
-        useFormatter: true,
-      },
-      valueFormatter: (params) => Number(params.value || 0).toFixed(2),
-      // cellRenderer: InputRenderer,
+      field: "p2PCommission", width: 150,
+      cellRenderer: InputRenderer,
     },
-
     {
       headerName: "P2A Commission",
-      field: "p2ACommission",
-      minWidth: 150,
-      editable: true,
-      valueParser: (params) => {
-        const value = parseFloat(params.newValue);
-        return isNaN(value) ? 0.0 : value;
-      },
-      cellEditor: "agTextCellEditor",
-      cellEditorParams: {
-        useFormatter: true,
-      },
-      valueFormatter: (params) => Number(params.value || 0).toFixed(2),
-      // cellRenderer: InputRenderer,
+      field: "p2ACommission",width: 140,
+      cellRenderer: InputRenderer,
     },
 
-    { headerName: "Commission Type", field: "commissionType", minWidth: 150 },
-
-    // ✅ Dropdown for Amount Type
+ {
+      headerName: "Commission Type",
+      field: "amountType",width: 190,flex: 1,
+      cellRenderer: (params: any) => (
+        <SelectRenderer {...params} options={["Flat", "Percentage"]} />
+      ),
+    },
     {
       headerName: "Amount Type",
-      field: "amountType",
-      minWidth: 150,
-      editable: true,
-      cellEditor: "agSelectCellEditor",
-      cellEditorParams: {
-        values: ["Flat", "Percentage"], // your dropdown values
-      },
-
+      field: "amountType",width: 190,flex: 1,
+      cellRenderer: (params: any) => (
+        <SelectRenderer {...params} options={["Flat", "Percentage"]} />
+      ),
     },
-
-    // ✅ Dropdown for Daily Limit
-    {
+       {
       headerName: "Daily Limit",
-      field: "dailyLimit",
-      minWidth: 150,
-      editable: true,
-      cellEditor: "agSelectCellEditor",
-      cellEditorParams: {
-        values: ["1000", "5000", "10000", "No Limit"], // example options
-      },
+      field: "dailyLimit",width: 140,
+      cellRenderer: InputRenderer,
     },
   ];
 
-  const rowData = [
+  const rowData: UserRowData[] = [
     {
       id: 1,
       operatorName: "Airtel",
@@ -176,11 +166,12 @@ export default function AddUpdatePackageCommission() {
       dailyLimit: "No Limit",
     },
   ];
+
   return (
     <div className="p-4">
       <div className="bg-white border border-gray-200 rounded-lg shadow-md overflow-hidden">
+        {/* Top Bar */}
         <div className="flex items-center justify-between p-2">
-          {/* Left: Filter + Search */}
           <div className="flex items-center gap-2">
             <div className="w-60">
               <div className="relative">
@@ -194,26 +185,28 @@ export default function AddUpdatePackageCommission() {
             </div>
           </div>
 
-          {/* Right: Export + Add */}
           <div className="flex items-center gap-2">
-            <Button className="h-8 px-5 text-sm bg-orange-500 hover:bg-orange-600 text-white">Submit</Button>
+            <Button className="h-8 px-5 text-sm bg-orange-500 hover:bg-orange-600 text-white">
+              Submit
+            </Button>
           </div>
         </div>
-        <div className="ag-theme-quartz w-full" style={{ height: '75vh' }}>
+
+        {/* Table */}
+        <div className="ag-theme-quartz w-full" style={{ height: "75vh" }}>
           <AgGridReact
             ref={gridRef}
             columnDefs={columnDefs}
             rowData={rowData}
-            rowHeight={40}
-            headerHeight={35}
+            rowHeight={45}
+            headerHeight={40}
             defaultColDef={{
-              sortable: true,
               resizable: true,
             }}
-            singleClickEdit={true}
+             suppressCellFocus={true} 
           />
         </div>
       </div>
     </div>
-  )
+  );
 }
