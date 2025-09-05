@@ -127,4 +127,59 @@ export const dropdownService = {
       throw error;
     }
   },
+
+  // operator type dropdown service
+  OperatorType: async (): Promise<ApiResponse> => {
+    try {
+      const res = await request<ApiResponse>("get", dropdownUrls.OperatorType, null, false)
+      return res;
+    } catch (error) {
+      console.error(`Error in common_state:`, error);
+      throw error;
+    }
+  },
+
+  // operator type dropdown service
+  OperatorDropdown: async (): Promise<ApiResponse> => {
+    try {
+      const res = await request<ApiResponse>("get", dropdownUrls.OperatorDropdown, null, false)
+      return res;
+    } catch (error) {
+      console.error(`Error in common_state:`, error);
+      throw error;
+    }
+  },
+
+  // operator type dropdown service
+  Circle: async (): Promise<ApiResponse> => {
+    try {
+      const res = await request<ApiResponse>("get", dropdownUrls.Circle, null, false)
+      return res;
+    } catch (error) {
+      console.error(`Error in common_state:`, error);
+      throw error;
+    }
+  },
+
+  // commission type dropdown service
+  CommissionType: async (): Promise<ApiResponse> => {
+    try {
+      const res = await request<ApiResponse>("get", dropdownUrls.CommissionType, null, false)
+      return res;
+    } catch (error) {
+      console.error(`Error in common_state:`, error);
+      throw error;
+    }
+  },
+
+  // amount type dropdown service
+  AmountType: async (): Promise<ApiResponse> => {
+    try {
+      const res = await request<ApiResponse>("get", dropdownUrls.AmountType, null, false)
+      return res;
+    } catch (error) {
+      console.error(`Error in common_state:`, error);
+      throw error;
+    }
+  },
 };

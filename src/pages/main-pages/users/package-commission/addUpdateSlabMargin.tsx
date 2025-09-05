@@ -1,13 +1,6 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Pencil, Trash2, Plus } from "lucide-react";
 import { AppDialog } from "@/components/common/AppDialog";
 import { Formik, Form, } from "formik";
@@ -120,16 +113,27 @@ export default function AddUpdateSlabMargin() {
       </div>
 
       {/* Edit Modal */}
-      <AppDialog open={open} onOpenChange={setOpen} title="Add Slab Margin">
+      <AppDialog open={open} onOpenChange={setOpen} title="Add Slab Margin" width="w-[900px] max-w-[900px]">
         <Formik
           initialValues={{ skills: [] }}
           onSubmit={(values) => console.log(values)}
         >
           <Form>
-            <div className="p-6">
-              <MultiSelect label="Select Items" options={options} value={selected} onChange={setSelected} />
+            <div className="rows grid grid-cols-3 gap-4 p-2">
+              <MultiSelect label="Operator Type" options={options} value={selected} onChange={setSelected} />
+              <MultiSelect label="Operator" options={options} value={selected} onChange={setSelected} />
+              <MultiSelect label="Circle" options={options} value={selected} onChange={setSelected} />
+              <MultiSelect label="Amount-Range" options={options} value={selected} onChange={setSelected} />
+              <MultiSelect label="Commission" options={options} value={selected} onChange={setSelected} />
+              <MultiSelect label="Commission Type" options={options} value={selected} onChange={setSelected} />
+              <MultiSelect label="Amount Type" options={options} value={selected} onChange={setSelected} />
             </div>
-
+            <div className="flex justify-end gap-2">
+              <Button type="submit" className="bg-orange-500 text-white hover:bg-orange-600">Add</Button>
+              <Button type="button" onClick={() => setOpen(false)} className=" border border-red-400 text-red-500 rounded hover:bg-red-50">
+                Cancel
+              </Button>
+            </div>
           </Form>
         </Formik>
       </AppDialog>

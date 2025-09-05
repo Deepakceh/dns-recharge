@@ -12,4 +12,9 @@ export const dropdownUrls = {
   BankDropdown: `${constants.baseUrl}Bank/BankDropdown`,
   TransferType: `${constants.baseUrl}Account/TransferType`,
   GstType: `${constants.baseUrl}Account/GstType`,
+  OperatorType: `${constants.baseUrl}Account/OperatorType`,
+  OperatorDropdown: `${constants.baseUrl}Account/OperatorDropdown/`,
+  Circle: `${constants.baseUrl}Account/Circle`,
+  CommissionType: `${constants.baseUrl}Account/CommissionType`,
+  AmountType: `${constants.baseUrl}Account/AmountType`,
 };

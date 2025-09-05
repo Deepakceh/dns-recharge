@@ -8,13 +8,14 @@ type AppDialogProps = {
   title: string
   children: React.ReactNode
   onCancel?: () => void
+  width?: string
 }
 
-export function AppDialog({ open, onOpenChange, title, children }: AppDialogProps) {
+export function AppDialog({ open, onOpenChange, title, children, width }: AppDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
-        className="max-w-lg rounded-2xl bg-white"
+        className={`bg-white rounded-2xl ${width || "max-w-lg"}`}
         onInteractOutside={(e) => e.preventDefault()}
         onEscapeKeyDown={(e) => e.preventDefault()}
       >
