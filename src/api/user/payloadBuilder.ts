@@ -15,11 +15,11 @@ export interface userData {
     packageName?: string
     page?: number
     size?: number
+    permissions?: Array<{ menuId: number; canView: boolean; canCreate: boolean; canUpdate: boolean; canDelete: boolean; }>;
 }
 export const userPayload = (action: string, data: unknown): Record<string, unknown> => {
 
     const d = data as userData;
-    console.log('get data', d)
     switch (action) {
 
         case "GET_USER_LIST": {
@@ -81,6 +81,17 @@ export const userPayload = (action: string, data: unknown): Record<string, unkno
                 id: d?.id ?? 0,
                 name: d?.roleName || "",
                 remark: ''
+            };
+        }
+        case "GET_MENU_FOR_ROLE_PERMISSIONS": {
+            return {
+                roleId: parseInt(d.roleId || "0", 10)
+            };
+        }
+        case "SET_MENU_PERMISSIONS": {
+            return {
+                roleId: parseInt(d.roleId || "0", 10),
+                permissions: d?.permissions
             };
         }
         case "GET_PACKAGE_LIST": {

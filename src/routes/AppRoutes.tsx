@@ -76,7 +76,7 @@ const AppRoutes: React.FC = () => {
                         <Route path="list" element={<UserList />} />
                         <Route path="list/:mode/:id?" element={<AddUser />} />
                         <Route path="role" element={<Role />} />
-                        <Route path="role/permission" element={<Permission />} />
+                        <Route path="role/permission/:id" element={<Permission />} />
                         <Route path="package-list" element={<PackageList />} />
                         <Route path="package-list/commission/:id" element={<AddUpdatePackageCommission />} />
                         <Route path="package-list/slabMargin/:id" element={<AddUpdateSlabMargin />} />

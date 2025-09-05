@@ -76,7 +76,44 @@ export const userService = {
       throw error;
     }
   },
-  // user list service
+
+  // get data by role id service
+  GetRoleById: async (id: number): Promise<ApiResponse> => {
+    try {
+      const url = `${user.GetRoleById}${id}`
+      const res = await request<ApiResponse>("post", url, null, false)
+      return res;
+    } catch (error) {
+      console.error(`Error in GetPackageSlabMarginById:`, error);
+      throw error;
+    }
+  },
+
+   // get data by role id service
+  GetMenuForRolePermissions: async (data: unknown): Promise<ApiResponse> => {
+    try {
+      const payload = userPayload('GET_MENU_FOR_ROLE_PERMISSIONS', data);
+      const res = await request<ApiResponse>("post", user.GetMenuForRolePermissions, payload, false)
+      return res;
+    } catch (error) {
+      console.error(`Error in GetMenuForRolePermissions:`, error);
+      throw error;
+    }
+  },
+
+    // update permission data by 
+  SetMenuPermissions: async (data: unknown): Promise<ApiResponse> => {
+    try {
+      const payload = userPayload('SET_MENU_PERMISSIONS', data);
+      const res = await request<ApiResponse>("post", user.SetMenuPermissions, payload, false)
+      return res;
+    } catch (error) {
+      console.error(`Error in SetMenuPermissions:`, error);
+      throw error;
+    }
+  },
+
+  // user package service
   GetPackageData: async (data: unknown): Promise<ApiResponse> => {
     try {
       const payload = userPayload('GET_PACKAGE_LIST', data);

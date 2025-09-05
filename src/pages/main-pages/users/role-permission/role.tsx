@@ -32,7 +32,6 @@ interface UserState {
 type UserRowData = {
     id: number;
     name: string;
-
 };
 const validationSchema = Yup.object({
     roleName: getValidationSchema({ isRequired: true }),
@@ -132,7 +131,7 @@ export default function Role() {
                     <div className="flex items-center gap-2 justify-center">
                         <span title="Edit" onClick={() => handleEdit(data)}><Pencil className="text-indigo-500 cursor-pointer w-4 h-4" /></span>
                         <span title="Delete" onClick={() => handleToggle('ROLE_DELETE', data)}><Trash2 className="text-indigo-500 cursor-pointer w-4 h-4" /></span>
-                        <span title="Setting" onClick={() => navigate('/users/role/permission')}><Settings className="text-indigo-500 cursor-pointer w-4 h-4" /></span>
+                        <span title="Setting" onClick={() => navigate(`/users/role/permission/${data.id}`)}><Settings className="text-indigo-500 cursor-pointer w-4 h-4" /></span>
                     </div>
                 )
             },
