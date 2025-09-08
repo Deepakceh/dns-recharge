@@ -12,7 +12,7 @@ const api = axios.create({
 // Add request interceptor
 api.interceptors.request.use((constants) => {
   const token = Cookies.get("token");
-
+  // const token = localStorage.getItem('token')
   // Skip adding token if `skipAuth` is set to true
   if (!constants.headers.skipAuth && token) {
     constants.headers.Authorization = `Bearer ${token}`;
@@ -30,7 +30,7 @@ api.interceptors.response.use(
   (error) => {
     if (error.response && (error.response.status === 401 || error.response.status === 403)) {
       console.error("Token expired. Redirecting to login...");
-      
+
       // Remove expired token and redirect to login
       Cookies.remove("token");
       Cookies.remove("user_data");

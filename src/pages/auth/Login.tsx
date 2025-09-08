@@ -11,6 +11,7 @@ import { showToast } from "@/utils/toast";
 import { useNavigate } from "react-router-dom";
 import { Loader2 } from "lucide-react"; // 🌀 Import spinner icon
 import { Eye, EyeOff } from "lucide-react";
+import Cookies from 'js-cookie';
 
 interface LoginFormValues {
   userId: string;
@@ -28,14 +29,18 @@ const Login: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
 
 
-  const handleSubmit = async (values: LoginFormValues, { resetForm }: { resetForm: () => void }) => {
+  const handleSubmit = async (values: LoginFormValues) => {
     setLoading(true);
     try {
       const res = await authService.SignIn("SIGN_IN", values);
       setLoading(false);
       if (res?.success) {
-        navigate('/dashboard')
-        resetForm();
+        // Save token and data to cookies
+        // localStorage.setItem('token', res?.token || '')
+        Cookies.set("token", res?.token || "");
+        Cookies.set("userData", JSON.stringify(res?.data));
+
+        navigate('/dashboard');
         showToast.success(res?.message || "Login successful");
       } else {
         showToast.error(res?.message || "Failed to login");
@@ -45,6 +50,7 @@ const Login: React.FC = () => {
       console.error(err);
     }
   };
+
 
 
   return (
@@ -67,7 +73,7 @@ const Login: React.FC = () => {
           {() => (
             <Form>
               <div className="relative w-full">
-                <Field name="userId" type="text" as={Input} placeholder=" " autoComplete='off' className="peer h-12 w-full border border-gray-300 rounded px-3 pt-5 placeholder-transparent text-sm focus-visible:ring-0 focus-visible:ring-offset-0 focus:outline-none" />
+                <Field name="userId" type="text" as={Input} placeholder=" " autoComplete='off' disabled={loading} className="peer h-12 w-full border border-gray-300 rounded px-3 pt-5 placeholder-transparent text-sm focus-visible:ring-0 focus-visible:ring-offset-0 focus:outline-none" />
                 <label htmlFor="userId" className="absolute left-3 top-1 text-gray-500 text-sm transition-all peer-placeholder-shown:top-3.5 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:top-1 peer-focus:text-xs peer-focus:text-gray-700">
                   User ID
                 </label>
@@ -82,6 +88,7 @@ const Login: React.FC = () => {
                   type={showPassword ? "text" : "password"}
                   placeholder=" "
                   autoComplete="off"
+                  disabled={loading}
                   className="peer h-12 w-full border border-gray-300 rounded px-3 pr-10 pt-5 placeholder-transparent text-sm focus-visible:ring-0 focus-visible:ring-offset-0 focus:outline-none"
                 />
                 <label

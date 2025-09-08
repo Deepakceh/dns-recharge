@@ -7,7 +7,7 @@ import SelectField from "@/components/common/formFields/SelectField";
 import signupBg from "@/assets/images/dns/signup_bg.svg";
 import { getValidationSchema } from "@/utils/validation";
 import { motion } from "framer-motion";
-import { commonService } from "@/api/common/service";
+import { dropdownService } from "@/api/dropdown/service";
 import { authService } from "@/api/auth/services";
 import { OtpModal } from "@/components/common/OtpModal";
 import { showToast } from "@/utils/toast";
@@ -32,35 +32,35 @@ interface SignupFormValues {
 }
 
 const validationSchema = Yup.object({
-  name: getValidationSchema({ isRequired: true, type: "text", minLength: 2, maxLength: 100 }),
-  shopName: getValidationSchema({ isRequired: true, type: "text", minLength: 2, maxLength: 100 }),
+  name: getValidationSchema({ isRequired: true, type: "text", minLength: 3, maxLength: 100 }),
+  shopName: getValidationSchema({ isRequired: true, type: "text", minLength: 3, maxLength: 100 }),
   mobile: getValidationSchema({ isRequired: true, type: "phone", minLength: 10, maxLength: 10 }),
   email: getValidationSchema({ isRequired: true, type: "email", minLength: 5, maxLength: 100 }),
   state: getValidationSchema({ isRequired: true, type: "text" }),
   district: getValidationSchema({ isRequired: true, type: "text" }),
   address: getValidationSchema({ isRequired: true, type: "text" }),
   pincode: getValidationSchema({ isRequired: true, type: "number", minLength: 6, maxLength: 6 }),
-  aadhar: getValidationSchema({ isRequired: false, type: "aadhar", minLength: 12, maxLength: 12 }),
-  pan: getValidationSchema({ isRequired: false, type: "pan", minLength: 10, maxLength: 10 }),
+  aadhar: getValidationSchema({ isRequired: true, type: "aadhar", minLength: 12, maxLength: 12 }),
+  pan: getValidationSchema({ isRequired: true, type: "pan", minLength: 10, maxLength: 10 }),
 
   // ✅ Conditionally required for API users only
-  gst: Yup.string().when("role", (role, schema) =>
-    (role as unknown as string) === "2"
-      ? getValidationSchema({ isRequired: true, type: "gst", minLength: 15, maxLength: 15 })
-      : schema.notRequired()
-  ),
+  gst: Yup.string().when('role', (role, schema) => {
+    return String(role) === '2'
+      ? getValidationSchema({ isRequired: true, type: 'gst', minLength: 15, maxLength: 15 })
+      : schema.notRequired();
+  }),
 
-  domainName: Yup.string().when("role", (role, schema) =>
-    (role as unknown as string) === "2"
-      ? getValidationSchema({ isRequired: true, type: "text", minLength: 2 })
-      : schema.notRequired()
-  ),
+  domainName: Yup.string().when('role', (role, schema) => {
+    return String(role) === '2'
+      ? getValidationSchema({ isRequired: true, type: 'gst', minLength: 15, maxLength: 15 })
+      : schema.notRequired();
+  }),
 
-  companyType: Yup.string().when("role", (role, schema) =>
-    (role as unknown as string) === "2"
-      ? getValidationSchema({ isRequired: true, type: "text" })
-      : schema.notRequired()
-  ),
+  companyType: Yup.string().when('role', (role, schema) => {
+    return String(role) === '2'
+      ? getValidationSchema({ isRequired: true, type: 'gst', minLength: 15, maxLength: 15 })
+      : schema.notRequired();
+  }),
   role: getValidationSchema({ isRequired: true, type: "text" }),
 });
 
@@ -76,7 +76,6 @@ const Signup: React.FC = () => {
   const [showOtp, setShowOtp] = useState<boolean>(false);
 
   useEffect(() => {
-    // setShowOtp(true);
     getStateService();
     getCompanyService()
   }, []);
@@ -84,7 +83,7 @@ const Signup: React.FC = () => {
   //  api call for get states data
   const getStateService = async () => {
     try {
-      const res = await commonService.common_state();
+      const res = await dropdownService.StateList();
       if (res?.success) {
         const data = res.data as Array<{ id: number; stateName: string }>;
         const states = data.map((state) => ({ id: state.id, name: state.stateName }));
@@ -101,7 +100,7 @@ const Signup: React.FC = () => {
     setDistrictData([]);
     if (!stateId) return;
     try {
-      const res = await commonService.common_district(stateId);
+      const res = await dropdownService.DistrictList(stateId);
       const data = res.data as Array<{ id: number; districtName: string }>;
       const districts = data.map((district) => ({ id: district.id, name: district.districtName }));
       setDistrictData(districts);
@@ -113,7 +112,7 @@ const Signup: React.FC = () => {
   //  api call for get company data 
   const getCompanyService = async () => {
     try {
-      const res = await commonService.company();
+      const res = await dropdownService.CompanyType();
       if (res?.success) {
         const data = res.data as Array<{ id: number; typeName: string }>;
         const companies = data.map((company) => ({ id: company.id, name: company.typeName }));
@@ -269,9 +268,7 @@ const Signup: React.FC = () => {
           open={showOtp}
           onClose={() => setShowOtp(false)}
           onSubmit={handleOtpSubmit}
-          onResend={() => {
-            if (formValues) handleSubmit(formValues);
-          }}
+          onResend={() => { if (formValues) handleSubmit(formValues) }}
           phoneOrEmail={formValues?.mobile || ""}
         />
       </div>

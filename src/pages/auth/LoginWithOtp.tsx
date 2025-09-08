@@ -58,7 +58,7 @@ const LoginWithOtp: React.FC = () => {
                     {() => (
                         <Form>
                             <div className="relative w-full">
-                                <Field name="mobile" type="text" as={Input} placeholder=" " maxLength='10' autoComplete='off' className="peer h-12 w-full border border-gray-300 rounded px-3 pt-5 placeholder-transparent text-sm focus-visible:ring-0 focus-visible:ring-offset-0 focus:outline-none" />
+                                <Field name="mobile" type="text" as={Input} placeholder=" " maxLength='10' autoComplete='off'disabled={loading} className="peer h-12 w-full border border-gray-300 rounded px-3 pt-5 placeholder-transparent text-sm focus-visible:ring-0 focus-visible:ring-offset-0 focus:outline-none" />
                                 <label htmlFor="mobile" className="absolute left-3 top-1 text-gray-500 text-sm transition-all peer-placeholder-shown:top-3.5 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:top-1 peer-focus:text-xs peer-focus:text-gray-700">
                                     Mobile
                                 </label>

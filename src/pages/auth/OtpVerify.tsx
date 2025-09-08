@@ -10,6 +10,8 @@ import { useLocation } from 'react-router-dom';
 import { authService } from "@/api/auth/services";
 import { showToast } from "@/utils/toast";
 import { useNavigate } from "react-router-dom";
+import Cookies from 'js-cookie';
+
 interface OtpFormValues {
     otp: string;
 }
@@ -40,6 +42,8 @@ const OtpVerify: React.FC = () => {
         try {
             const res = await authService.SignIn("SIGN_IN_OTP", { ...values, mobile });
             if (res?.success) {
+                Cookies.set("token", res?.token || "");
+                Cookies.set("userData", JSON.stringify(res?.data));
                 navigate('/dashboard')
                 showToast.success(res?.message || "Login successful");
             } else {

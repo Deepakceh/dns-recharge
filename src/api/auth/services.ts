@@ -31,8 +31,13 @@ export const authService = {
 
   // sign in service
   SignIn: async (action: string, data: SignUpRawData): Promise<ApiResponse> => {
-    const payload = authPayload(action, data);
-    return await request("post", auth.SignIn, payload, true);
+    try {
+      const payload = authPayload(action, data);
+      return await request("post", auth.SignIn, payload, true);
+    } catch (error) {
+      console.error(`Error in SignIn:`, error);
+      throw error;
+    }
   },
 
   // send otp service
@@ -43,6 +48,18 @@ export const authService = {
       return res;
     } catch (error) {
       console.error(`Error in SendOTP:`, error);
+      throw error;
+    }
+  },
+
+  // signup service
+  ForgotPassWord: async (data: SignUpRawData): Promise<ApiResponse> => {
+    try {
+      const payload = authPayload("FORGOT_PASSWORD", data);
+      const res = await request<ApiResponse>("post", auth.ForgotPassWord, payload, true);
+      return res;
+    } catch (error) {
+      console.error(`Error in SIGN_UP}:`, error);
       throw error;
     }
   },

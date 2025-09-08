@@ -118,8 +118,8 @@ export const OtpModal: React.FC<OtpModalProps> = ({
                 </div>
 
                 <div className="flex justify-between gap-4">
-                    <Button variant="outline" className="w-full" onClick={onClose}>Cancel</Button>
-                    <Button variant="outline" className="w-full" onClick={handleSubmit}>Submit</Button>
+                    <Button type="button" variant="outline" className="w-full" onClick={handleSubmit}>Submit</Button>
+                    <Button type="button" variant="outline" className="w-full" onClick={onClose}>Cancel</Button>
                 </div>
             </DialogContent>
         </Dialog>

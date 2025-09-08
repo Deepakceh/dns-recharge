@@ -2,5 +2,6 @@
 export interface ApiResponse<T = unknown> {
     success: boolean;
     message?: string | null | "";
+    token?: string | null | ""
     data?: T | null;
 }

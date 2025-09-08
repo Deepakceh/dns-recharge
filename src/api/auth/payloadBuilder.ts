@@ -21,8 +21,6 @@ export interface SignUpRawData {
   confirmPassword?: string;
 }
 
-// ...keep rest of the code same
-
 export const authPayload = (action: string, data: unknown): Record<string, unknown> => {
   const d = data as SignUpRawData;
 
@@ -56,11 +54,10 @@ export const authPayload = (action: string, data: unknown): Record<string, unkno
         isOTP: true,
         otp: d.otp || ""
       };
-    case "SIGN_IN_FORGOT":
+    case "FORGOT_PASSWORD":
       return {
-        userName: d.mobile || '',
+        mobileNumber: d.mobile || '',
         passWord: d.confirmPassword || '',
-        isOTP: true,
         otp: d.otp || ''
       };
     default:

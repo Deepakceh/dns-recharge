@@ -1,15 +1,4 @@
-import {
-  CircleUser,
-  ChevronDown,
-  LifeBuoy,
-  LogOut,
-  Settings,
-  User,
-  Lock,
-  Moon,
-  ShieldQuestion,
-  Search,
-} from "lucide-react";
+import { CircleUser, ChevronDown, LifeBuoy, LogOut, Settings, User, Lock, Moon, ShieldQuestion, Search } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -23,15 +12,25 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { SidebarTrigger } from "../ui/sidebar";
-import { clearAllCookies } from "@/utils/cookieHandler";
 import { useNavigate } from "react-router-dom";
+import Cookies from "js-cookie";
+import { constants } from "@/constants/index";
+
+
 export default function AuthNavbar() {
   const navigate = useNavigate()
+
   const handleLogout = () => {
-    navigate('/login')
-    clearAllCookies();
+    // Remove specific cookies
+    Cookies.remove('token');
+    Cookies.remove('userData');
+
+    // Clear other storage
     localStorage.clear();
     sessionStorage.clear();
+
+    // Redirect to login page
+    navigate('/login');
   };
 
   return (
@@ -57,8 +56,8 @@ export default function AuthNavbar() {
           <DropdownMenuTrigger className="flex items-center gap-3 cursor-pointer focus:outline-none">
             <CircleUser className="w-8 h-8 text-gray-700" />
             <div className="flex flex-col items-start leading-tight">
-              <p className="text-sm font-medium text-gray-800">Deepak Kumar</p>
-              <p className="text-xs text-gray-400 -mt-1">Admin</p>
+              <p className="text-sm font-medium text-gray-800">{constants?.user?.orgName || ''}</p>
+              <p className="text-xs text-gray-400 -mt-1">{constants?.user?.roleName || ''}</p>
             </div>
             <div className="border border-gray-300 rounded-full">
               <ChevronDown className="w-4 h-4 text-gray-500" />

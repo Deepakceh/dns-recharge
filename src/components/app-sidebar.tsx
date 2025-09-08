@@ -1,14 +1,17 @@
 import * as React from "react"
-import { GalleryVerticalEnd, UserRoundPlus, Users, LayoutGrid, Landmark } from "lucide-react"
+// import { GalleryVerticalEnd, UserRoundPlus, Users, LayoutGrid, Landmark } from "lucide-react"
+import { GalleryVerticalEnd, UserRoundPlus, LayoutGrid, Landmark } from "lucide-react"
 import { NavMain } from "@/components/nav-main"
 import { NavUser } from "@/components/nav-user"
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarRail } from "@/components/ui/sidebar"
 import sidebar_logo from '../assets/images/dns/sidebar_logo.svg'
+import { constants } from "@/constants/index";
+
 // This is sample data.
 const data = {
   user: {
-    name: "Deepak Kumar",
-    email: "",
+    name: constants?.user?.orgName || '',
+    email: constants?.user?.email || '',
     avatar: "/avatars/shadcn.jpg",
   },
   teams: [
@@ -53,42 +56,42 @@ const data = {
 
         {
           title: "Add Notification",
-          url: "#",
+          url: "/users/notification",
         },
       ],
     },
-    {
-      title: "Vendors",
-      url: "#",
-      icon: Users,
-      isActive: false,
-      items: [
-        {
-          title: "Vendor List-Add/Edit/Settings",
-          url: "#",
-        },
-        {
-          title: "Vendor TXN-Add/Pull",
-          url: "#",
-        },
-        {
-          title: "Request/Response",
-          url: "#",
-        },
-        {
-          title: "Due Amount",
-          url: "#",
-        },
-        {
-          title: "PackComm-OpWise",
-          url: "#",
-        },
-        {
-          title: "Vendor Balance",
-          url: "#",
-        }
-      ],
-    },
+    // {
+    //   title: "Vendors",
+    //   url: "#",
+    //   icon: Users,
+    //   isActive: false,
+    //   items: [
+    //     {
+    //       title: "Vendor List-Add/Edit/Settings",
+    //       url: "#",
+    //     },
+    //     {
+    //       title: "Vendor TXN-Add/Pull",
+    //       url: "#",
+    //     },
+    //     {
+    //       title: "Request/Response",
+    //       url: "#",
+    //     },
+    //     {
+    //       title: "Due Amount",
+    //       url: "#",
+    //     },
+    //     {
+    //       title: "PackComm-OpWise",
+    //       url: "#",
+    //     },
+    //     {
+    //       title: "Vendor Balance",
+    //       url: "#",
+    //     }
+    //   ],
+    // },
     {
       title: "Bank",
       url: "#",
@@ -103,10 +106,27 @@ const data = {
           title: "Bank Statement",
           url: "/bank/statement-list",
         },
+        // {
+        //   title: "Deposit / Withdrow",
+        //   url: "#",
+        // }
+      ],
+    },
+    {
+      title: "Configuration",
+      url: "#",
+      icon: UserRoundPlus,
+      isActive: false,
+      items: [
         {
-          title: "Deposit / Withdrow",
-          url: "#",
-        }
+          title: "IP Address",
+          url: "/configuration/ip-address",
+        },
+        {
+          title: "Callback",
+          url: "/configuration/callback",
+        },
+
       ],
     },
   ]

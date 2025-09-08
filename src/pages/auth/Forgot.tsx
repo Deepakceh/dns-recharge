@@ -41,8 +41,6 @@ const getValidationSchema = (showFields: boolean) =>
         }),
     });
 
-
-
 const Forgot: React.FC = () => {
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
@@ -71,10 +69,10 @@ const Forgot: React.FC = () => {
                     showToast.error(res?.message || "Failed to send OTP");
                 }
             } else {
-                const res = await authService.SignIn("SIGN_IN_FORGOT", values);
+                const res = await authService.ForgotPassWord(values);
                 if (res?.success) {
                     showToast.success(res?.message || "Password reset successfully");
-                    navigate('/dashboard')
+                    navigate('/login')
                 } else {
                     showToast.error(res?.message || "Failed to reset password");
                 }
@@ -131,7 +129,7 @@ const Forgot: React.FC = () => {
                                 labelType="floating"
                                 inputMode="int"
                                 className="border"
-                                disabled={showFields}
+                                disabled={loading || showFields}
                             />
 
                             {showFields && (

@@ -27,13 +27,20 @@ const AddUser = React.lazy(() => import('@/pages/main-pages/users/list/add'));
 const Role = React.lazy(() => import('@/pages/main-pages/users/role-permission/role'));
 const Permission = React.lazy(() => import('@/pages/main-pages/users/role-permission/permission'));
 const PackageList = React.lazy(() => import('@/pages/main-pages/users/package-commission/list'));
+const AddUpdatePackageCommission = React.lazy(() => import('@/pages/main-pages/users/package-commission/addUpdatePackageCommission'));
+const AddUpdateSlabMargin = React.lazy(() => import('@/pages/main-pages/users/package-commission/addUpdateSlabMargin'));
 const Wallet = React.lazy(() => import('@/pages/main-pages/users/wallet/wallet'));
+const UserNotification = React.lazy(() => import('@/pages/main-pages/users/notification/list'));
 
 // bank routes
 const BankLayout = React.lazy(() => import('@/pages/main-pages/bank/layout'));
 const AccountList = React.lazy(() => import('@/pages/main-pages/bank/account/list'));
 const AddAccount = React.lazy(() => import('@/pages/main-pages/bank/account/add'));
 const StatementList = React.lazy(() => import('@/pages/main-pages/bank/statement/list'));
+
+// callback routes
+const Callback = React.lazy(() => import('@/pages/main-pages/configuration/Callback'));
+const IPAddress = React.lazy(() => import('@/pages/main-pages/configuration/IPAddress'));
 
 
 // Other
@@ -67,19 +74,29 @@ const AppRoutes: React.FC = () => {
                     <Route path="/users" element={<UsersLayout />}>
                         <Route index element={<Navigate to="list" />} />
                         <Route path="list" element={<UserList />} />
-                        <Route path="list/:page" element={<AddUser />} />
+                        <Route path="list/:mode/:id?" element={<AddUser />} />
                         <Route path="role" element={<Role />} />
-                        <Route path="role/permission" element={<Permission />} />
+                        <Route path="role/permission/:id" element={<Permission />} />
                         <Route path="package-list" element={<PackageList />} />
+                        <Route path="package-list/commission/:id" element={<AddUpdatePackageCommission />} />
+                        <Route path="package-list/slabMargin/:id" element={<AddUpdateSlabMargin />} />
                         <Route path="wallet" element={<Wallet />} />
+                        <Route path="notification" element={<UserNotification />} />
                     </Route>
 
                     {/* bank routes */}
                     <Route path="/bank" element={<BankLayout />}>
                         <Route index element={<Navigate to="account-list" />} />
                         <Route path="account-list" element={<AccountList />} />
-                        <Route path="account-list/:page" element={<AddAccount />} />
+                        <Route path="account-list/:mode/:id?" element={<AddAccount />} />
                         <Route path="statement-list/" element={<StatementList />} />
+                    </Route>
+
+                    {/* configuration routes */}
+                    <Route path="/configuration" element={<BankLayout />}>
+                        <Route index element={<Navigate to="callback" />} />
+                        <Route path="callback" element={<Callback />} />
+                        <Route path="ip-address" element={<IPAddress />} />
                     </Route>
 
 
