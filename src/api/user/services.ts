@@ -172,4 +172,18 @@ export const userService = {
       throw error;
     }
   },
+
+  // wallet transaction list service
+  GetWalletTransactionList: async (action: string, data: unknown): Promise<ApiResponse> => {
+    try {
+      const payload = userPayload(action, data);
+      const res = await request<ApiResponse>("post", user.GetWalletTransactionList, payload, false)
+      return res;
+    } catch (error) {
+      console.error(`Error in ${action}:`, error);
+      throw error;
+    }
+  },
+  
 }
+

@@ -47,7 +47,7 @@ const data = {
         },
         {
           title: "User Wallet TXN-Add/Pull",
-          url: "#",
+          url: "/users/wallet-list",
         },
         {
           title: "PackComm-OpWise",

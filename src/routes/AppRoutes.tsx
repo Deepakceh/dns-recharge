@@ -29,7 +29,8 @@ const Permission = React.lazy(() => import('@/pages/main-pages/users/role-permis
 const PackageList = React.lazy(() => import('@/pages/main-pages/users/package-commission/list'));
 const AddUpdatePackageCommission = React.lazy(() => import('@/pages/main-pages/users/package-commission/addUpdatePackageCommission'));
 const AddUpdateSlabMargin = React.lazy(() => import('@/pages/main-pages/users/package-commission/addUpdateSlabMargin'));
-const Wallet = React.lazy(() => import('@/pages/main-pages/users/wallet/wallet'));
+const WalletList = React.lazy(() => import('@/pages/main-pages/users/wallet/List'));
+const AddWallet = React.lazy(() => import('@/pages/main-pages/users/wallet/add'));
 const UserNotification = React.lazy(() => import('@/pages/main-pages/users/notification/list'));
 
 // bank routes
@@ -80,7 +81,8 @@ const AppRoutes: React.FC = () => {
                         <Route path="package-list" element={<PackageList />} />
                         <Route path="package-list/commission/:id" element={<AddUpdatePackageCommission />} />
                         <Route path="package-list/slabMargin/:id" element={<AddUpdateSlabMargin />} />
-                        <Route path="wallet" element={<Wallet />} />
+                        <Route path="wallet-list" element={<WalletList />} />
+                        <Route path="wallet-list/:mode/:id?" element={<AddWallet />} />
                         <Route path="notification" element={<UserNotification />} />
                     </Route>
 
