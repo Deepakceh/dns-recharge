@@ -22,4 +22,9 @@ export const user = {
   AddUpdatePackage: `${constants.baseUrl}Package/AddUpdatePackage`,
   GetPackageWiseMargins: `${constants.baseUrl}Package/GetPackageWiseMargins`,
   GetPackageSlabMarginById: `${constants.baseUrl}Package/GetPackageSlabMarginById/`,
+
+  //wallet urls
+  GetWalletTransactionList: `${constants.baseUrl}Wallet/GetWalletRequestData`,
+  //AddUpdateWalletTransaction: `${constants.baseUrl}Wallet/AddUpdateWalletTransaction`,
+  //GetWalletTransactionById: `${constants.baseUrl}Wallet/GetWalletTransactionById/`,
 };

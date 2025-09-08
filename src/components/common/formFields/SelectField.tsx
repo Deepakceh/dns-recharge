@@ -19,6 +19,7 @@ interface SelectFieldProps {
   labelType?: "top" | "floating";
   onCustomChange?: (value: string) => void;
   useFormik?: boolean; // ✅ default true
+  placeholder?: string;
 }
 
 interface FormValues {
@@ -34,6 +35,7 @@ const SelectField: React.FC<SelectFieldProps> = ({
   labelType = "top",
   onCustomChange,
   useFormik = true,
+  placeholder,
 }) => {
   const [localValue, setLocalValue] = React.useState<string>("");
 

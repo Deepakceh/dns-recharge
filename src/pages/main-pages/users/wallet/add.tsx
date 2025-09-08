@@ -7,10 +7,12 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { dropdownService } from '@/api/dropdown/service';
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
-//import { walletService } from "@/api/wallet/service";
+// import { walletService } from "@/api/wallet/service";
 import { showToast } from '@/utils/toast';
 import CircleLoader from '@/components/common/loader/CircleLoader';
 import { Calendar } from 'lucide-react';
+import { userService } from '@/api/user/services';
+import DateField from '@/components/ui/DateField';
 
 interface FormValues {
   walletTypeId: string;
@@ -25,7 +27,7 @@ interface FormValues {
 }
 
 interface OptionType {
-  id: number;
+  id: number | string;
   name: string;
 }
 
@@ -64,10 +66,11 @@ const AddWallet: React.FC = () => {
     isPullOut: false,
   });
 
+  // load Dropdown data
   useEffect(() => {
     Promise.all([
       getWalletTypeDropdown(),
-      getUserDropdown(),
+      getUserDropdownService(),
       getTransferTypeDropdown(),
       getBankAccountDropdown(),
     ]);
@@ -79,69 +82,100 @@ const AddWallet: React.FC = () => {
     }
   }, [page, id]);
 
-  const getWalletTypeDropdown = async () => {
-    //const res = await dropdownService.WalletTypes();
-    //if (res?.success) setWalletTypes(res.data.map((x: any) => ({ id: x.id, name: x.name })));
+  // Load dropdowns
+  const getUserDropdownService = async () => {
+    try {
+      const res = await dropdownService.UserDropdown();
+      if (res?.success) {
+        const data = res.data as Array<{ id: number; text: string }>;
+        setUsers(data.map(({ id, text }) => ({ id, name: text })));
+      }
+      console.log('User list API:', res.data);
+    } catch (err) {
+      console.error(err);
+    }
   };
-
-  const getUserDropdown = async () => {
-    //const res = await dropdownService.Users();
-    //if (res?.success) setUsers(res.data.map((x: any) => ({ id: x.id, name: x.name })));
+  const getWalletTypeDropdown = async () => {
+    try {
+      const res = await dropdownService.GstType();
+      if (res?.success) {
+        const data = res.data as Array<{
+          id: string | number;
+          gstName: string;
+        }>;
+        setWalletTypes(
+          data.map(({ id, gstName }) => ({
+            id: String(id),
+            name: gstName || 'Unnamed',
+          }))
+        );
+      }
+    } catch (err) {
+      console.error('Error loading Wallet Types:', err);
+    }
   };
 
   const getTransferTypeDropdown = async () => {
-    //const res = await dropdownService.TransferTypes();
-    //if (res?.success) setTransferTypes(res.data.map((x: any) => ({ id: x.id, name: x.name })));
+    try {
+      const res = await dropdownService.TransferType();
+      if (res?.success) {
+        const data = res.data as Array<{ id: string | number; text: string }>;
+        setTransferTypes(
+          data.map(({ id, text }) => ({
+            id: String(id),
+            name: text || 'Unnamed',
+          }))
+        );
+      }
+    } catch (err) {
+      console.error('Error loading Wallet Types:', err);
+    }
   };
 
   const getBankAccountDropdown = async () => {
-    //const res = await dropdownService.BankAccounts();
-    //if (res?.success) setBankAccounts(res.data.map((x: any) => ({ id: x.id, name: x.name })));
+    try {
+      const res = await dropdownService.BankDropdown();
+      if (res?.success) {
+        const data = res.data as Array<{ id: string | number; text: string }>;
+        setBankAccounts(
+          data.map(({ id, text }) => ({
+            id: String(id),
+            name: text || 'Unnamed',
+          }))
+        );
+      }
+    } catch (err) {
+      console.error('Error loading Wallet Types:', err);
+    }
   };
 
   const getWalletById = async (walletId: string) => {
     setLoader(true);
     try {
-      //const res = await walletService.GetWalletById(walletId);
-      setLoader(false);
-      //   if (res?.success) {
-      //     const data = res.data as Partial<FormValues>;
-      //     setInitialValues({
-      //       walletTypeId: data.walletTypeId?.toString() || "",
-      //       userId: data.userId?.toString() || "",
-      //       amount: data.amount?.toString() || "",
-      //       transferTypeId: data.transferTypeId?.toString() || "",
-      //       paymentDate: data.paymentDate || "",
-      //       bankAccountId: data.bankAccountId?.toString() || "",
-      //       chequeRefNumber: data.chequeRefNumber || "",
-      //       remark: data.remark || "",
-      //       isPullOut: data.isPullOut ?? false,
-      //     });
-      //   }
+      // const res = await userService.GetWalletById(walletId);
+      // setLoader(false);
+      // if (res?.success) {
+      //   const data = res.data as Partial<FormValues>;
+      //   setInitialValues({
+      //     walletTypeId: data.walletTypeId?.toString() || '',
+      //     userId: data.userId?.toString() || '',
+      //     amount: data.amount?.toString() || '',
+      //     transferTypeId: data.transferTypeId?.toString() || '',
+      //     paymentDate: data.paymentDate || '',
+      //     bankAccountId: data.bankAccountId?.toString() || '',
+      //     chequeRefNumber: data.chequeRefNumber || '',
+      //     remark: data.remark || '',
+      //     isPullOut: data.isPullOut ?? false,
+      //   });
+      // }
     } catch (err) {
       console.error(err);
       setLoader(false);
     }
   };
 
-  //   const handleSubmit = async (values: FormValues) => {
-  //     setLoader(true);
-  //     try {
-  //       const res = await walletService.AddUpdateWallet({ ...values, id: id || undefined });
-  //       setLoader(false);
-  //       if (res?.success) {
-  //         showToast.success(res.message || (page === "EDIT" ? "Wallet updated successfully" : "Wallet added successfully"));
-  //         setTimeout(() => navigate("/wallet/list"), 2000);
-  //       } else {
-  //         showToast.error(res?.message || "Failed");
-  //       }
-  //     } catch (err) {
-  //       console.error(err);
-  //       setLoader(false);
-  //     }
-  //   };
-
   const isViewMode = page === 'VIEW';
+  console.log(users);
 
   return (
     <>
@@ -164,7 +198,7 @@ const AddWallet: React.FC = () => {
             onSubmit={(values) => {
               console.log(values);
             }}
-            //onSubmit={handleSubmit}
+            // onSubmit={handleSubmit}
           >
             {({ values, setFieldValue }) => (
               <Form
@@ -179,12 +213,14 @@ const AddWallet: React.FC = () => {
                     label="Wallet Type"
                     options={walletTypes}
                     disabled={isViewMode}
+                    placeholder="Select Wallet Type"
                   />
                   <SelectField
                     name="userId"
                     label="User"
                     options={users}
                     disabled={isViewMode}
+                    placeholder="Select User"
                   />
                   <InputField
                     name="amount"
@@ -198,30 +234,22 @@ const AddWallet: React.FC = () => {
                     label="Transfer Type"
                     options={transferTypes}
                     disabled={isViewMode}
+                    placeholder="Select Transfer Type"
                   />
 
                   {/* Payment Date */}
-                  <div>
-                    <label className="block text-sm font-medium mb-1">
-                      Payment Date
-                    </label>
-                    <div className="relative">
-                      <InputField
-                        name="paymentDate"
-                        type="date"
-                        placeholder="mm/dd/yyyy"
-                        disabled={isViewMode}
-                        label={''}
-                      />
-                      <Calendar className="absolute right-3 top-2.5 w-4 h-4 text-orange-500" />
-                    </div>
-                  </div>
+                  <DateField
+                    name="paymentDate"
+                    label="Payment Date"
+                    disabled={isViewMode}
+                  />
 
                   <SelectField
                     name="bankAccountId"
                     label="Bank Account"
                     options={bankAccounts}
                     disabled={isViewMode}
+                    placeholder="Select Bank Account"
                   />
                   <InputField
                     name="chequeRefNumber"

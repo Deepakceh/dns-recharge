@@ -1,24 +1,30 @@
-'use client';
-import { useState, useRef } from 'react';
-import { AgGridReact } from 'ag-grid-react';
-import { ModuleRegistry } from 'ag-grid-community';
-import { AllCommunityModule } from 'ag-grid-community';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import {
-  CheckSquare,
-  Filter,
-  Search,
-  XSquare,
-  ChevronDown,
-  ChevronLeft,
-  ChevronRight,
-} from 'lucide-react';
-import type { ColDef, ICellRendererParams } from 'ag-grid-community';
+import { useState, useRef, useEffect } from "react";
+import { Formik, Form } from "formik";
+import { AgGridReact } from "ag-grid-react";
+import { ModuleRegistry } from "ag-grid-community";
+import { AllCommunityModule } from "ag-grid-community";
+// import { Switch } from "@/components/ui/switch";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Pencil, Trash2, SquarePlus, Filter, Search, CheckSquare, ChevronDown, ChevronLeft, ChevronRight, XSquare } from "lucide-react";
+import type { ColDef, ICellRendererParams } from "ag-grid-community";
+import InputField from "@/components/common/formFields/InputField";
+import SelectField from "@/components/common/formFields/SelectField";
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { userService } from "@/api/user/services";
+import { dropdownService } from "@/api/dropdown/service";
+import { commonService } from "@/api/common/service";
+import { ToggleStatusIndicator } from "@/components/common/ToggleStatusIndicator";
+import { showToast } from "@/utils/toast";
+import CircleLoader from "@/components/common/loader/CircleLoader";
+import { SearchSheet } from "@/components/common/SearchSheet";
+
 
 // Register AG Grid community modules
 ModuleRegistry.registerModules([AllCommunityModule]);
+
+
 
 type WalletRowData = {
   id: number;
@@ -47,239 +53,51 @@ interface WalletState {
   search: string;
   data: WalletRowData[];
 }
+interface filterFormValues {
+  mobile: string;
+  email: string;
+  user: string;
+  role: string;
+  status: string;
+}
+
+interface OptionType { id: number; name: string; }
 
 const WalletList: React.FC = () => {
-  const gridRef = useRef<any>(null);
-  const [open, setOpen] = useState(false);
+    const navigate = useNavigate()
+    const gridRef = useRef<any>(null);
+    const [loader, setLoader] = useState(false)
+    const [open, setOpen] = useState(false);
+    
+  
 
   // Dummy data
   const [wallet, setWallet] = useState<WalletState>({
     page: 1,
     size: 10, // default rows per page
     search: '',
-    data: [
-      {
-        id: 1,
-        actionId: '01',
-        txnId: '4647',
-        statusName: 'Pending',
-        bankName: 'HDFC Bank',
-        orgName: 'ABC Corporation',
-        paymentRefNo: 'REF202502191',
-        amount: 3849,
-        paymentDate: '19/02/2025',
-        addedDate: '18/02/2025',
-        updatedDate: '19/02/2025',
-        addedBy: 'Admin User',
-        updatedBy: 'Finance Manager',
-        remark: 'Monthly subscription payment',
-        txnType: 'Credit',
-        amtType: 'USD',
-        transferType: 'NEFT',
-        gstType: 'GST18',
-      },
-      {
-        id: 2,
-        actionId: '02',
-        txnId: '4648',
-        statusName: 'Pending',
-        bankName: 'ICICI Bank',
-        orgName: 'XYZ Enterprises',
-        paymentRefNo: 'REF202502192',
-        amount: 5623,
-        paymentDate: '19/02/2025',
-        addedDate: '18/02/2025',
-        updatedDate: '19/02/2025',
-        addedBy: 'Manager',
-        updatedBy: 'System',
-        remark: 'Vendor payment',
-        txnType: 'Debit',
-        amtType: 'INR',
-        transferType: 'RTGS',
-        gstType: 'GST12',
-      },
-      {
-        id: 3,
-        actionId: '03',
-        txnId: '4649',
-        statusName: 'Pending',
-        bankName: 'SBI',
-        orgName: 'Tech Solutions Ltd',
-        paymentRefNo: 'REF202502193',
-        amount: 7200,
-        paymentDate: '19/02/2025',
-        addedDate: '17/02/2025',
-        updatedDate: '19/02/2025',
-        addedBy: 'Finance User',
-        updatedBy: 'Admin',
-        remark: 'Invoice #INV-2025-001',
-        txnType: 'Credit',
-        amtType: 'EUR',
-        transferType: 'IMPS',
-        gstType: 'GST5',
-      },
-      {
-        id: 4,
-        actionId: '04',
-        txnId: '4650',
-        statusName: 'Pending',
-        bankName: 'Axis Bank',
-        orgName: 'Global Services',
-        paymentRefNo: 'REF202502194',
-        amount: 9200,
-        paymentDate: '19/02/2025',
-        addedDate: '16/02/2025',
-        updatedDate: '19/02/2025',
-        addedBy: 'System',
-        updatedBy: 'Finance Manager',
-        remark: 'Client refund',
-        txnType: 'Debit',
-        amtType: 'USD',
-        transferType: 'NEFT',
-        gstType: 'GST18',
-      },
-      {
-        id: 5,
-        actionId: '05',
-        txnId: '4651',
-        statusName: 'Pending',
-        bankName: 'Kotak Mahindra',
-        orgName: 'Innovate Inc',
-        paymentRefNo: 'REF202502195',
-        amount: 3500,
-        paymentDate: '19/02/2025',
-        addedDate: '15/02/2025',
-        updatedDate: '19/02/2025',
-        addedBy: 'Admin User',
-        updatedBy: 'System',
-        remark: 'Salary payment',
-        txnType: 'Credit',
-        amtType: 'INR',
-        transferType: 'RTGS',
-        gstType: 'GST12',
-      },
-      {
-        id: 6,
-        actionId: '06',
-        txnId: '4652',
-        statusName: 'Pending',
-        bankName: 'Yes Bank',
-        orgName: 'Data Systems',
-        paymentRefNo: 'REF202502196',
-        amount: 6400,
-        paymentDate: '19/02/2025',
-        addedDate: '18/02/2025',
-        updatedDate: '19/02/2025',
-        addedBy: 'Manager',
-        updatedBy: 'Finance User',
-        remark: 'Quarterly tax payment',
-        txnType: 'Debit',
-        amtType: 'INR',
-        transferType: 'NEFT',
-        gstType: 'GST18',
-      },
-      {
-        id: 7,
-        actionId: '07',
-        txnId: '4653',
-        statusName: 'Pending',
-        bankName: 'IndusInd Bank',
-        orgName: 'Cloud Networks',
-        paymentRefNo: 'REF202502197',
-        amount: 8100,
-        paymentDate: '19/02/2025',
-        addedDate: '17/02/2025',
-        updatedDate: '19/02/2025',
-        addedBy: 'Finance User',
-        updatedBy: 'Admin',
-        remark: 'Infrastructure upgrade',
-        txnType: 'Credit',
-        amtType: 'USD',
-        transferType: 'IMPS',
-        gstType: 'GST5',
-      },
-      {
-        id: 8,
-        actionId: '08',
-        txnId: '4654',
-        statusName: 'Pending',
-        bankName: 'RBL Bank',
-        orgName: 'Web Services Co',
-        paymentRefNo: 'REF202502198',
-        amount: 4300,
-        paymentDate: '19/02/2025',
-        addedDate: '16/02/2025',
-        updatedDate: '19/02/2025',
-        addedBy: 'System',
-        updatedBy: 'Finance Manager',
-        remark: 'Domain renewal',
-        txnType: 'Debit',
-        amtType: 'INR',
-        transferType: 'RTGS',
-        gstType: 'GST12',
-      },
-      {
-        id: 9,
-        actionId: '09',
-        txnId: '4655',
-        statusName: 'Pending',
-        bankName: 'Federal Bank',
-        orgName: 'App Developers',
-        paymentRefNo: 'REF202502199',
-        amount: 2900,
-        paymentDate: '19/02/2025',
-        addedDate: '15/02/2025',
-        updatedDate: '19/02/2025',
-        addedBy: 'Admin User',
-        updatedBy: 'System',
-        remark: 'Software license',
-        txnType: 'Credit',
-        amtType: 'EUR',
-        transferType: 'NEFT',
-        gstType: 'GST18',
-      },
-      {
-        id: 10,
-        actionId: '10',
-        txnId: '4656',
-        statusName: 'Pending',
-        bankName: 'IDFC First Bank',
-        orgName: 'Digital Solutions',
-        paymentRefNo: 'REF202502200',
-        amount: 6700,
-        paymentDate: '19/02/2025',
-        addedDate: '18/02/2025',
-        updatedDate: '19/02/2025',
-        addedBy: 'Manager',
-        updatedBy: 'Finance User',
-        remark: 'Marketing campaign',
-        txnType: 'Debit',
-        amtType: 'INR',
-        transferType: 'IMPS',
-        gstType: 'GST5',
-      },
-      {
-        id: 11,
-        actionId: '11',
-        txnId: '4656',
-        statusName: 'Pending',
-        bankName: 'IDFC First Bank',
-        orgName: 'Digital Solutions',
-        paymentRefNo: 'REF202502200',
-        amount: 6700,
-        paymentDate: '19/02/2025',
-        addedDate: '18/02/2025',
-        updatedDate: '19/02/2025',
-        addedBy: 'Manager',
-        updatedBy: 'Finance User',
-        remark: 'Marketing campaign',
-        txnType: 'Debit',
-        amtType: 'INR',
-        transferType: 'IMPS',
-        gstType: 'GST5',
-      },
-    ],
+    data: [],
   });
+
+  useEffect(() => {
+    getWalletListService(wallet.page, wallet.size);
+  }, [wallet.page, wallet.size]);
+
+  //  api call for get user dropdown data
+  //  api call for get user list data
+    const getWalletListService = async (page: number, size: number) => {
+      try {
+        const res = await userService.GetWalletTransactionList("GET_WALLET_LIST", { page: page, size: size });
+        if (res?.success && Array.isArray(res?.data)) {
+          setWallet((prev) => ({
+            ...prev,
+            data: res.data as WalletRowData[]
+          }));
+        }
+      } catch (err) {
+        console.error("User API Error:", err);
+      }
+    };
 
   // Accept / Reject handlers
   const handleAccept = (id: number) => {
@@ -422,8 +240,7 @@ const WalletList: React.FC = () => {
               />
             </div>
           </div>
-          {/* Add Button */}
-          <Link to="/users/wallet-txn/AddWallet">
+          <Link to="/users/wallet-list/Add">
             <Button className="h-8 px-5 text-sm bg-orange-500 hover:bg-orange-600 text-white">
               ADD
             </Button>
@@ -447,12 +264,10 @@ const WalletList: React.FC = () => {
           />
         </div>
 
-        {/* Pagination Footer */}
+        {/* Pagination */}
         <div className="flex items-center justify-between p-3 border-t border-gray-200 text-sm text-gray-600">
           <div className="flex items-center gap-4">
             <span className="text-sm text-gray-700">Rows per page</span>
-
-            {/* Styled native select with chevron */}
             <div className="relative inline-flex items-center">
               <select
                 aria-label="Rows per page"
@@ -470,7 +285,6 @@ const WalletList: React.FC = () => {
               <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
             </div>
 
-            {/* ✅ Use displaySizeLabel here */}
             <div className="text-sm text-gray-600">
               <span>
                 {totalRows === 0
@@ -479,7 +293,6 @@ const WalletList: React.FC = () => {
               </span>
             </div>
           </div>
-
           <div className="flex items-center gap-2">
             <button
               onClick={goToPrev}
@@ -488,11 +301,9 @@ const WalletList: React.FC = () => {
             >
               <ChevronLeft className="w-5 h-5 text-gray-600" />
             </button>
-
             <span className="text-sm text-gray-700">
               Page {effectivePage} of {totalPages}
             </span>
-
             <button
               onClick={goToNext}
               disabled={effectivePage === totalPages}
@@ -503,6 +314,117 @@ const WalletList: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* ✅ Filter SearchSheet */}
+      <SearchSheet open={open} onOpenChange={setOpen} title="Wallet Request Filter">
+        <Formik
+          initialValues={{
+            bankAccount: "",
+            transferType: "",
+            user: "",
+            status: "",
+            fromDate: "",
+            toDate: "",
+            paymentRef: "",
+          }}
+          onSubmit={(values, { resetForm }) => {
+            console.log("Filter Data:", values);
+            resetForm();
+            setOpen(false);
+          }}
+        >
+          {({ setFieldValue, values }) => (
+            <Form
+              className="space-y-6"
+              onKeyDown={(e) => {
+                if (e.key === "Enter") e.preventDefault();
+              }}
+            >
+              <div className="grid md:grid-cols-3 gap-6">
+                <SelectField
+                  name="bankAccount"
+                  label="Bank Account"
+                  options={[
+                    { id: 1, name: "HDFC Bank" },
+                    { id: 2, name: "ICICI Bank" },
+                  ]}
+                  placeholder="Select Bank Account"
+                />
+                <SelectField
+                  name="transferType"
+                  label="Transfer Type"
+                  options={[
+                    { id: 1, name: "P2P" },
+                    { id: 2, name: "P2A" },
+                  ]}
+                  placeholder="Select Transfer Type"
+                />
+                <SelectField
+                  name="user"
+                  label="User"
+                  options={[
+                    { id: 1, name: "John Doe" },
+                    { id: 2, name: "Jane Smith" },
+                  ]}
+                  placeholder="Select User"
+                />
+                <SelectField
+                  name="status"
+                  label="Status"
+                  options={[
+                    { id: 1, name: "Pending" },
+                    { id: 2, name: "Approved" },
+                    { id: 3, name: "Rejected" },
+                  ]}
+                  placeholder="Select Status"
+                />
+                <div>
+                  <label className="block text-sm font-medium mb-1">From Date</label>
+                  <Input
+                    type="date"
+                    name="fromDate"
+                    value={values.fromDate}
+                    onChange={(e) => setFieldValue("fromDate", e.target.value)}
+                    className="border w-full"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-1">To Date</label>
+                  <Input
+                    type="date"
+                    name="toDate"
+                    value={values.toDate}
+                    onChange={(e) => setFieldValue("toDate", e.target.value)}
+                    className="border w-full"
+                  />
+                </div>
+                <InputField
+                  name="paymentRef"
+                  label="Payment Reference Number"
+                  type="text"
+                  placeholder="Enter Payment Reference Number"
+                />
+              </div>
+              <div className="flex gap-4 mt-10">
+                <Button
+                  type="submit"
+                  className="w-full bg-orange-500 text-white hover:brightness-90"
+                >
+                  Search
+                </Button>
+                <Button
+                  type="button"
+                  onClick={() => setOpen(false)}
+                  variant="outline"
+                  className="w-full border border-red-400 text-red-500 hover:bg-red-50"
+                >
+                  Cancel
+                </Button>
+              </div>
+            </Form>
+          )}
+        </Formik>
+      </SearchSheet>
     </div>
   );
 };
