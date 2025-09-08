@@ -20,7 +20,6 @@ export const dropdownService = {
   DistrictList: async (id: string): Promise<ApiResponse> => {
     try {
       const url = `${dropdownUrls.DistrictList}?stateId=${id}`;
-
       const res = await request<ApiResponse>("get", url, null, true)
       return res;
     } catch (error) {
@@ -140,9 +139,10 @@ export const dropdownService = {
   },
 
   // operator type dropdown service
-  OperatorDropdown: async (): Promise<ApiResponse> => {
+  OperatorDropdown: async (id: string): Promise<ApiResponse> => {
     try {
-      const res = await request<ApiResponse>("get", dropdownUrls.OperatorDropdown, null, false)
+      const url = `${dropdownUrls.OperatorDropdown}?operatorTypeId=${id}`;
+      const res = await request<ApiResponse>("get", url, null, false)
       return res;
     } catch (error) {
       console.error(`Error in common_state:`, error);

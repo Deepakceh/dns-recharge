@@ -121,7 +121,6 @@ const AddAccount: React.FC = () => {
     };
 
     const handleSubmit = async (values: FormValues) => {
-        console.log('get data', values)
         setLoader(true)
         try {
             const res = await bankService.AddUpdateBankAccount({ ...values, id: id || undefined });

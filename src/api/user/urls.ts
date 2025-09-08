@@ -22,4 +22,5 @@ export const user = {
   AddUpdatePackage: `${constants.baseUrl}Package/AddUpdatePackage`,
   GetPackageWiseMargins: `${constants.baseUrl}Package/GetPackageWiseMargins`,
   GetPackageSlabMarginById: `${constants.baseUrl}Package/GetPackageSlabMarginById/`,
+  AddUpdatePackageSlabMargin: `${constants.baseUrl}Package/AddUpdatePackageSlabMargin`,
 };

@@ -16,6 +16,15 @@ export interface userData {
     page?: number
     size?: number
     permissions?: Array<{ menuId: number; canView: boolean; canCreate: boolean; canUpdate: boolean; canDelete: boolean; }>;
+    operatorTypeFilter?: string
+    operatorFilter?: string
+    circleFilter?: string
+    minValue?: number
+    maxValue?: number
+    commission?: number
+    commissionTypeId?: number
+    amountTypeId?: number
+    gstTypeId?: number
 }
 export const userPayload = (action: string, data: unknown): Record<string, unknown> => {
 
@@ -115,6 +124,21 @@ export const userPayload = (action: string, data: unknown): Record<string, unkno
                     "packageId": parseInt(d.packageId || "0", 10),
                 }
             }
+        }
+        case "ADD_UPDATE_PACKAGE_SLAB_MARGIN": {
+            return {
+                "id": d?.id ?? 0,
+                "packageId": parseInt(d.packageId || "0", 10),
+                "operatorTypeFilter": d?.operatorTypeFilter || '',
+                "operatorFilter": Array.isArray(d?.operatorFilter) ? d.operatorFilter.join(",") : (d?.operatorFilter || ""),
+                "circleFilter": Array.isArray(d?.circleFilter) ? d.circleFilter.join(",") : (d?.circleFilter || ""),
+                "minValue": d?.minValue || 0,
+                "maxValue": d?.maxValue || 0,
+                "commission": d?.commission || 0,
+                "commissionTypeId": d?.commissionTypeId || 0,
+                "amountTypeId": d?.amountTypeId || 0,
+                "gstTypeId": d?.gstTypeId || 0,
+            };
         }
         default:
             throw new Error(`Unknown action: ${action}`);

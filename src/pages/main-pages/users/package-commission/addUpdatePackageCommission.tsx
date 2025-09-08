@@ -8,10 +8,6 @@ import { Search } from "lucide-react";
 import type { ColDef } from "ag-grid-community";
 import { userService } from "@/api/user/services";
 import { useParams } from "react-router-dom";
-
-import "ag-grid-community/styles/ag-grid.css";
-import "ag-grid-community/styles/ag-theme-quartz.css";
-
 ModuleRegistry.registerModules([AllCommunityModule]);
 
 type UserRowData = {
@@ -48,17 +44,9 @@ export default function AddUpdatePackageCommission() {
     }
   }, [user.page, user.size, id]);
 
-  const getPackageMarginService = async (
-    page: number,
-    size: number,
-    packageId: string
-  ) => {
+  const getPackageMarginService = async (page: number, size: number, packageId: string) => {
     try {
-      const res = await userService.GetPackageWiseMargins({
-        page,
-        size,
-        packageId,
-      });
+      const res = await userService.GetPackageWiseMargins({ page, size, packageId });
       if (res?.success) {
         setUser((prev) => ({
           ...prev,
@@ -112,27 +100,27 @@ export default function AddUpdatePackageCommission() {
     },
     {
       headerName: "P2A Commission",
-      field: "p2ACommission",width: 140,
+      field: "p2ACommission", width: 140,
       cellRenderer: InputRenderer,
     },
 
- {
+    {
       headerName: "Commission Type",
-      field: "amountType",width: 190,flex: 1,
+      field: "amountType", width: 190, flex: 1,
       cellRenderer: (params: any) => (
         <SelectRenderer {...params} options={["Flat", "Percentage"]} />
       ),
     },
     {
       headerName: "Amount Type",
-      field: "amountType",width: 190,flex: 1,
+      field: "amountType", width: 190, flex: 1,
       cellRenderer: (params: any) => (
         <SelectRenderer {...params} options={["Flat", "Percentage"]} />
       ),
     },
-       {
+    {
       headerName: "Daily Limit",
-      field: "dailyLimit",width: 140,
+      field: "dailyLimit", width: 140,
       cellRenderer: InputRenderer,
     },
   ];
@@ -203,7 +191,7 @@ export default function AddUpdatePackageCommission() {
             defaultColDef={{
               resizable: true,
             }}
-             suppressCellFocus={true} 
+            suppressCellFocus={true}
           />
         </div>
       </div>

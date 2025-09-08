@@ -160,4 +160,16 @@ export const userService = {
       throw error;
     }
   },
+
+    // add updated package service
+  AddUpdatePackageSlabMargin: async (data: unknown): Promise<ApiResponse> => {
+    try {
+      const payload = userPayload('ADD_UPDATE_PACKAGE_SLAB_MARGIN', data);
+      const res = await request<ApiResponse>("post", user.AddUpdatePackageSlabMargin, payload, false)
+      return res;
+    } catch (error) {
+      console.error(`Error in AddUpdatePackageSlabMargin:`, error);
+      throw error;
+    }
+  },
 }
