@@ -27,6 +27,6 @@ export const user = {
 
   //wallet urls
   GetWalletTransactionList: `${constants.baseUrl}Wallet/GetWalletRequestData`,
-  //AddUpdateWalletTransaction: `${constants.baseUrl}Wallet/AddUpdateWalletTransaction`,
+  AddUpdateWalletTransaction: `${constants.baseUrl}Wallet/AddTopUpRequest`,
   //GetWalletTransactionById: `${constants.baseUrl}Wallet/GetWalletTransactionById/`,
 };

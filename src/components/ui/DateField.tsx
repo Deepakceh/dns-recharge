@@ -13,16 +13,17 @@ interface DateFieldProps {
   name: string;
   label: string;
   disabled?: boolean;
+  className?: string; // ✅ optional className
 }
 
-const DateField: React.FC<DateFieldProps> = ({ name, label, disabled }) => {
+const DateField: React.FC<DateFieldProps> = ({ name, label, disabled, className }) => {
   const { setFieldValue } = useFormikContext<any>();
   const [field, meta] = useField(name);
 
   const selectedDate = field.value ? new Date(field.value) : undefined;
 
   return (
-    <div className="relative">
+    <div className={`relative ${className || ''}`}> {/* ✅ apply className here */}
       <label className="block text-sm font-medium mb-1">{label}</label>
 
       <Popover>
@@ -39,7 +40,7 @@ const DateField: React.FC<DateFieldProps> = ({ name, label, disabled }) => {
           </button>
         </PopoverTrigger>
 
-        <PopoverContent className="p-2 bg-white rounded-md shadow-md mt-1">
+        <PopoverContent className="p-2 bg-white rounded-md shadow-md mt-1 z-50">
           <DayPicker
             mode="single"
             selected={selectedDate}

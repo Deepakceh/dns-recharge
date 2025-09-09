@@ -1,173 +1,222 @@
 export interface userData {
-    id?: number;
-    fullName?: number;
-    email?: string;
-    mobileNumber?: string;
-    roleId?: string;
-    packageId?: string;
-    userName?: string;
-    passWord?: string;
-    isActive?: boolean;
-    isLocked?: boolean;
-    notificationMsg?: string
-    remark?: string
-    roleName?: string
-    packageName?: string
-    page?: number
-    size?: number
-    permissions?: Array<{ menuId: number; canView: boolean; canCreate: boolean; canUpdate: boolean; canDelete: boolean; }>;
-    operatorTypeFilter?: string
-    operatorFilter?: string
-    circleFilter?: string
-    minValue?: number
-    maxValue?: number
-    commission?: number
-    commissionTypeId?: number
-    amountTypeId?: number
-    gstTypeId?: number
+  id?: number;
+  fullName?: number;
+  email?: string;
+  mobileNumber?: string;
+  roleId?: string;
+  packageId?: string;
+  userName?: string;
+  passWord?: string;
+  isActive?: boolean;
+  isLocked?: boolean;
+  notificationMsg?: string;
+  remark?: string;
+  roleName?: string;
+  packageName?: string;
+  page?: number;
+  size?: number;
+  permissions?: Array<{
+    menuId: number;
+    canView: boolean;
+    canCreate: boolean;
+    canUpdate: boolean;
+    canDelete: boolean;
+  }>;
+  operatorTypeFilter?: string;
+  operatorFilter?: string;
+  circleFilter?: string;
+  minValue?: number;
+  maxValue?: number;
+  commission?: number;
+  commissionTypeId?: number;
+  amountTypeId?: number;
+  gstTypeId?: number;
+
+  // ✅ Add Wallet Fields
+  userId?: string;
+  bankAccountId?: string;
+  amount?: string;
+  transferTypeId?: string;
+  paymentDate?: string;
+  paymentReferenceNumber?: string;
+  isPullOut?: boolean;
+  isApproved?: boolean;
+  addedById?: string;
+  walletTypeId: number;
 }
-export const userPayload = (action: string, data: unknown): Record<string, unknown> => {
-
-    const d = data as userData;
-    switch (action) {
-
-        case "GET_USER_LIST": {
-            const { page = 1, size = 100 } = data as { page?: number; size?: number };
-            return {
-                "pageNumber": page,
-                "pageSize": size,
-                "filter": {
-                    "accountNumber": "",
-                    "accountHolderName": "",
-                    "ifscCode": "",
-                    "mobileNumber": "",
-                    "email": "",
-                    "userId": 0,
-                    "roleId": 0,
-                    "statusId": 0,
-                    "gstTypeId": 0,
-                    "bankAccountId": 0,
-                    "transferTypeId": 0,
-                    "packageId": 0,
-                    "operatorId": 0,
-                    "paymentReferenceNumber": "",
-                    "fromDate": "",
-                    "toDate": ""
-                }
-            }
-        }
-        case "ADD_UPDATE_USER": {
-            return {
-                id: d?.id ?? 0,
-                fullName: d?.fullName ?? "",
-                email: d?.email ?? "",
-                mobileNumber: d?.mobileNumber ?? "",
-                roleId: parseInt(d.roleId || "0", 10),
-                packageId: parseInt(d.packageId || "0", 10),
-                userName: d?.userName ?? "",
-                passWord: d?.passWord ?? "",
-                isActive: d?.isActive ?? true,
-                isLocked: d?.isLocked ?? false,
-            };
-        }
-        case "GET_NOTIFICATION_LIST": {
-            const { page = 1, size = 100 } = data as { page?: number; size?: number };
-            return {
-                "pageNumber": page,
-                "pageSize": size,
-            }
-        }
-        case "ADD_UPDATE_NOTIFICATION": {
-            return {
-                id: d?.id ?? 0,
-                roleId: parseInt(d.roleId || "0", 10),
-                notificationMsg: d?.notificationMsg ?? "",
-                remark: d?.remark ?? ""
-            };
-        }
-        case "ADD_UPDATE_ROLE": {
-            return {
-                id: d?.id ?? 0,
-                name: d?.roleName || "",
-                remark: ''
-            };
-        }
-        case "GET_MENU_FOR_ROLE_PERMISSIONS": {
-            return {
-                roleId: parseInt(d.roleId || "0", 10)
-            };
-        }
-        case "SET_MENU_PERMISSIONS": {
-            return {
-                roleId: parseInt(d.roleId || "0", 10),
-                permissions: d?.permissions
-            };
-        }
-        case "GET_PACKAGE_LIST": {
-            const { page = 1, size = 100 } = data as { page?: number; size?: number };
-            return {
-                "pageNumber": page,
-                "pageSize": size,
-            }
-        }
-        case "ADD_UPDATE_PACKAGE": {
-            return {
-                id: d?.id ?? 0,
-                packageName: d?.packageName || "",
-            };
-        }
-        case "GET_PACKAGE_WISE_MARGINS": {
-            return {
-                "pageNumber": d?.page,
-                "pageSize": d?.size,
-                "filter": {
-                    "packageId": parseInt(d.packageId || "0", 10),
-                }
-            }
-        }
-        case "GET_WALLET_LIST": {
-            const { page = 1, size = 100 } = data as { page?: number; size?: number };
-            return {
-                "pageNumber": page,
-                "pageSize": size,
-                "filter": {
-                    "accountNumber": "",
-                    "accountHolderName": "",
-                    "ifscCode": "",
-                    "mobileNumber": "",
-                    "email": "",
-                    "userId": 0,
-                    "roleId": 0,
-                    "statusId": 0,
-                    "gstTypeId": 0,
-                    "bankAccountId": 0,
-                    "transferTypeId": 0,
-                    "packageId": 0,
-                    "operatorId": 0,
-                    "paymentReferenceNumber": "",
-                    "fromDate": "",
-                    "toDate": ""
-                }
-            }
-        }
-        case "ADD_UPDATE_PACKAGE_SLAB_MARGIN": {
-            return {
-                "id": d?.id ?? 0,
-                "packageId": parseInt(d.packageId || "0", 10),
-                "operatorTypeFilter": d?.operatorTypeFilter || '',
-                "operatorFilter": Array.isArray(d?.operatorFilter) ? d.operatorFilter.join(",") : (d?.operatorFilter || ""),
-                "circleFilter": Array.isArray(d?.circleFilter) ? d.circleFilter.join(",") : (d?.circleFilter || ""),
-                "minValue": d?.minValue || 0,
-                "maxValue": d?.maxValue || 0,
-                "commission": d?.commission || 0,
-                "commissionTypeId": d?.commissionTypeId || 0,
-                "amountTypeId": d?.amountTypeId || 0,
-                "gstTypeId": d?.gstTypeId || 0,
-            };
-        }
-        default:
-            throw new Error(`Unknown action: ${action}`);
+export const userPayload = (
+  action: string,
+  data: unknown
+): Record<string, unknown> => {
+  const d = data as userData;
+  switch (action) {
+    case 'GET_USER_LIST': {
+      const { page = 1, size = 100 } = data as { page?: number; size?: number };
+      return {
+        pageNumber: page,
+        pageSize: size,
+        filter: {
+          accountNumber: '',
+          accountHolderName: '',
+          ifscCode: '',
+          mobileNumber: '',
+          email: '',
+          userId: 0,
+          roleId: 0,
+          statusId: 0,
+          gstTypeId: 0,
+          bankAccountId: 0,
+          transferTypeId: 0,
+          packageId: 0,
+          operatorId: 0,
+          paymentReferenceNumber: '',
+          fromDate: '',
+          toDate: '',
+        },
+      };
+    }
+    case 'ADD_UPDATE_USER': {
+      return {
+        id: d?.id ?? 0,
+        fullName: d?.fullName ?? '',
+        email: d?.email ?? '',
+        mobileNumber: d?.mobileNumber ?? '',
+        roleId: parseInt(d.roleId || '0', 10),
+        packageId: parseInt(d.packageId || '0', 10),
+        userName: d?.userName ?? '',
+        passWord: d?.passWord ?? '',
+        isActive: d?.isActive ?? true,
+        isLocked: d?.isLocked ?? false,
+      };
+    }
+    case 'GET_NOTIFICATION_LIST': {
+      const { page = 1, size = 100 } = data as { page?: number; size?: number };
+      return {
+        pageNumber: page,
+        pageSize: size,
+      };
+    }
+    case 'ADD_UPDATE_NOTIFICATION': {
+      return {
+        id: d?.id ?? 0,
+        roleId: parseInt(d.roleId || '0', 10),
+        notificationMsg: d?.notificationMsg ?? '',
+        remark: d?.remark ?? '',
+      };
+    }
+    case 'ADD_UPDATE_ROLE': {
+      return {
+        id: d?.id ?? 0,
+        name: d?.roleName || '',
+        remark: '',
+      };
+    }
+    case 'GET_MENU_FOR_ROLE_PERMISSIONS': {
+      return {
+        roleId: parseInt(d.roleId || '0', 10),
+      };
+    }
+    case 'SET_MENU_PERMISSIONS': {
+      return {
+        roleId: parseInt(d.roleId || '0', 10),
+        permissions: d?.permissions,
+      };
+    }
+    case 'GET_PACKAGE_LIST': {
+      const { page = 1, size = 100 } = data as { page?: number; size?: number };
+      return {
+        pageNumber: page,
+        pageSize: size,
+      };
+    }
+    case 'ADD_UPDATE_PACKAGE': {
+      return {
+        id: d?.id ?? 0,
+        packageName: d?.packageName || '',
+      };
+    }
+    case 'GET_PACKAGE_WISE_MARGINS': {
+      return {
+        pageNumber: d?.page,
+        pageSize: d?.size,
+        filter: {
+          packageId: parseInt(d.packageId || '0', 10),
+        },
+      };
+    }
+    case 'GET_WALLET_LIST': {
+      const { page = 1, size = 100 } = data as { page?: number; size?: number };
+      return {
+        pageNumber: page,
+        pageSize: size,
+        filter: {
+          accountNumber: '',
+          accountHolderName: '',
+          ifscCode: '',
+          mobileNumber: '',
+          lapuNumber: '',
+          email: '',
+          recId: 0,
+          userId: 0,
+          roleId: 0,
+          statusId: 0,
+          gstTypeId: 0,
+          bankAccountId: 0,
+          txnTypeId: 0,
+          amountTypeId: 0,
+          transferTypeId: 0,
+          packageId: 0,
+          operatorId: 0,
+          apiId: 0,
+          filterTypeId: 0,
+          circleId: 0,
+          paymentReferenceNumber: '',
+          remark: '',
+          fromDate: '',
+          toDate: '',
+        },
+      };
     }
 
-
+    case 'ADD_UPDATE_WALLET': {
+      return {
+        id: d?.id ?? 0,
+        userId: parseInt(d?.userId || '0', 10),
+        roleId: parseInt(d?.roleId || '0', 10),
+        gstTypeId: d?.walletTypeId ?? 0,
+        bankAccountId: parseInt(d?.bankAccountId || '0', 10),
+        amount: parseFloat(d?.amount || '0'),
+        transferTypeId: parseInt(d?.transferTypeId || '0', 10),
+        paymentDate: d?.paymentDate
+          ? new Date(d.paymentDate).toISOString()
+          : new Date().toISOString(),
+        paymentReferenceNumber: d?.paymentReferenceNumber ?? '',
+        remark: d?.remark ?? '',
+        isPullOut: d?.isPullOut ?? false,
+        isApproved: d?.isApproved ?? false,
+        addedById: parseInt(d?.addedById || '0', 10),
+      };
+    }
+    case 'ADD_UPDATE_PACKAGE_SLAB_MARGIN': {
+      return {
+        id: d?.id ?? 0,
+        packageId: parseInt(d.packageId || '0', 10),
+        operatorTypeFilter: d?.operatorTypeFilter || '',
+        operatorFilter: Array.isArray(d?.operatorFilter)
+          ? d.operatorFilter.join(',')
+          : d?.operatorFilter || '',
+        circleFilter: Array.isArray(d?.circleFilter)
+          ? d.circleFilter.join(',')
+          : d?.circleFilter || '',
+        minValue: d?.minValue || 0,
+        maxValue: d?.maxValue || 0,
+        commission: d?.commission || 0,
+        commissionTypeId: d?.commissionTypeId || 0,
+        amountTypeId: d?.amountTypeId || 0,
+        gstTypeId: d?.gstTypeId || 0,
+      };
+    }
+    default:
+      throw new Error(`Unknown action: ${action}`);
+  }
 };
