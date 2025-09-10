@@ -18,6 +18,8 @@ interface FormValues {
   mobileNumber: string;
   roleId: string;
   packageId: string;
+  p2PBlockAmount: string;
+  p2ABlockAmount: string;
   userName: string;
   passWord: string;
   isActive: boolean;
@@ -53,6 +55,8 @@ const AddUser: React.FC = () => {
     mobileNumber: "",
     roleId: "",
     packageId: "",
+    p2PBlockAmount: "",
+    p2ABlockAmount: "",
     userName: "",
     passWord: "",
     isActive: true,
@@ -108,6 +112,8 @@ const AddUser: React.FC = () => {
           mobileNumber: data.mobileNumber || "",
           roleId: data.roleId?.toString() || "",
           packageId: data.packageId?.toString() || "",
+          p2PBlockAmount: data.p2PBlockAmount || "",
+          p2ABlockAmount: data.p2ABlockAmount || "",
           userName: data.userName || "",
           passWord: data.passWord || '', // blank on edit for security
           isActive: data.isActive ?? true,
@@ -158,7 +164,7 @@ const AddUser: React.FC = () => {
             onSubmit={handleSubmit}
           >
             {({ values, setFieldValue }) => (
-              <Form className="space-y-6" onKeyDown={(e) => {if (e.key === "Enter") e.preventDefault()}}>
+              <Form className="space-y-6" onKeyDown={(e) => { if (e.key === "Enter") e.preventDefault() }}>
                 <div>
                   <h4 className="text-base font-semibold text-gray-700 mt-3 mb-3">General Info</h4>
                   <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
@@ -167,6 +173,9 @@ const AddUser: React.FC = () => {
                     <InputField name="mobileNumber" label="Contact Number" type="text" placeholder="+91 XXX XXXX XXX" inputMode="int" maxLength={10} disabled={isViewMode} />
                     <SelectField name="roleId" label="Role" options={roleData} disabled={isViewMode} />
                     <SelectField name="packageId" label="Package" options={packageData} disabled={isViewMode} />
+                    <InputField name="p2PBlockAmount" label="P2P Block Amount" type="text" placeholder="Enter P2P Block Amount" inputMode="int" disabled={isViewMode} />
+                    <InputField name="p2ABlockAmount" label="P2A Block Amount" type="text" placeholder="Enter P2A Block Amount" inputMode="int" disabled={isViewMode} />
+
                   </div>
                 </div>
                 <div>

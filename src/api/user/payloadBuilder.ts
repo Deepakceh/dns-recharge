@@ -25,6 +25,8 @@ export interface userData {
     commissionTypeId?: number
     amountTypeId?: number
     gstTypeId?: number
+    p2PBlockAmount?: string
+    p2ABlockAmount?: string
 }
 export const userPayload = (action: string, data: unknown): Record<string, unknown> => {
 
@@ -64,6 +66,8 @@ export const userPayload = (action: string, data: unknown): Record<string, unkno
                 mobileNumber: d?.mobileNumber ?? "",
                 roleId: parseInt(d.roleId || "0", 10),
                 packageId: parseInt(d.packageId || "0", 10),
+                p2PBlockAmount: d?.p2PBlockAmount ?? "",
+                p2ABlockAmount: d?.p2ABlockAmount ?? "",
                 userName: d?.userName ?? "",
                 passWord: d?.passWord ?? "",
                 isActive: d?.isActive ?? true,

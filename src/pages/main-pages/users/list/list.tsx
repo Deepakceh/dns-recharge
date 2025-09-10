@@ -207,8 +207,10 @@ const UserList: React.FC = () => {
     { headerName: "MOBILE NUMBER", field: "mobileNumber" },
     { headerName: "EMAIL", field: "email" },
     { headerName: "ORG. NAME", field: "orgName" },
-    { headerName: "P2P BALANCE", field: "p2PBalance", width: 140, suppressSizeToFit: true },
-    { headerName: "P2A BALANCE", field: "p2ABalance", width: 140, suppressSizeToFit: true },
+    { headerName: "P2P BALANCE", field: "p2PBalance", width: 140 },
+    { headerName: "P2A BALANCE", field: "p2ABalance", width: 140 },
+    { headerName: "P2P Block Amount", field: "p2PBlockAmount", width: 140 },
+    { headerName: "P2A Block Amount", field: "p2ABlockAmount", width: 140 }
   ];
 
 

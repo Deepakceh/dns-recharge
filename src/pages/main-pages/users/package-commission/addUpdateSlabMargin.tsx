@@ -239,7 +239,7 @@ const AddUpdateSlabMargin: React.FC = () => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {slabMarginData.map((user) => (
+              {slabMarginData?.map((user) => (
                 <TableRow key={user.id}>
                   <TableCell>{user.operatorType || "--Select--"}</TableCell>
                   <TableCell>{user.operator || "--Select--"}</TableCell>
