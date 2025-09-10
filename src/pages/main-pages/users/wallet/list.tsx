@@ -1,30 +1,41 @@
-import { useState, useRef, useEffect } from "react";
-import { Formik, Form } from "formik";
-import { AgGridReact } from "ag-grid-react";
-import { ModuleRegistry } from "ag-grid-community";
-import { AllCommunityModule } from "ag-grid-community";
+import { useState, useRef, useEffect } from 'react';
+import { Formik, Form } from 'formik';
+import { AgGridReact } from 'ag-grid-react';
+import { ModuleRegistry } from 'ag-grid-community';
+import { AllCommunityModule } from 'ag-grid-community';
 // import { Switch } from "@/components/ui/switch";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Pencil, Trash2, SquarePlus, Filter, Search, CheckSquare, ChevronDown, ChevronLeft, ChevronRight, XSquare } from "lucide-react";
-import type { ColDef, ICellRendererParams } from "ag-grid-community";
-import InputField from "@/components/common/formFields/InputField";
-import SelectField from "@/components/common/formFields/SelectField";
-import { Link } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
-import { userService } from "@/api/user/services";
-import { dropdownService } from "@/api/dropdown/service";
-import { commonService } from "@/api/common/service";
-import { ToggleStatusIndicator } from "@/components/common/ToggleStatusIndicator";
-import { showToast } from "@/utils/toast";
-import CircleLoader from "@/components/common/loader/CircleLoader";
-import { SearchSheet } from "@/components/common/SearchSheet";
-
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import {
+  Pencil,
+  Trash2,
+  SquarePlus,
+  Filter,
+  Search,
+  CheckSquare,
+  ChevronDown,
+  ChevronLeft,
+  ChevronRight,
+  XSquare,
+} from 'lucide-react';
+import type { ColDef, ICellRendererParams } from 'ag-grid-community';
+import InputField from '@/components/common/formFields/InputField';
+import SelectField from '@/components/common/formFields/SelectField';
+import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import { userService } from '@/api/user/services';
+import { dropdownService } from '@/api/dropdown/service';
+import { commonService } from '@/api/common/service';
+import { ToggleStatusIndicator } from '@/components/common/ToggleStatusIndicator';
+import { showToast } from '@/utils/toast';
+import CircleLoader from '@/components/common/loader/CircleLoader';
+import { SearchSheet } from '@/components/common/SearchSheet';
+import DateField from '@/components/ui/DateField';
+import OptionType from './add';
+import { userPayload } from '@/api/user/payloadBuilder';
 
 // Register AG Grid community modules
 ModuleRegistry.registerModules([AllCommunityModule]);
-
-
 
 type WalletRowData = {
   id: number;
@@ -61,43 +72,160 @@ interface filterFormValues {
   status: string;
 }
 
-interface OptionType { id: number; name: string; }
+interface OptionType {
+  id: number;
+  name: string;
+}
 
 const WalletList: React.FC = () => {
-    const navigate = useNavigate()
-    const gridRef = useRef<any>(null);
-    const [loader, setLoader] = useState(false)
-    const [open, setOpen] = useState(false);
-    
-  
+  const navigate = useNavigate();
+  const gridRef = useRef<any>(null);
+  const [loader, setLoader] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [users, setUsers] = useState<OptionType[]>([]);
+  const [transferTypes, setTransferTypes] = useState<OptionType[]>([]);
+  const [bankAccounts, setBankAccounts] = useState<OptionType[]>([]);
 
   // Dummy data
   const [wallet, setWallet] = useState<WalletState>({
     page: 1,
-    size: 10, // default rows per page
+    size: 100, // default rows per page
     search: '',
     data: [],
   });
+
+  // load Dropdown data
+  useEffect(() => {
+    Promise.all([
+      getUserDropdownService(),
+      getTransferTypeDropdown(),
+      getBankAccountDropdown(),
+    ]);
+  }, []);
 
   useEffect(() => {
     getWalletListService(wallet.page, wallet.size);
   }, [wallet.page, wallet.size]);
 
-  //  api call for get user dropdown data
   //  api call for get user list data
-    const getWalletListService = async (page: number, size: number) => {
-      try {
-        const res = await userService.GetWalletTransactionList("GET_WALLET_LIST", { page: page, size: size });
-        if (res?.success && Array.isArray(res?.data)) {
-          setWallet((prev) => ({
-            ...prev,
-            data: res.data as WalletRowData[]
-          }));
-        }
-      } catch (err) {
-        console.error("User API Error:", err);
+  const getWalletListService = async (page: number, size: number) => {
+    try {
+      const res = await userService.GetWalletTransactionList(
+        'GET_WALLET_LIST',
+        { page: page, size: size }
+      );
+      console.log('res', res);
+      if (res?.success && Array.isArray(res?.data)) {
+        setWallet((prev) => ({
+          ...prev,
+          data: res.data as WalletRowData[],
+        }));
       }
-    };
+    } catch (err) {
+      console.error('User API Error:', err);
+    }
+  };
+
+  // Handle Filter
+  const handleFilterSubmit = async (values: any) => {
+  try {
+    setLoader(true);
+
+    // Build payload using existing payload builder
+    const payload = userPayload('GET_WALLET_LIST', {
+      page: wallet.page,
+      size: wallet.size,
+      bankAccountId: values.bankAccount,
+      transferTypeId: values.transferType,
+      userId: values.user,
+      statusId: values.status,
+      fromDate: values.fromDate,
+      toDate: values.toDate,
+      paymentReferenceNumber: values.paymentRef,
+    });
+
+    const res = await userService.GetWalletTransactionList(
+      'GET_WALLET_LIST',
+      payload
+    );
+
+    if (res?.success && Array.isArray(res.data)) {
+      setWallet((prev) => ({
+        ...prev,
+        data: res.data as WalletRowData[],
+      }));
+    }
+  } catch (err) {
+    console.error('Filter API Error:', err);
+  } finally {
+    setLoader(false);
+    setOpen(false);
+  }
+};
+
+
+  // Load dropdowns
+  const getUserDropdownService = async () => {
+    try {
+      const res = await dropdownService.UserDropdown();
+      if (res?.success) {
+        const data = res.data as Array<{
+          value: number | string;
+          text: string;
+        }>;
+        //setUsers(data.map(({ value, text }) => ({ value, name: text })));
+        setUsers(
+          data.map(({ value, text }) => ({
+            id: Number(value), // ✅ convert to number
+            name: text || 'Unnamed',
+          }))
+        );
+      }
+      // console.log('User list API:', res.data);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const getTransferTypeDropdown = async () => {
+    try {
+      const res = await dropdownService.TransferType();
+      if (res?.success) {
+        const data = res.data as Array<{
+          value: string | number;
+          text: string;
+        }>;
+        setTransferTypes(
+          data.map(({ value, text }) => ({
+            id: Number(value),
+            name: text || 'Unnamed',
+          }))
+        );
+      }
+    } catch (err) {
+      console.error('Error loading Wallet Types:', err);
+    }
+  };
+
+  const getBankAccountDropdown = async () => {
+    try {
+      const res = await dropdownService.BankDropdown();
+      if (res?.success) {
+        const data = res.data as Array<{
+          value: string | number;
+          text: string;
+        }>;
+        setBankAccounts(
+          data.map(({ value, text }) => ({
+            id: Number(value),
+            name: text || 'Unnamed',
+          }))
+        );
+      }
+    } catch (err) {
+      console.error('Error loading Wallet Types:', err);
+    }
+  };
 
   // Accept / Reject handlers
   const handleAccept = (id: number) => {
@@ -277,8 +405,8 @@ const WalletList: React.FC = () => {
                 onChange={(e) => handleSizeChange(e.target.value)}
                 className="appearance-none h-8 pl-3 pr-8 border border-gray-200 rounded-md text-sm bg-white focus:outline-none focus:ring-1 focus:ring-blue-200"
               >
-                <option value="10">10</option>
-                <option value="100">100</option>
+                <option value="10">100</option>
+                <option value="100">500</option>
                 <option value="1000">1000</option>
                 <option value="all">All</option>
               </select>
@@ -316,88 +444,61 @@ const WalletList: React.FC = () => {
       </div>
 
       {/* ✅ Filter SearchSheet */}
-      <SearchSheet open={open} onOpenChange={setOpen} title="Wallet Request Filter">
+      <SearchSheet
+        open={open}
+        onOpenChange={setOpen}
+        title="Wallet Request Filter"
+      >
         <Formik
           initialValues={{
-            bankAccount: "",
-            transferType: "",
-            user: "",
-            status: "",
-            fromDate: "",
-            toDate: "",
-            paymentRef: "",
+            bankAccount: '',
+            transferType: '',
+            user: '',
+            status: '',
+            fromDate: '',
+            toDate: '',
+            paymentRef: '',
           }}
-          onSubmit={(values, { resetForm }) => {
-            console.log("Filter Data:", values);
-            resetForm();
-            setOpen(false);
-          }}
+          onSubmit={(values) => handleFilterSubmit(values)}
         >
-          {({ setFieldValue, values }) => (
+         {() => (
             <Form
               className="space-y-6"
               onKeyDown={(e) => {
-                if (e.key === "Enter") e.preventDefault();
+                if (e.key === 'Enter') e.preventDefault();
               }}
             >
               <div className="grid md:grid-cols-3 gap-6">
                 <SelectField
                   name="bankAccount"
                   label="Bank Account"
-                  options={[
-                    { id: 1, name: "HDFC Bank" },
-                    { id: 2, name: "ICICI Bank" },
-                  ]}
+                  options={bankAccounts} // API data
                   placeholder="Select Bank Account"
                 />
                 <SelectField
                   name="transferType"
                   label="Transfer Type"
-                  options={[
-                    { id: 1, name: "P2P" },
-                    { id: 2, name: "P2A" },
-                  ]}
+                   options={transferTypes} // API data
                   placeholder="Select Transfer Type"
                 />
                 <SelectField
                   name="user"
                   label="User"
-                  options={[
-                    { id: 1, name: "John Doe" },
-                    { id: 2, name: "Jane Smith" },
-                  ]}
+                  options={users} // API data
                   placeholder="Select User"
                 />
                 <SelectField
                   name="status"
                   label="Status"
                   options={[
-                    { id: 1, name: "Pending" },
-                    { id: 2, name: "Approved" },
-                    { id: 3, name: "Rejected" },
+                    { id: 1, name: 'Pending' },
+                    { id: 2, name: 'Approved' },
+                    { id: 3, name: 'Rejected' },
                   ]}
                   placeholder="Select Status"
                 />
-                <div>
-                  <label className="block text-sm font-medium mb-1">From Date</label>
-                  <Input
-                    type="date"
-                    name="fromDate"
-                    value={values.fromDate}
-                    onChange={(e) => setFieldValue("fromDate", e.target.value)}
-                    className="border w-full"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium mb-1">To Date</label>
-                  <Input
-                    type="date"
-                    name="toDate"
-                    value={values.toDate}
-                    onChange={(e) => setFieldValue("toDate", e.target.value)}
-                    className="border w-full"
-                  />
-                </div>
+                <DateField name="fromDate" label="From Date" className="relative z-50"/>
+                <DateField name="toDate" label="To Date" className="relative z-50" />
                 <InputField
                   name="paymentRef"
                   label="Payment Reference Number"

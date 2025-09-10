@@ -184,6 +184,18 @@ export const userService = {
       throw error;
     }
   },
+  // add updated wallet service
+  AddUpdateWalletTransaction: async (data: unknown): Promise<ApiResponse> => {
+    try {
+      const payload = userPayload('ADD_UPDATE_WALLET', data);
+      const res = await request<ApiResponse>("post", user.AddUpdateWalletTransaction, payload, false)
+      return res;
+    } catch (error) {
+      console.error(`Error in AddUpdateWallet:`, error);
+      throw error;
+    }
+  },
+  
   
 }
 
