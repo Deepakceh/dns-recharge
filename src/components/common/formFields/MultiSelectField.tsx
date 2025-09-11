@@ -13,7 +13,7 @@ interface MultiSelectFieldProps {
   useFormik?: boolean; // ✅ default true
 }
 
-interface FormValues {[key: string]: string[];}
+interface FormValues { [key: string]: string[]; }
 
 const MultiSelectField: React.FC<MultiSelectFieldProps> = ({
   name,
@@ -88,10 +88,7 @@ const MultiSelectField: React.FC<MultiSelectFieldProps> = ({
             {selectedValue.map((id) => {
               const option = options.find((o) => o.id === id);
               return (
-                <span
-                  key={id}
-                  className="bg-blue-100 text-blue-700 px-2 py-1 rounded text-xs"
-                >
+                <span key={id} className="bg-blue-100 text-blue-700 px-2 py-1 rounded text-xs">
                   {option?.name}
                 </span>
               );
@@ -105,34 +102,31 @@ const MultiSelectField: React.FC<MultiSelectFieldProps> = ({
       </div>
 
       {/* Dropdown */}
+      {/* Dropdown */}
       {isOpen && (
         <div className="absolute mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg z-10 max-h-48 overflow-y-auto">
-          {/* All Option */}
-          <div
-            className="flex items-center px-3 py-2 hover:bg-gray-100 cursor-pointer"
-            onClick={toggleAll}
-          >
-            <input type="checkbox" className="mr-2" readOnly checked={isAllSelected} />
-            <span className="text-sm">All</span>
-          </div>
+          {options.length > 0 ? (
+            <>
+              {/* All Option */}
+              <div className="flex items-center px-3 py-2 hover:bg-gray-100 cursor-pointer" onClick={toggleAll}>
+                <input type="checkbox" className="mr-2" readOnly checked={isAllSelected} />
+                <span className="text-sm">All</span>
+              </div>
 
-          {/* Options */}
-          {options.map((option) => (
-            <div key={option.id}
-              className="flex items-center px-3 py-2 hover:bg-gray-100 cursor-pointer"
-              onClick={() => toggleOption(option.id)}
-            >
-              <input
-                type="checkbox"
-                className="mr-2"
-                readOnly
-                checked={selectedValue.includes(option.id)}
-              />
-              <span className="text-sm">{option.name}</span>
-            </div>
-          ))}
+              {/* Options */}
+              {options.map((option) => (
+                <div key={option.id} className="flex items-center px-3 py-2 hover:bg-gray-100 cursor-pointer" onClick={() => toggleOption(option.id)}>
+                  <input type="checkbox" className="mr-2" readOnly checked={selectedValue.includes(option.id)} />
+                  <span className="text-sm">{option.name}</span>
+                </div>
+              ))}
+            </>
+          ) : (
+            <div className="px-3 py-2 text-gray-400 text-sm">No records found</div>
+          )}
         </div>
       )}
+
     </div>
   );
 

@@ -26,9 +26,9 @@ type RowData = {
   amtType: string;
 };
 interface FormValues {
-  operatorTypeFilter: string;
-  operatorFilter: string;
-  circleFilter: string;
+  operatorTypeFilter: string[];
+  operatorFilter: string[];
+  circleFilter: string[];
   minValue: string;
   maxValue: string;
   commission: string;
@@ -45,10 +45,10 @@ interface UserState {
 }
 
 const validationSchema = () => Yup.object({
-  operatorTypeFilter: getValidationSchema({ isRequired: true }),
-  // operatorFilter: getValidationSchema({ isRequired: true }),
-  // circleFilter: getValidationSchema({ isRequired: true }),
-  minValue: getValidationSchema({ isRequired: true, }),
+  operatorTypeFilter: getValidationSchema({ isRequired: true, isArray: true }),
+  operatorFilter: getValidationSchema({ isRequired: true, isArray: true }),
+  circleFilter: getValidationSchema({ isRequired: true, isArray: true }),
+  minValue: getValidationSchema({ isRequired: true }),
   maxValue: getValidationSchema({ isRequired: true }),
   commission: getValidationSchema({ isRequired: true }),
   commissionTypeId: getValidationSchema({ isRequired: true }),
@@ -61,9 +61,11 @@ const AddUpdateSlabMargin: React.FC = () => {
   const [loader, setLoader] = useState(false)
   const [open, setOpen] = useState(false);
   const [dropdown, setDropdown] = useState({
-    operatorType: [] as Array<{ id: number; name: string }>,
-    operator: [] as Array<{ id: number; name: string }>,
-    circle: [] as Array<{ id: number; name: string }>,
+    operatorType: [] as Array<{ id: string; name: string }>,
+    operator: [] as Array<{ id: string; name: string; operatorTypeId: string }>,
+    operatorFilterOptions: [] as Array<{ id: string; name: string; operatorTypeId: string }>, // ✅ filtered list
+
+    circle: [] as Array<{ id: string; name: string }>,
     commissionType: [] as Array<{ id: number; name: string }>,
     amountType: [] as Array<{ id: number; name: string }>,
     gstType: [] as Array<{ id: number; name: string }>
@@ -77,9 +79,9 @@ const AddUpdateSlabMargin: React.FC = () => {
 
 
   const [initialValues] = useState<FormValues>({
-    operatorTypeFilter: '',
-    operatorFilter: '',
-    circleFilter: '',
+    operatorTypeFilter: [],
+    operatorFilter: [],
+    circleFilter: [],
     minValue: '',
     maxValue: '',
     commission: '',
@@ -96,10 +98,10 @@ const AddUpdateSlabMargin: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    getPackageMarginService(slabMargin.page, slabMargin.size);
+    getPackageSlabMarginService(slabMargin.page, slabMargin.size);
   }, [slabMargin.page, slabMargin.size]);
 
-  const getPackageMarginService = async (page: number, size: number,) => {
+  const getPackageSlabMarginService = async (page: number, size: number,) => {
     try {
       const res = await userService.GetPackageWiseSlabMargins({ page, size });
       if (res?.success) {
@@ -117,10 +119,10 @@ const AddUpdateSlabMargin: React.FC = () => {
     try {
       const res = await dropdownService.OperatorType();
       if (res?.success) {
-        const data = res.data as Array<{ id: number; typeName: string, operatorTypeId: number }>;
+        const data = res.data as Array<{ id: number; typeName: string }>;
         setDropdown((prev) => ({
           ...prev,
-          operatorType: data.map((item) => ({ id: item?.id, name: item?.typeName, operatorTypeId: item?.operatorTypeId })),
+          operatorType: data.map((item) => ({ id: String(item.id), name: item?.typeName })),
         }));
       }
     } catch (err) {
@@ -131,10 +133,10 @@ const AddUpdateSlabMargin: React.FC = () => {
   const getOperatorDropdownService = async () => {
     try {
       const res = await dropdownService.OperatorDropdown();
-      const data = res.data as Array<{ id: number; name: string }>;
+      const data = res.data as Array<{ id: number; name: string, operatorTypeId: string }>;
       setDropdown((prev) => ({
         ...prev,
-        operator: data.map((item) => ({ id: item?.id, name: item?.name })),
+        operator: data.map((item) => ({ id: String(item.id), name: item?.name, operatorTypeId: String(item?.operatorTypeId) })),
       }));
     } catch (err) {
       console.error(err);
@@ -148,7 +150,7 @@ const AddUpdateSlabMargin: React.FC = () => {
         const data = res.data as Array<{ id: number; circleName: string }>;
         setDropdown((prev) => ({
           ...prev,
-          circle: data.map((item) => ({ id: item?.id, name: item?.circleName })),
+          circle: data.map((item) => ({ id: String(item.id), name: item?.circleName })),
         }));
       }
     } catch (err) {
@@ -207,6 +209,7 @@ const AddUpdateSlabMargin: React.FC = () => {
       const res = await userService.AddUpdatePackageSlabMargin({ ...values, packageId: id || undefined });
       setLoader(false)
       if (res?.success) {
+        getPackageSlabMarginService(slabMargin.page, slabMargin.size);
         showToast.success(res.message || ("Added successfully"));
         setOpen(false);
       } else {
@@ -217,6 +220,14 @@ const AddUpdateSlabMargin: React.FC = () => {
       setLoader(false)
     }
   };
+
+  const handleOperatorTypeChange = (selectedIds: string[]) => {
+    setDropdown((prev) => ({
+      ...prev,
+      operatorFilterOptions: selectedIds.length > 0 ? prev.operator.filter((op) => selectedIds.includes(op.operatorTypeId)) : []
+    }));
+  };
+
 
 
   return (
@@ -246,29 +257,38 @@ const AddUpdateSlabMargin: React.FC = () => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {slabMargin.data?.map((user) => (
-                <TableRow key={user.id}>
-                  <TableCell>{user.operatorType || "--Select--"}</TableCell>
-                  <TableCell>{user.operator || "--Select--"}</TableCell>
-                  <TableCell>{user.circle || "--Select--"}</TableCell>
-                  <TableCell>{user.amountRange || "Ex. 10-50"}</TableCell>
-                  <TableCell>{user.commission}</TableCell>
-                  <TableCell>{user.commType || "Percent"}</TableCell>
-                  <TableCell>{user.amtType || "Discount"}</TableCell>
-                  <TableCell>
-                    <div className="flex gap-2">
-                      <Button size="icon" variant="outline" >
-                        <Pencil className="w-4 h-4" />
-                      </Button>
-                      <Button size="icon" variant="destructive">
-                        <Trash2 className="w-4 h-4" />
-                      </Button>
-                    </div>
+              {slabMargin.data && slabMargin.data.length > 0 ? (
+                slabMargin.data.map((user) => (
+                  <TableRow key={user.id}>
+                    <TableCell>{user.operatorType || "--Select--"}</TableCell>
+                    <TableCell>{user.operator || "--Select--"}</TableCell>
+                    <TableCell>{user.circle || "--Select--"}</TableCell>
+                    <TableCell>{user.amountRange || "Ex. 10-50"}</TableCell>
+                    <TableCell>{user.commission}</TableCell>
+                    <TableCell>{user.commType || "Percent"}</TableCell>
+                    <TableCell>{user.amtType || "Discount"}</TableCell>
+                    <TableCell>
+                      <div className="flex gap-2">
+                        <Button size="icon" variant="outline">
+                          <Pencil className="w-4 h-4" />
+                        </Button>
+                        <Button size="icon" variant="destructive">
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell colSpan={8} className="text-center py-4 text-gray-500">
+                    No records found
                   </TableCell>
                 </TableRow>
-              ))}
+              )}
             </TableBody>
           </Table>
+
         </div>
 
         {/* Edit Modal */}
@@ -278,11 +298,11 @@ const AddUpdateSlabMargin: React.FC = () => {
             validationSchema={validationSchema}
             onSubmit={handleSubmit}
           >
-            {({ setFieldValue }) => (
+            {() => (
               <Form>
                 <div className="grid md:grid-cols-3 gap-6">
-                  <MultiSelect name='operatorTypeFilter' label="Operator Type" options={dropdown.operatorType} onCustomChange={(id: string) => console.log('data', id)} />
-                  <MultiSelect name='operatorFilter' label="Operator" options={dropdown.operator} />
+                  <MultiSelect name='operatorTypeFilter' label="Operator Type" options={dropdown.operatorType} onCustomChange={handleOperatorTypeChange} />
+                  <MultiSelect name='operatorFilter' label="Operator" options={dropdown.operatorFilterOptions || []} disabled={!dropdown.operatorFilterOptions.length} />
                   <MultiSelect name='circleFilter' label="Circle" options={dropdown.circle} />
                   <InputField name="minValue" label="Min Value" type="text" inputMode="int" placeholder="Enter min value" className="border" />
                   <InputField name="maxValue" label="Max Value" type="text" inputMode="int" placeholder="Enter max value" className="border" />

@@ -147,7 +147,7 @@ export const userPayload = (action: string, data: unknown): Record<string, unkno
     }
     case 'GET_PACKAGE_WISE_SLAB_MARGINS': {
       return {
-         pageNumber: d?.page,
+        pageNumber: d?.page,
         pageSize: d?.size,
       };
     }
@@ -208,13 +208,9 @@ export const userPayload = (action: string, data: unknown): Record<string, unkno
       return {
         id: d?.id ?? 0,
         packageId: parseInt(d.packageId || '0', 10),
-        operatorTypeFilter: d?.operatorTypeFilter || '',
-        operatorFilter: Array.isArray(d?.operatorFilter)
-          ? d.operatorFilter.join(',')
-          : d?.operatorFilter || '',
-        circleFilter: Array.isArray(d?.circleFilter)
-          ? d.circleFilter.join(',')
-          : d?.circleFilter || '',
+        operatorTypeFilter: Array.isArray(d?.operatorTypeFilter) ? d.operatorTypeFilter.join(',') : d?.operatorTypeFilter || '',
+        operatorFilter: Array.isArray(d?.operatorFilter) ? d.operatorFilter.join(',') : d?.operatorFilter || '',
+        circleFilter: Array.isArray(d?.circleFilter) ? d.circleFilter.join(',') : d?.circleFilter || '',
         minValue: d?.minValue || 0,
         maxValue: d?.maxValue || 0,
         commission: d?.commission || 0,

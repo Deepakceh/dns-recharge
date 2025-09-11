@@ -18,6 +18,7 @@ export function AppDialog({ open, onOpenChange, title, children, width }: AppDia
         className={`bg-white rounded-2xl ${width || "max-w-lg"}`}
         onInteractOutside={(e) => e.preventDefault()}
         onEscapeKeyDown={(e) => e.preventDefault()}
+        aria-describedby={undefined}
       >
         <DialogHeader>
           <DialogTitle className="text-xl font-semibold">{title}</DialogTitle>
