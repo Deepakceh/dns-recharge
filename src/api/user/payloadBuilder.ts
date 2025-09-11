@@ -43,13 +43,10 @@ export interface userData {
   isApproved?: boolean;
   addedById?: string;
   walletTypeId: number;
-    p2PBlockAmount?: string
-    p2ABlockAmount?: string
+  p2PBlockAmount?: string
+  p2ABlockAmount?: string
 }
-export const userPayload = (
-  action: string,
-  data: unknown
-): Record<string, unknown> => {
+export const userPayload = (action: string, data: unknown): Record<string, unknown> => {
   const d = data as userData;
   switch (action) {
     case 'GET_USER_LIST': {
@@ -85,8 +82,8 @@ export const userPayload = (
         mobileNumber: d?.mobileNumber ?? '',
         roleId: parseInt(d.roleId || '0', 10),
         packageId: parseInt(d.packageId || '0', 10),
-                p2PBlockAmount: d?.p2PBlockAmount ?? "",
-                p2ABlockAmount: d?.p2ABlockAmount ?? "",
+        p2PBlockAmount: d?.p2PBlockAmount ?? "",
+        p2ABlockAmount: d?.p2ABlockAmount ?? "",
         userName: d?.userName ?? '',
         passWord: d?.passWord ?? '',
         isActive: d?.isActive ?? true,
@@ -146,6 +143,12 @@ export const userPayload = (
         filter: {
           packageId: parseInt(d.packageId || '0', 10),
         },
+      };
+    }
+    case 'GET_PACKAGE_WISE_SLAB_MARGINS': {
+      return {
+         pageNumber: d?.page,
+        pageSize: d?.size,
       };
     }
     case 'GET_WALLET_LIST': {

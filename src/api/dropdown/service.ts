@@ -139,9 +139,9 @@ export const dropdownService = {
   },
 
   // operator type dropdown service
-  OperatorDropdown: async (id: string): Promise<ApiResponse> => {
+  OperatorDropdown: async (): Promise<ApiResponse> => {
     try {
-      const url = `${dropdownUrls.OperatorDropdown}?operatorTypeId=${id}`;
+      const url = `${dropdownUrls.OperatorDropdown}?operatorTypeId=0`;
       const res = await request<ApiResponse>("get", url, null, false)
       return res;
     } catch (error) {

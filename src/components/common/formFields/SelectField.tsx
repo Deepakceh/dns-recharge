@@ -1,14 +1,6 @@
 import React from "react";
 import { Field, ErrorMessage, useFormikContext, FieldProps } from "formik";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 interface SelectFieldProps {
   name: string;
@@ -22,9 +14,7 @@ interface SelectFieldProps {
   placeholder?: string;
 }
 
-interface FormValues {
-  [key: string]: string;
-}
+interface FormValues { [key: string]: string; }
 
 const SelectField: React.FC<SelectFieldProps> = ({
   name,

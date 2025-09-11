@@ -89,7 +89,7 @@ export const userService = {
     }
   },
 
-   // get data by role id service
+  // get data by role id service
   GetMenuForRolePermissions: async (data: unknown): Promise<ApiResponse> => {
     try {
       const payload = userPayload('GET_MENU_FOR_ROLE_PERMISSIONS', data);
@@ -101,7 +101,7 @@ export const userService = {
     }
   },
 
-    // update permission data by 
+  // update permission data by 
   SetMenuPermissions: async (data: unknown): Promise<ApiResponse> => {
     try {
       const payload = userPayload('SET_MENU_PERMISSIONS', data);
@@ -150,6 +150,18 @@ export const userService = {
   },
 
   // get package wise margins service
+  GetPackageWiseSlabMargins: async (data: unknown): Promise<ApiResponse> => {
+    try {
+      const payload = userPayload('GET_PACKAGE_WISE_SLAB_MARGINS', data);
+      const res = await request<ApiResponse>("post", user.GetPackageWiseSlabMargins, payload, false)
+      return res;
+    } catch (error) {
+      console.error(`Error in GetPackageSlabMarginById:`, error);
+      throw error;
+    }
+  },
+
+  // get package wise margins service by id
   GetPackageSlabMarginById: async (id: number): Promise<ApiResponse> => {
     try {
       const url = `${user.GetPackageSlabMarginById}${id}`
@@ -161,7 +173,7 @@ export const userService = {
     }
   },
 
-    // add updated package service
+  // add updated package service
   AddUpdatePackageSlabMargin: async (data: unknown): Promise<ApiResponse> => {
     try {
       const payload = userPayload('ADD_UPDATE_PACKAGE_SLAB_MARGIN', data);
@@ -195,7 +207,7 @@ export const userService = {
       throw error;
     }
   },
-  
-  
+
+
 }
 

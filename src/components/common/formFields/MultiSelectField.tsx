@@ -1,11 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Field, ErrorMessage, useFormikContext, FieldProps } from "formik";
 
-type Option = {
-  id: string;
-  name: string;
-};
-
+type Option = { id: string; name: string; };
 interface MultiSelectFieldProps {
   name: string;
   label: string;
@@ -17,9 +13,7 @@ interface MultiSelectFieldProps {
   useFormik?: boolean; // ✅ default true
 }
 
-interface FormValues {
-  [key: string]: string[];
-}
+interface FormValues {[key: string]: string[];}
 
 const MultiSelectField: React.FC<MultiSelectFieldProps> = ({
   name,
@@ -29,7 +23,7 @@ const MultiSelectField: React.FC<MultiSelectFieldProps> = ({
   disabled = false,
   labelType = "top",
   onCustomChange,
-  useFormik = true,
+  useFormik = true
 }) => {
   const [localValue, setLocalValue] = useState<string[]>([]);
   const [isOpen, setIsOpen] = useState(false);
