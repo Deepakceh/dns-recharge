@@ -25,7 +25,6 @@ const SelectField: React.FC<SelectFieldProps> = ({
   labelType = "top",
   onCustomChange,
   useFormik = true,
-  placeholder,
 }) => {
   const [localValue, setLocalValue] = React.useState<string>("");
 

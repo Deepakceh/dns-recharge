@@ -118,8 +118,7 @@ const MultiSelectField: React.FC<MultiSelectFieldProps> = ({
 
           {/* Options */}
           {options.map((option) => (
-            <div
-              key={option.id}
+            <div key={option.id}
               className="flex items-center px-3 py-2 hover:bg-gray-100 cursor-pointer"
               onClick={() => toggleOption(option.id)}
             >

@@ -59,6 +59,7 @@ const validationSchema = () => Yup.object({
 const AddUpdateSlabMargin: React.FC = () => {
   const { id } = useParams<{ id?: string }>();
   const [loader, setLoader] = useState(false)
+  const [open, setOpen] = useState(false);
   const [dropdown, setDropdown] = useState({
     operatorType: [] as Array<{ id: number; name: string }>,
     operator: [] as Array<{ id: number; name: string }>,
@@ -87,11 +88,9 @@ const AddUpdateSlabMargin: React.FC = () => {
     gstTypeId: ''
   });
 
-  const [open, setOpen] = useState(false);
-
 
   useEffect(() => {
-    Promise.all([getOperatorTypeDropdownService(),getOperatorDropdownService(), getCircleDropdownService(),
+    Promise.all([getOperatorTypeDropdownService(), getOperatorDropdownService(), getCircleDropdownService(),
     getCommissionTypeDropdownService(), getAmountTypeDropdownService(), getGstTypeDropdownService()
     ]);
   }, []);
@@ -118,10 +117,10 @@ const AddUpdateSlabMargin: React.FC = () => {
     try {
       const res = await dropdownService.OperatorType();
       if (res?.success) {
-        const data = res.data as Array<{ id: number; typeName: string }>;
+        const data = res.data as Array<{ id: number; typeName: string, operatorTypeId: number }>;
         setDropdown((prev) => ({
           ...prev,
-          operatorType: data.map((item) => ({ id: item?.id, name: item?.typeName })),
+          operatorType: data.map((item) => ({ id: item?.id, name: item?.typeName, operatorTypeId: item?.operatorTypeId })),
         }));
       }
     } catch (err) {
@@ -129,8 +128,8 @@ const AddUpdateSlabMargin: React.FC = () => {
     }
   };
 
-   const getOperatorDropdownService = async () => {
-     try {
+  const getOperatorDropdownService = async () => {
+    try {
       const res = await dropdownService.OperatorDropdown();
       const data = res.data as Array<{ id: number; name: string }>;
       setDropdown((prev) => ({
@@ -282,7 +281,7 @@ const AddUpdateSlabMargin: React.FC = () => {
             {({ setFieldValue }) => (
               <Form>
                 <div className="grid md:grid-cols-3 gap-6">
-                  <MultiSelect name='operatorTypeFilter' label="Operator Type" options={dropdown.operatorType}/>
+                  <MultiSelect name='operatorTypeFilter' label="Operator Type" options={dropdown.operatorType} onCustomChange={(id: string) => console.log('data', id)} />
                   <MultiSelect name='operatorFilter' label="Operator" options={dropdown.operator} />
                   <MultiSelect name='circleFilter' label="Circle" options={dropdown.circle} />
                   <InputField name="minValue" label="Min Value" type="text" inputMode="int" placeholder="Enter min value" className="border" />
